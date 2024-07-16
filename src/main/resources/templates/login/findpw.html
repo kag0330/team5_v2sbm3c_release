@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속 -->
+<div layout:fragment="content">
+  <div style="text-align: center; margin: 50px 0px 30px 0px;">
+    비밀번호 찾기
+    <form method="post" action="./findpw">
+
+      id &nbsp;&nbsp;&nbsp;<input type="text" name="id" style="height: 3rem;">
+      email &nbsp;&nbsp;&nbsp;<input type="text" name="email" placeholder="[pass]입력시 통과(테스트용)" style="height: 3rem;">
+      <button class="btn btn-secondary" type="submit">비밀번호 변경하기</button>
+    </form>
+  </div>
+
+</div>
+
+
+</html>

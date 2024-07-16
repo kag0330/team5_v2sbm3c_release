@@ -1,0 +1,21 @@
+<div th:fragment="list_all_fragment" class="paymentDiv">
+  <!--/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/-->
+  <!--/*
+  <th:block th:each="paymentTotal : ${list}">
+    <div>
+      <button type="button" class="collapsible" th:onclick="fetchList(this, [[${paymentTotal.memberno}]]);">
+        <div style="display: flex; justify-content: space-around;">
+          <span class="color-white" th:text="|회원번호: ${paymentTotal.memberno}|"></span>
+          <span class="color-white" th:text="|회원ID: ${paymentTotal.memberid}|"></span>
+          <span class="color-white" th:text="|회원닉네임: ${paymentTotal.nickname}|"></span>
+        </div>
+      </button>
+      <div class="contents" id="btnDiv"></div>
+    </div>
+  </th:block>
+  
+  <!--/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  */-->
+</div>

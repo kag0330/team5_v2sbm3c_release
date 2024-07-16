@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dev.mvc.paymentTotal.PaymentTotalDAOInter">
+
+  <resultMap id="PaymentDetailsOptionMap" type="dev.mvc.paymentTotal.PaymentDetailsOptionVO">
+    <id property="payment_details_no" column="payment_details_no" />
+    <result property="payment_amount" column="payment_amount" />
+    <result property="paymentno" column="paymentno" />
+    
+    <result property="optionno" column="optionno" />
+    <result property="sizes" column="sizes" />
+    <result property="amount" column="amount" />
+    <result property="color" column="color" />
+    
+    <result property="shoesno" column="shoesno" />
+    <result property="title" column="title" />
+    <result property="brand" column="brand" />
+    <result property="rating" column="rating" />
+    <result property="price" column="price" />
+    <result property="discount" column="discount" />
+    <result property="contents" column="contents" />
+    <result property="visible" column="visible" />
+    
+    <result property="subname" column="subname"/>
+    
+    <result property="categoryno" column="categoryno"/>
+    
+    <result property="shoes_file_no" column="shoes_file_no" />
+    <result property="name" column="name" />
+    <result property="shoes_file_sizes" column="shoes_file_sizes" />
+    <result property="ex" column="ex" />
+    <result property="src" column="src" />
+  </resultMap>
+
+
+	<resultMap id="PaymentTotalMap" type="dev.mvc.paymentTotal.PaymentTotalVO">
+		<id property="paymentno" column="paymentno" />
+		<result property="memberno" column="memberno" />
+		<result property="memberid" column="memberid" />
+		<result property="nickname" column="nickname" />
+		<result property="rdate" column="rdate" />
+		<result property="status" column="status" />
+		<result property="payment_status" column="payment_status" />
+		<result property="cs_status" column="cs_status" />
+		<result property="total_price" column="total_price" />
+		<result property="delivery" column="delivery" />
+		<result property="total_payment" column="total_payment" />
+
+    <collection property="payment_details_option" autoMapping="true" ofType="dev.mvc.paymentTotal.PaymentDetailsOptionVO" column="paymentno" />
+  </resultMap>
+
+	<select id="list" parameterType="map" resultMap="PaymentTotalMap" resultOrdered="true" >
+    SELECT DISTINCT
+    m.memberno,
+    p.paymentno,
+    p.rdate,
+    p.status,
+    p.payment_status,
+    p.cs_status,
+    p.total_price,
+    p.delivery,
+    p.total_payment
+    FROM
+    member m
+    INNER JOIN payment p ON m.memberno = p.memberno
+    INNER JOIN payment_details pd ON p.paymentno = pd.paymentno
+    WHERE
+    m.memberno = #{memberno} AND p.cs_status IS NULL
+    <if test="startDate != null and endDate != null">
+      AND p.rdate BETWEEN #{startDate} AND #{endDate}
+    </if>
+    ORDER BY
+    p.rdate DESC
+	</select>
+	
+	 <select id="cslist" parameterType="map" resultMap="PaymentTotalMap" resultOrdered="true">
+    SELECT DISTINCT
+    m.memberno,
+    p.paymentno,
+    p.rdate,
+    p.status,
+    p.payment_status,
+    p.cs_status,
+    p.total_price,
+    p.delivery,
+    p.total_payment
+    FROM
+    member m
+    INNER JOIN payment p ON m.memberno = p.memberno
+    INNER JOIN payment_details pd ON p.paymentno = pd.paymentno
+    WHERE
+    m.memberno = #{memberno} AND p.cs_status IS NOT NULL
+    <if test="startDate != null and endDate != null">
+      AND p.rdate BETWEEN #{startDate} AND #{endDate}
+    </if>
+    ORDER BY
+    p.rdate DESC
+  </select>
+
+  <select id="selectPaymentDetailsByPaymentNo" parameterType="map" resultMap="PaymentDetailsOptionMap">
+    SELECT
+    pd.payment_details_no,
+    pd.payment_amount,
+    o.optionno,
+    o.sizes,
+    o.amount,
+    o.color,
+    s.shoesno,
+    s.title,
+    s.brand,
+    s.rating,
+    s.price,
+    s.discount,
+    s.contents,
+    s.visible,
+    c.subname,
+    cl.categoryno,
+    sf.shoes_file_no,
+    sf.name,
+    sf.sizes as shoes_file_sizes,
+    sf.ex,
+    sf.src
+    FROM
+    payment_details pd
+    INNER JOIN options o ON pd.optionno = o.optionno
+    INNER JOIN shoes s ON o.shoesno = s.shoesno
+    INNER JOIN category_list cl ON cl.shoesno = s.shoesno
+    INNER JOIN category c ON c.categoryno = cl.categoryno
+    LEFT JOIN shoes_file sf ON s.shoesno = sf.shoesno
+    WHERE
+    pd.paymentno = #{paymentno} AND c.subname = s.brand
+    <if test="search != null and search != ''">
+      AND UPPER(s.title) LIKE '%' || UPPER(#{search}) || '%'
+    </if>
+    ORDER BY
+    pd.payment_details_no
+  </select>
+
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ -->
+
+	<select id="listAdminPaging" resultMap="PaymentTotalMap" parameterType="Map" >
+	  SELECT *
+    FROM (
+      WITH PaymentRank AS (
+        SELECT
+          m.memberno,
+          m.id AS memberid,
+          m.nickname,
+          p.paymentno,
+          p.rdate,
+          ROW_NUMBER() OVER (PARTITION BY m.memberno ORDER BY p.rdate desc) AS rn
+        FROM
+          member m
+          INNER JOIN payment p ON m.memberno = p.memberno
+        <where>
+          <if test=" word != null and word != '' ">
+            (UPPER(m.id) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%')
+          </if>
+          
+          <if test="payment_statuss != null and payment_statuss.size() > 0">
+            AND p.payment_status IN
+            <foreach item="item" collection="payment_statuss" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          
+          <if test="statuss != null and statuss.size() > 0">
+            AND p.status IN
+            <foreach item="item" collection="statuss" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          
+          <if test="cs_statuss != null and cs_statuss.size() > 0">
+          AND (
+            <foreach item="item" collection="cs_statuss" open="(" separator=" OR " close=")">
+              <choose>
+                <when test="item == 'NULL'">
+                  p.cs_status IS NULL
+                </when>
+                <otherwise>
+                  p.cs_status = #{item}
+                </otherwise>
+              </choose>
+            </foreach>
+          )
+        </if>
+        </where>
+      )
+      SELECT
+        memberno,
+        memberid,
+        nickname,
+        paymentno,
+        rdate,
+        ROW_NUMBER() OVER (ORDER BY rdate ${order}) AS rownum_
+      FROM
+        PaymentRank
+      WHERE
+        rn = 1
+    )
+    WHERE rownum_ BETWEEN #{start_num} AND #{end_num}
+    ORDER BY rdate ${order}
+  </select>
+
+
+	<select id="listAdminPDO" parameterType="Map" resultMap="PaymentTotalMap">
+		SELECT
+		m.memberno,
+		p.paymentno,
+		p.rdate,
+		p.payment_status,
+		p.status,
+		p.cs_status,
+		p.total_price,
+		p.delivery,
+		p.total_payment,
+		pd.payment_details_no,
+		pd.payment_amount,
+		o.optionno,
+		o.sizes,
+		o.amount,
+		o.color,
+		s.shoesno,
+		s.title,
+		s.brand,
+		s.rating,
+		s.price,
+		s.discount,
+		s.contents,
+		s.visible,
+		sf.shoes_file_no,
+		sf.name,
+		sf.sizes as shoes_file_sizes,
+		sf.ex,
+		sf.src
+		FROM
+		member m
+		INNER JOIN payment p ON p.memberno = m.memberno
+		INNER JOIN payment_details pd ON p.paymentno = pd.paymentno
+		INNER JOIN options o ON pd.optionno = o.optionno
+		INNER JOIN shoes s ON o.shoesno = s.shoesno
+		LEFT JOIN shoes_file sf ON s.shoesno = sf.shoesno
+		WHERE
+		m.memberno = #{memberno}
+      <if test="payment_statuss != null and payment_statuss.size() > 0">
+        AND p.payment_status IN
+        <foreach item="item" collection="payment_statuss" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="statuss != null and statuss.size() > 0">
+        AND p.status IN
+        <foreach item="item" collection="statuss" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="cs_statuss != null and cs_statuss.size() > 0">
+          AND (
+            <foreach item="item" collection="cs_statuss" open="(" separator=" OR " close=")">
+              <choose>
+                <when test="item == 'NULL'">
+                  p.cs_status IS NULL
+                </when>
+                <otherwise>
+                  p.cs_status = #{item}
+                </otherwise>
+              </choose>
+            </foreach>
+          )
+        </if>
+		ORDER BY
+		p.rdate DESC
+	</select>
+
+	<select id="member_cnt" parameterType="Map" resultType="int">
+		SELECT
+		COUNT(DISTINCT m.memberno) AS cnt
+		FROM
+		member m
+		INNER JOIN payment p ON p.memberno = m.memberno
+		INNER JOIN payment_details pd ON p.paymentno = pd.paymentno
+		INNER JOIN options o ON pd.optionno = o.optionno
+		INNER JOIN shoes s ON o.shoesno = s.shoesno
+		LEFT JOIN shoes_file sf ON s.shoesno = sf.shoesno
+		<where>
+		  <if test=" word != null and word != '' ">
+        (UPPER(m.id) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%')
+      </if>
+		
+			<if test="payment_statuss != null and payment_statuss.size() > 0">
+				AND p.payment_status IN
+				<foreach item="item" collection="payment_statuss" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			
+			<if test="statuss != null and statuss.size() > 0">
+				AND p.status IN
+				<foreach item="item" collection="statuss" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			
+			<if test="cs_statuss != null and cs_statuss.size() > 0">
+          AND (
+            <foreach item="item" collection="cs_statuss" open="(" separator=" OR " close=")">
+              <choose>
+                <when test="item == 'NULL'">
+                  p.cs_status IS NULL
+                </when>
+                <otherwise>
+                  p.cs_status = #{item}
+                </otherwise>
+              </choose>
+            </foreach>
+          )
+        </if>
+		</where>
+	</select>
+
+	<select id="payment_cnt" parameterType="Map" resultType="int">
+		SELECT
+		COUNT(DISTINCT p.paymentno) AS cnt
+		FROM
+		member m
+		INNER JOIN payment p ON p.memberno = m.memberno
+		INNER JOIN payment_details pd ON p.paymentno = pd.paymentno
+		INNER JOIN options o ON pd.optionno = o.optionno
+		INNER JOIN shoes s ON o.shoesno = s.shoesno
+		LEFT JOIN shoes_file sf ON s.shoesno = sf.shoesno
+		<where>
+		  <if test=" word != null and word != '' ">
+        (UPPER(m.id) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%')
+      </if>
+		
+			<if test="payment_statuss != null and payment_statuss.size() > 0">
+				AND p.payment_status IN
+				<foreach item="item" collection="payment_statuss" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			
+			<if test="statuss != null and statuss.size() > 0">
+				AND p.status IN
+				<foreach item="item" collection="statuss" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			
+			<if test="cs_statuss != null and cs_statuss.size() > 0">
+          AND (
+            <foreach item="item" collection="cs_statuss" open="(" separator=" OR " close=")">
+              <choose>
+                <when test="item == 'NULL'">
+                  p.cs_status IS NULL
+                </when>
+                <otherwise>
+                  p.cs_status = #{item}
+                </otherwise>
+              </choose>
+            </foreach>
+          )
+        </if>
+		</where>
+	</select>
+</mapper>
+
+
+

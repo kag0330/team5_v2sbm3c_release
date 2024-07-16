@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="user-scalable=yes, initial-scale=1.0, minimum-scale=1.0, maximum-scale=10.0, width=device-width" />
+  <title>발걸음 관리자 페이지</title>
+  
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/admin/css/style.css" rel="Stylesheet" type="text/css"> <!-- /static 기준 -->
+  <link href="/admin/css/bootstrapCustom.css" rel="StyleSheet" type="text/css">
+  <link rel="shortcut icon" href="/images/star.png" />
+  
+  
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css" />
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css" />
+
+  <!-- Color Picker -->
+  <script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>
+  <!-- Editor -->
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <!-- Editor's Plugin -->
+  <script src="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.js"></script>
+  <!-- Editor ko-KR lang -->
+  <script src="https://uicdn.toast.com/editor/latest/i18n/ko-kr.js"></script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+  <div class='container_main'>
+
+    <div th:replace="~{admin/navbar::navbarFragment}"></div> <!-- navbar.html navbarFragment import -->
+
+    <div class='content_body' style="width:80%">
+      <th:block layout:fragment="content"></th:block> <!-- 각 파일의 내용 출력 -->
+    </div> <!-- content_body 종료 -->
+
+    <div class='bottom_menu'>
+      <hr>
+      발걸음
+    </div>
+
+  </div> <!-- container_main 종료 -->
+
+</body>
+
+</html>

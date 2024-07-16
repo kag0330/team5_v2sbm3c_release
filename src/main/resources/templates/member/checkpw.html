@@ -1,0 +1,22 @@
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+
+<body>
+  <div layout:fragment="content">
+
+    <div class="clearfix" style="text-align: -webkit-center; width: 80%; margin: 0px auto;" >
+      <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+
+      <div style="width: max-content; padding: 200px;">
+        회원정보를 변경하시려면 비밀번호를 입력하세요.
+        <form style="margin:0 auto;" id="frm" name="frm" method="post" action="./checkpw">
+          <label>비밀번호 입력</label>
+          <input type="password" name="pw">
+          <button class="btn btn-danger">회원 정보 수정</button><br>
+        </form>
+      </div>
+    </div>
+    <script type="text/javascript" src="/js/member/delete.js"></script>
+  </div>
+</body>
+</html>

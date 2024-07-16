@@ -1,0 +1,50 @@
+<div th:fragment="other_fragment">
+  <div th:if="${type == 'other'}" class="container" style="padding-top: 100px;">
+    <div class="table-wrapper">
+      <table class="table table-bordered">
+        <colgroup>
+          <col style='width: 10%;' />
+          <col style='width: 40%;' />
+          <col style='width: 15%;' />
+          <col style='width: 25%;' />
+          <col style='width: 10%;' />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="th_bs">문의 종류</th>
+            <th class="th_bs">문의 제목</th>
+            <th class="th_bs">날짜</th>
+            <th class="th_bs">답변 여부</th>
+            <th class="th_bs"></th>
+          </tr>
+        </thead>
+        <tbody th:each="otherInquiryVO, status:${list}">
+          <tr>
+            <td class="td_bs">기타 문의</td>
+            <td class="td_bs" th:text="${otherInquiryVO.title}"></td>
+            <td class="td_bs" th:text="${#dates.format(otherInquiryVO.rdate, 'yy/MM/dd')}"></td>
+            <td class="td_bs"
+              th:text="${#strings.equals(otherInquiryVO.answer_visible, 'Y') ? '답변 완료' : '답변을 기다리는 중'}">
+            </td>
+            <td class="td_bs zoom">+</td>
+          </tr>
+          <tr class="contents">
+            <td colspan="5" style="padding:10px 20% 10px 20%;">
+              <span style="margin-left: 30px; margin-bottom: 30px;"
+                th:text="${otherInquiryVO.contents}"></span>
+              <div class='line'></div><br>
+              <span th:if="${otherInquiryVO.answer_contents}">
+                <span style="font-size: 20px; padding-left: 7%;">답변</span><br>
+                <span style="padding-left: 10%;" th:text="${otherInquiryVO.answer_contents}"></span>
+              </span>
+              <span th:unless="${otherInquiryVO.answer_contents}">
+                <span style="font-size: 20px; padding-left: 7%;">답변을 기다리는 중입니다.</span><br>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="bottom_menu" th:utext="${paging}"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.paymentInquiry.PaymentInquiryDAOInter">
+
+  <!-- 생성 -->
+  <insert id="create" parameterType="dev.mvc.paymentInquiry.PaymentInquiryVO">
+    INSERT INTO PAYMENT_INQUIRY(payment_inquiry_no, title, contents, rdate, memberno, payment_details_no)
+    VALUES(PAYMENT_INQUIRY_SEQ.nextval, #{title}, #{contents}, sysdate, #{memberno}, #{payment_details_no})
+  </insert>
+
+  <!-- 검색된 레코드 수 -->
+  <select id="list_search_count" resultType="int" parameterType="String">
+    SELECT COUNT(*) as cnt
+    FROM payment_inquiry pi
+    JOIN member m ON pi.memberno = m.memberno
+    JOIN payment_details pd ON pi.payment_details_no = pd.payment_details_no
+    JOIN payment p ON pd.paymentno = p.paymentno
+    JOIN options o ON o.optionno = pd.optionno
+    JOIN shoes s ON s.shoesno = o.shoesno
+    <if test="word != null and word != ''">
+    WHERE
+    (
+        UPPER(pi.title) LIKE '%' || UPPER('a') || '%' 
+        OR UPPER(pi.contents) LIKE '%' || UPPER('a') || '%'
+        OR UPPER(s.title) LIKE '%' || UPPER('a') || '%'
+        OR UPPER(m.nickname) LIKE '%' || UPPER('a') || '%' 
+    )
+    </if>
+  </select>
+
+  <!-- 페이징 -->
+  <!-- 페이징 검색 -->
+  <select id="list_search_paging" resultMap="InquiryResult" parameterType="Map">
+    SELECT payment_inquiry_no, title, contents, rdate, answer_visible, shoestitle, nickname FROM (
+    SELECT pi.payment_inquiry_no as payment_inquiry_no, pi.title as title, pi.contents as contents, pi.rdate as rdate, pi.answer_visible as answer_visible, s.title shoestitle, m.nickname as nickname, 
+    ROW_NUMBER() OVER(
+        ORDER BY
+            CASE
+                WHEN answer_visible = 'N' THEN 0
+                ELSE 1
+            END,
+            payment_inquiry_no DESC
+    ) AS r
+    FROM payment_inquiry pi
+    JOIN member m ON pi.memberno = m.memberno
+    JOIN payment_details pd ON pi.payment_details_no = pd.payment_details_no
+    JOIN payment p ON pd.paymentno = p.paymentno
+    JOIN options o ON o.optionno = pd.optionno
+    JOIN shoes s ON s.shoesno = o.shoesno
+    <if test="word != null and word != ''">
+    WHERE
+    (
+        UPPER(pi.title) LIKE '%' || UPPER('a') || '%' 
+        OR UPPER(pi.contents) LIKE '%' || UPPER('a') || '%'
+        OR UPPER(s.title) LIKE '%' || UPPER('a') || '%'
+        OR UPPER(m.nickname) LIKE '%' || UPPER('a') || '%' 
+    )
+    </if>
+    ) WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+  </select>
+
+  <resultMap id="InquiryResult" type="dev.mvc.paymentInquiry.PaymentInquiryInfoVO">
+    <association property="paymentInquiryVO" javaType="dev.mvc.paymentInquiry.PaymentInquiryVO">
+      <id property="payment_inquiry_no" column="payment_inquiry_no" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="answer_visible" column="answer_visible" />
+    </association>
+
+    <association property="shoesVO" javaType="dev.mvc.shoes.ShoesVO">
+      <result property="title" column="shoestitle" />
+    </association>
+
+    <association property="memberVO" javaType="dev.mvc.member.MemberVO">
+      <result property="nickname" column="nickname" />
+    </association>
+  </resultMap>
+
+  <select id="read" resultMap="ReadInquiry" parameterType="Integer">
+    SELECT pi.payment_inquiry_no as payment_inquiry_no, pi.title as title, pi.contents as contents, pi.rdate as rdate, pi.answer_visible as answer_visible, 
+    p.rdate payment_rdate, p.total_payment as total_payment, s.title shoestitle, m.nickname as nickname,
+    o.sizes as sizes, o.color as color, pi.answer_contents as answer_contents
+    FROM payment_inquiry pi
+    JOIN member m ON pi.memberno = m.memberno
+    JOIN payment_details pd ON pi.payment_details_no = pd.payment_details_no
+    JOIN payment p ON pd.paymentno = p.paymentno
+    JOIN options o ON o.optionno = pd.optionno
+    JOIN shoes s ON s.shoesno = o.shoesno
+    WHERE payment_inquiry_no = ${payment_inquiry_no}
+  </select>
+
+  <resultMap id="ReadInquiry" type="dev.mvc.paymentInquiry.PaymentInquiryInfoVO">
+    <association property="paymentInquiryVO" javaType="dev.mvc.paymentInquiry.PaymentInquiryVO">
+      <id property="payment_inquiry_no" column="payment_inquiry_no" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="answer_visible" column="answer_visible" />
+      <result property="answer_contents" column="answer_contents" />
+    </association>
+
+    <association property="optionVO" javaType="dev.mvc.option.OptionVO">
+      <result property="sizes" column="sizes" />
+      <result property="color" column="color" />
+    </association>
+
+    <association property="shoesVO" javaType="dev.mvc.shoes.ShoesVO">
+      <result property="title" column="shoestitle" />
+    </association>
+
+    <association property="memberVO" javaType="dev.mvc.member.MemberVO">
+      <result property="nickname" column="nickname" />
+    </association>
+
+    <association property="paymentVO" javaType="dev.mvc.payment.PaymentVO">
+      <result property="total_payment" column="total_payment" />
+    </association>
+  </resultMap>
+
+  <update id="answer" parameterType="Map">
+    UPDATE payment_inquiry
+    SET answer_visible = #{answer_visible}, answer_contents = #{answer_contents}
+    WHERE payment_inquiry_no = #{payment_inquiry_no}
+  </update>
+
+  <select id="inquiry_select" resultMap="selectResult" parameterType="Integer">
+    SELECT
+      pd.payment_details_no,
+      pd.payment_amount,
+      o.sizes,
+      o.color,
+      s.title
+      FROM
+      payment p
+      INNER JOIN payment_details pd ON p.paymentno = pd.paymentno
+      INNER JOIN options o ON pd.optionno = o.optionno
+      INNER JOIN shoes s ON o.shoesno = s.shoesno
+      WHERE p.memberno = #{memberno}
+      ORDER BY pd.payment_details_no
+  </select>
+
+  <resultMap id="selectResult" type="dev.mvc.paymentInquiry.PaymentInquiryInfoVO">
+    <association property="paymentDetailsVO" javaType="dev.mvc.paymentDetails.PaymentDetailsVO">
+      <id property="payment_details_no" column="payment_details_no" />
+      <result property="payment_amount" column="payment_amount" />
+    </association>
+
+    <association property="optionVO" javaType="dev.mvc.option.OptionVO">
+      <result property="sizes" column="sizes" />
+      <result property="color" column="color" />
+    </association>
+
+    <association property="shoesVO" javaType="dev.mvc.shoes.ShoesVO">
+      <result property="title" column="title" />
+    </association>
+  </resultMap>
+
+  <select id="myInquiryCount" parameterType="Integer">
+    SELECT COUNT(*)
+    FROM payment_inquiry pi
+    WHERE pi.memberno = #{memberno}
+  </select>
+
+  <select id="myInquiry" resultMap="myInquiry" parameterType="Map">
+    SELECT payment_inquiry_no, title, contents, rdate, answer_visible, answer_contents, shoestitle, 
+    payment_amount, sizes, color FROM (
+    SELECT pi.payment_inquiry_no as payment_inquiry_no, pi.title as title, pi.contents as contents, pi.rdate as rdate, 
+    pi.answer_visible as answer_visible, pi.answer_contents as answer_contents, s.title as shoestitle, 
+    pd.payment_amount as payment_amount, o.sizes as sizes, o.color as color,
+    ROW_NUMBER() OVER(
+        ORDER BY
+            CASE
+                WHEN answer_visible = 'N' THEN 0
+                ELSE 1
+            END,
+            payment_inquiry_no DESC
+    ) AS r
+    FROM payment_inquiry pi
+    JOIN payment_details pd ON pi.payment_details_no = pd.payment_details_no
+    JOIN payment p ON pd.paymentno = p.paymentno
+    JOIN options o ON o.optionno = pd.optionno
+    JOIN shoes s ON s.shoesno = o.shoesno
+    WHERE p.memberno = #{memberno}
+    ORDER BY payment_inquiry_no DESC
+    ) WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+  </select>
+
+  <resultMap id="myInquiry" type="dev.mvc.paymentInquiry.PaymentInquiryInfoVO">
+    <association property="paymentInquiryVO" javaType="dev.mvc.paymentInquiry.PaymentInquiryVO">
+      <id property="payment_inquiry_no" column="payment_inquiry_no" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="answer_visible" column="answer_visible" />
+      <result property="answer_contents" column="answer_contents" />
+    </association>
+
+    <association property="shoesVO" javaType="dev.mvc.shoes.ShoesVO">
+      <result property="title" column="shoestitle" />
+    </association>
+
+    <association property="paymentDetailsVO" javaType="dev.mvc.paymentDetails.PaymentDetailsVO">
+      <result property="payment_amount" column="payment_amount" />
+    </association>
+
+    <association property="optionVO" javaType="dev.mvc.option.OptionVO">
+      <result property="sizes" column="sizes" />
+      <result property="color" column="color" />
+    </association>
+
+  </resultMap>
+</mapper>

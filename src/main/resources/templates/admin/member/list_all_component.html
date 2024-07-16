@@ -1,0 +1,110 @@
+<div th:fragment="list_all_fragment">
+	<div style="width: 100%; overflow-x: scroll;">
+		<table class="table table-striped table-bordered" style="min-width: 1400px; width: max-content; margin: 0 auto; table-layout: fixed;">
+			<thead>
+				<tr>
+					<th class="th_bs" style="min-width: 55px;">번호<div class="resizer"></div></th>
+					<th class="th_bs">ID(Nickname)<div class="resizer"></div></th>
+					<th class="th_bs">PW<div class="resizer"></div></th>
+					<th class="th_bs">Name<div class="resizer"></div></th>
+					<th class="th_bs">Phone<div class="resizer"></div></th>
+					<th class="th_bs">Email<div class="resizer"></div></th>
+					<th class="th_bs">Thumb<div class="resizer"></div></th>
+					<th class="th_bs">Addr<div class="resizer"></div></th>
+					<th class="th_bs">Date / RDate<div class="resizer"></div></th>
+					<th class="th_bs">Point<div class="resizer"></div></th>
+					<th class="th_bs">Grade<div class="resizer"></div></th>
+					<th class="th_bs">Role<div class="resizer"></div></th>
+					<th class="th_bs">기타<div class="resizer"></div></th>
+				</tr>
+				
+			</thead>
+			<tbody id="table-body">
+				<tr th:each="member : ${list}">
+					<td class="td_bs text-truncate" th:with="page=${not #lists.isEmpty(param.now_page) and not #strings.isEmpty(param.now_page[0])} ? ${#numbers.formatInteger(param.now_page[0],1)} : 1" th:text="${memberStat.index + 1} + ${page - 1} * 10"></td>
+					<td class="td_bs text-truncate"><a th:href="@{/admin/member/read(memberno=${member.memberno}, now_page=${param.now_page}, word=${word})}" style="display: block;" th:text="|${member.id}(${member.nickname})|"></a></td>
+					<td class="td_bs text-truncate" style="max-width: 100px;" th:text="${member.pw}"></td>
+					<td class="td_bs text-truncate" style="max-width: 100px;" th:text="${member.name}"></td>
+					<td class="td_bs text-truncate" style="max-width: 100px;" th:text="${member.phone}"></td>
+					<td class="td_bs text-truncate" style="max-width: 100px;" th:text="${member.email}"></td>
+					<th:block th:if="${not #strings.isEmpty(member.thumb)}">
+						<td class="td_bs text-truncate"><a th:text="|${member.thumb.substring(0,10)}...|" th:href="@{|/file/storage/${member.thumb}|}"></a></td>
+					</th:block>
+					<th:block th:if="${#strings.isEmpty(member.thumb)}">
+						<td class="td_bs text-truncate"><a th:text="|NULL|"></a></td>
+					</th:block>
+					<td class="td_bs text-truncate" style="max-width: 100px;" th:text="|${member.zipcode}-${member.addr1}-${member.addr2}|"></td>
+					<td class="td_bs text-truncate" th:text="|${#dates.format(member.mdate,'yyyy-MM-dd')} / ${#dates.format(member.rdate,'yyyy-MM-dd')}|"></td>
+					<td class="td_bs text-truncate" th:text="${member.point}"></td>
+					<td class="td_bs text-truncate" th:text="${member.grade}"></td>
+					<td class="td_bs text-truncate" th:text="${member.role}"></td>
+					<td class="text-truncate" style="align-content: center;">
+					  <a th:href="@{/admin/member/update(memberno=${member.memberno}, word=${param.word}, key=${param.key}, now_page=${param.now_page})}"><img src="/admin/member/images/update.png"></a> 
+					  <a th:href="@{/admin/member/delete(memberno=${member.memberno}, word=${param.word}, key=${param.key}, now_page=${param.now_page})}"><img src="/admin/member/images/delete.png"></a> 
+					  <a th:href="@{/admin/member/decrease(memberno=${member.memberno})}"><img src="/admin/member/images/decrease.png"></a> 
+					  <a th:href="@{/admin/member/increase(memberno=${member.memberno})}"><img src="/admin/member/images/increase.png"></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="bottom_menu" th:utext="${paging}"></div>
+
+	<style type="text/css">
+  th {
+	  position: relative;
+  }
+
+  .resizer {
+	  position: absolute;
+	  right: 0;
+	  top: 0;
+	  width: 4px;
+	  height: 100%;
+	  cursor: col-resize;
+	  user-select: none;
+	  border-left: 1px solid #999;
+	  border-right: 1px solid #999;
+  }
+
+  .text-truncate {
+	  overflow: hidden;
+	  text-overflow: ellipsis;
+	  white-space: nowrap;
+  }
+  </style>
+
+	<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const resizables = document.querySelectorAll('th');
+      resizables.forEach(th => {
+        const resizer = document.createElement('div');
+        resizer.classList.add('resizer');
+        th.appendChild(resizer);
+        createResizableColumn(th, resizer);
+      });
+    });
+
+    function createResizableColumn(th, resizer) {
+      let startX, startWidth;
+
+      resizer.addEventListener('mousedown', (e) => {
+        startX = e.pageX;
+        startWidth = parseInt(document.defaultView.getComputedStyle(th).width, 10);
+
+        document.addEventListener('mousemove', mouseMoveHandler);
+        document.addEventListener('mouseup', mouseUpHandler);
+      });
+
+      function mouseMoveHandler(e) {
+        const width = Math.max(30, startWidth + e.pageX - startX);
+        th.style.width = `${width}px`;
+      }
+
+      function mouseUpHandler() {
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        document.removeEventListener('mouseup', mouseUpHandler);
+      }
+    }
+  </script>
+</div>

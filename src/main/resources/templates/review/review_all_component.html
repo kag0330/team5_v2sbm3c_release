@@ -1,0 +1,81 @@
+<div th:fragment="review_all_fragment">
+  <link rel="stylesheet" href="/css/review/style.css">
+  <input type="hidden" id="shoesno" th:data-shoesno="${shoesno}">
+  <h2 class="title">상품후기<span class="all">
+      <a th:href="@{|/shoes/${shoesno}|}">
+        상품으로 이동
+      </a>
+      <i class="bi bi-chevron-right"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+          class="bi bi-chevron-right" viewBox="0 0 16 16">
+          <path fill-rule="evenodd"
+            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+        </svg></i>
+    </span>
+  </h2>
+  <div class="no_review" th:if="${no_review}">
+    후기가 없습니다. 후기를 작성해주세요.
+  </div>
+  <div class="review" th:each="review : ${review}">
+    <input type="hidden" class="nickname" th:value="${review.memberVO.nickname}">
+    <input type="hidden" class="memberno" th:value="${review.memberVO.memberno}">
+    <input type="hidden" class="reviewno" th:value="${review.reviewVO.reviewno}">
+    <div class="username">닉네임: <span th:text="${review.memberVO.nickname}"></span></div>
+    <div class="rating" style="cursor: default;">
+      <span th:each="star : ${#numbers.sequence(1, 5)}">
+        <span th:if="${star le review.reviewVO.rating}" style="color: yellow; font-size: 1.8rem; ">&#9733;</span>
+        <span th:unless="${star le review.reviewVO.rating}" style="color: lightgray; font-size: 1.8rem;">&#9733;</span>
+      </span>
+    </div>
+    <div class="date" th:text="${#dates.format(review.reviewVO.rdate, 'yy/MM/dd')}"></div>
+    <div class="contents" th:text="${review.reviewVO.contents}"></div>
+    <a href="#" class="btn btn-link likes">좋아요 <span class="likes_count" th:text="${review.reviewVO.likes}"></span></a>
+    <span class="menu_devide">│</span>
+    <a href="#" class="btn btn-link hates">싫어요 <span class="hates_count" th:text="${review.reviewVO.hates}"></span></a>
+    <span class="menu_devide">│</span>
+    <a href="#" class="btn btn-link report">신고</a>
+    <span th:if="${memberno == review.memberVO.memberno}">
+      <span class="menu_devide">│</span>
+      <a href="#" class="btn btn-link review_update">후기 수정</a>
+      <span class="menu_devide">│</span>
+      <a href="#" class="btn btn-link review_delete">후기 삭제</a>
+    </span>
+    <div id="updateForm" style="display: none;">
+      <span class="update_star-rating">
+        <span class="update_rating" id="update_rating"></span>
+        <span class="update_star" update-data-value="1.0">★</span>
+        <span class="update_star" update-data-value="2.0">★</span>
+        <span class="update_star" update-data-value="3.0">★</span>
+        <span class="update_star" update-data-value="4.0">★</span>
+        <span class="update_star" update-data-value="5.0">★</span>
+      </span>
+      <textarea class="form-control" id="updateReviewContents" name="updateReviewContents" rows="4" required="required"
+        placeholder="수정할 값을 입력하세요."></textarea>
+      <div style="text-align: right; margin-top: 10px;">
+        <button class="btn btn-secondary" id="updateReview">수정</button>
+        <button class="btn btn-secondary" id="cancelReview">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="nickname" th:data-nickname="${nickname}"></div>
+  <div class="review_create" style="margin-top: 20px;">
+    <div style="font-size: 20px;">후기 작성</div>
+    <span class="star-rating">
+      <span class="rating" id="rating"></span>
+      <span class="star" data-value="1.0">★</span>
+      <span class="star" data-value="2.0">★</span>
+      <span class="star" data-value="3.0">★</span>
+      <span class="star" data-value="4.0">★</span>
+      <span class="star" data-value="5.0">★</span>
+    </span>
+    <textarea class="form-control" id="reviewContents" name="reviewContents" rows="4" required="required"></textarea>
+    <div style="text-align: right; margin-top: 10px;">
+      <button class="btn btn-secondary" id="createReview">작성하기</button>
+    </div>
+  </div>
+  <script src="/js/review/create.js"></script>
+  <script src="/js/review/update.js"></script>
+  <script src="/js/review/delete.js"></script>
+  <script src="/js/likes/likes.js"></script>
+  <script src="/js/hates/hates.js"></script>
+</div>

@@ -1,0 +1,58 @@
+<div th:fragment="infoSidebarFragment" class="menu-bar" 
+     style="
+            max-width: 170px;
+            float: left;
+            border: solid 1px black;
+            margin-top: 150px;">
+  
+  <div style="background: #cccccc; padding: 10px; border-bottom: solid 1px black; font-size: 2.5rem;">
+    마이 메뉴
+  </div>
+  <nav>
+
+
+    <div>
+      <div style="background: #eeeeee; padding: 10px; border-bottom: solid 1px black;">MY 쇼핑</div>
+      <ul style="list-style-type: none; padding: 5px; margin: 0px auto;">
+        <li><a href="/member/payment/order" title="주문목록/배송조회" target="_self">주문목록/배송조회</a></li>
+        <li><a href="/member/payment/csorder" title="취소/반품/교환/환불내역" target="_self">취소/반품/교환/환불내역</a></li>
+      </ul>
+    </div>
+
+
+    <div>
+      <div style="background: #eeeeee; padding: 10px; border-top: solid 1px black; border-bottom: solid 1px black;">MY
+        활동</div>
+      <ul style="list-style-type: none; padding: 5px; margin: 0px auto;">
+        <li><a href="#" class="inquiry" title="문의하기" target="_self">문의하기</a></li>
+        <li><a href="/inquiry/myInquiry/shoes" title="문의내역 확인" target="_self">문의 내역 확인</a></li>
+        <li><a href="/review/myReview" title="리뷰관리" target="_self">리뷰관리</a></li>
+        <li><a href="/report/myReport" title="신고관리" target="_self">신고관리</a></li>
+        <li><a href="/basket/basket_list" title="찜 리스트" target="_self">장바구니 리스트</a></li>
+      </ul>
+    </div>
+
+
+    <div>
+      <div style="background: #eeeeee; padding: 10px; border-top: solid 1px black; border-bottom: solid 1px black;">MY정보
+      </div>
+      <ul style="list-style-type: none; padding: 5px; margin: 0px auto;">
+        <li><a href="/member/checkpw" title="개인정보확인/수정" target="_self">개인정보확인/수정</a></li>
+        <li><a href="/member/history" title="접속기록 확인" target="_self">접속기록 확인</a></li>
+        <li><a href="javascript:Events.AddressBookPopup();" title="배송지 관리" target="_self">배송지 관리</a></li>
+        <li><a href="/member/delete" title="배송지 관리" target="_self">회원 탈퇴</a></li>
+      </ul>
+    </div>
+  </nav>
+  <script>
+    var GlobalEnvironmentJS = {
+      MembersSSLUrl: "http://localhost:9093"
+    };
+    
+    function Events() { }
+    Events.AddressBookPopup = function () {
+      window.open(GlobalEnvironmentJS.MembersSSLUrl + "/delivery/NewAddress", "NewAddress", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=no,width=500,height=860,left=50,top=50").focus();
+    }
+    
+  </script>
+</div>

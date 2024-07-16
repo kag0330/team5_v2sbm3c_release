@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.basket.BasketDAOInter">
+
+	<select id="list" resultMap="basketRead">
+		SELECT b.basketno, b.amount, 
+		       o.optionno, o.sizes, o.color,
+		       s.shoesno, s.title, s.brand, s.price, s.discount, s.contents
+		FROM basket b
+		JOIN options o ON b.optionno = o.optionno
+		JOIN shoes s ON o.shoesno = s.shoesno
+		WHERE b.memberno = ${memberno}
+	</select>
+
+	<resultMap id="basketRead" type="dev.mvc.shoes.ShoesAllVO">
+		<association property="basketVO" javaType="dev.mvc.basket.BasketVO">
+			<id property="basketno" column="basketno" />
+			<result property="amount" column="amount" />
+		</association>
+
+		<association property="optionVO" javaType="dev.mvc.option.OptionVO">
+		  <result property="optionno" column="optionno" />
+			<result property="sizes" column="sizes" />
+			<result property="color" column="color" />
+		</association>
+
+		<association property="shoesVO" javaType="dev.mvc.shoes.ShoesVO">
+			<result property="shoesno" column="shoesno" />
+			<result property="title" column="title" />
+			<result property="brand" column="brand" />
+			<result property="rating" column="rating" />
+			<result property="price" column="price" />
+			<result property="discount" column="discount" />
+			<result property="contents" column="contents" />
+		</association>
+	</resultMap>
+	
+	<select id="read" parameterType="Map" resultType="Map">
+	  SELECT b.basketno, b.amount
+    FROM basket b
+    INNER JOIN options o ON o.optionno = b.optionno
+    INNER JOIN shoes s ON o.shoesno = s.shoesno
+    INNER JOIN member m ON m.memberno = b.memberno
+    WHERE color =#{color} AND sizes = #{sizes}
+	</select>
+
+
+	<insert id="create" parameterType="Map">
+		INSERT INTO basket(basketno, amount, memberno, optionno)
+		SELECT basket_seq.nextval, #{amount}, #{memberno}, o.optionno
+		FROM options o
+		JOIN shoes s ON o.shoesno = s.shoesno
+		WHERE o.color = #{color} AND o.sizes = #{sizes}
+	</insert>
+
+	<update id="update" parameterType="Map">
+		UPDATE basket
+		SET amount = #{amount}
+		WHERE memberno = #{memberno} AND basketno = #{basketno}
+	</update>
+
+
+	<delete id="delete" parameterType="Map">
+		DELETE FROM basket
+		WHERE memberno = #{memberno}
+		<if test="basketno !=null and basketno != '' ">
+		  AND basketno = #{basketno}
+		</if>
+		
+	</delete>
+
+	<update id="decrease">
+		UPDATE options SET AMOUNT = AMOUNT - 1 WHERE OPTIONNO = #{optionNo}
+	</update>
+
+	<update id="increase">
+		UPDATE options SET AMOUNT = AMOUNT + 1 WHERE OPTIONNO = #{optionNo}
+	</update>
+
+
+</mapper>
+

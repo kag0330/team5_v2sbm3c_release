@@ -1,0 +1,41 @@
+<div th:fragment="navbarFragment">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/admin">HOME</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <a class="nav-link" href="/admin/category/list?now_page=1">카테고리 목록</a>
+          <a class="nav-link" href="/admin/shoes/admin_list_all?now_page=1">신발 목록</a>
+          <a class="nav-link" href="/admin/member/list">회원 목록</a>
+          <a class="nav-link" href="/admin/payment/list">주문 목록</a>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">문의 내역
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li>
+                <a class="dropdown-item" href="/admin/inquiry/shoes?now_page=1">신발 문의</a>
+                <a class="dropdown-item" href="/admin/inquiry/payment?now_page=1">주문 문의</a>
+                <a class="dropdown-item" href="/admin/inquiry/other?now_page=1">기타 문의</a>
+              </li>
+            </ul>
+          </li>
+          <a class="nav-link" href="/admin/report/list?now_page=1">신고 내역</a>
+          <a class="nav-link" href="/admin/notice/list?now_page=1">공지 사항 목록</a>
+          <a class="nav-link" href="/admin/wordcloud/index">WordCloud</a>
+          <a class="nav-link" href="/">쇼핑몰 페이지 이동</a>
+        </ul>
+        <ul class="navbar-nav">
+          <a class="nav-link" href="/login/logout">로그아웃</a>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+</div>

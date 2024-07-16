@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+  <!-- layout.html 상속-->
+  <div layout:fragment="content">
+    <div class='title_line'>
+      회원 정보 >
+      <span th:text="|${memberVO.name}(${memberVO.nickname})|" class="title_line_text"></span>
+    </div>
+
+    <aside class="aside_right">
+      <a th:href="@{/admin/member/list(memberno=${memberVO.memberno}, now_page=${param.now_page}, word=${word})}">회원 목록</a>
+      <span class="menu_devide">│</span>
+      <a th:href="@{/admin/member/update(memberno=${memberVO.memberno}, now_page=${param.now_page}, word=${word})}">회원 수정</a>
+      <span class="menu_devide">│</span>
+      <a th:href="@{/admin/member/delete(memberno=${memberVO.memberno}, now_page=${param.now_page}, word=${word})}">회원 삭제</a>
+      <span class="menu_devide">│</span>
+      <a href="javascript: location.reload();">새로 고침</a>
+    </aside>
+
+    <div th:replace="~{admin/member/list_search_component::list_search_fragment}"></div>
+
+    <div class="menu_line"></div>
+
+    <div class="container mt-3" style="width: 70%; margin: 5px auto;" th:object="${memberVO}">
+      <form id="frm" th:action="@{/admin/member/update}" method="post" enctype="multipart/form-data">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">번호:</span>
+            <input id="no" type="text" th:field="*{memberno}" disabled />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">ID:</span>
+            <input type="text" th:field="*{id}" disabled />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">PW:</span>
+            <input type="text" th:field="*{pw}" disabled />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">NAME:</span>
+            <input type="text" th:field="*{name}" disabled />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">NICKNAME:</span>
+            <input type="text" th:field="*{nickname}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">PHONE:</span>
+            <input type="text" th:field="*{phone}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">EMAIL:</span>
+            <input type="email" th:field="*{email}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">THUMB:</span>
+            <input type="text" th:field="*{thumb}" />
+            <input type='file' class="form-control" style="width:300px; display: inline;" required placeholder="파일 선택" th:field="*{mf}">
+            <button type="button" onclick="imgView()" class="btn btn-primary btn-sm">저장된 이미지 보기</button>
+            <img id="savedimg" style="display: none; width:200px; margin: 0px auto;"  th:src="@{|/file/storage/*{thumb}|}">
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">ADDR:</span>
+            <input type="text" th:field="*{zipcode}" placeholder="우편번호" />
+            <input type="text" th:field="*{addr1}" placeholder="주소 1" />
+            <input type="text" th:field="*{addr2}" placeholder="주소 2" />
+            <button type="button" id="btn_DaumPostcode" onclick="DaumPostcode()" class="btn btn-primary btn-sm">우편번호 찾기</button>
+            <div>
+              <div id="wrap" style="display: none; border: 1px solid; width: 500px; height: 300px; margin: 5px 0; position: relative">
+                <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap"
+                  style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" onclick="foldDaumPostcode()" alt="접기 버튼">
+              </div>
+            </div>
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">MDATE:</span>
+            <input type="text" th:field="*{mdate}" th:value="${#dates.format(memberVO.mdate,'yyyy년 MM월 dd일')}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">RDATE:</span>
+            <input type="text" th:field="*{rdate}" disabled th:value="${#dates.format(memberVO.rdate,'yyyy년 MM월 dd일')}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">POINT:</span>
+            <input type="number" th:field="*{point}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">GENDER:</span>
+            <input type="text" th:field="*{gender}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">GRADE:</span>
+            <input type="text" th:field="*{grade}" />
+          </li>
+
+          <li class="list-group-item">
+            <span style="display: inline-block; width: 100px; font-weight: bold;">ROLE:</span>
+            <select th:field="*{role}" style="width:171px; height: 25px;">
+              <option value="MASTER" th:selected="*{role} == 'MASTER'">MASTER</option>
+              <option value="ADMIN" th:selected="*{role} == 'ADMIN'">ADMIN</option>
+              <option value="BUSINESS" th:selected="*{role} == 'BUSINESS'">BUSINESS</option>
+              <option value="USER" th:selected="*{role} == 'USER'">USER</option>
+            </select>
+          </li>
+
+        </ul>
+        <div class="form-group mt-3">
+          <button type="button" onclick="send()" class="btn btn-primary">수정</button>
+        </div>
+      </form>
+    </div>
+
+    <div th:replace="~{admin/member/list_all_component::list_all_fragment}"></div>
+   
+    <script type="text/javascript" src="/js/admin/member/update.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="/js/daumAddr.js"></script>
+    <script>
+      function imgView(){
+        let img = document.querySelector("#savedimg");
+        
+        if(img.style.display == 'none'){
+          img.style.display = 'block';
+        }else{
+          img.style.display = 'none';
+        }
+      }
+      
+    </script>
+  </div>
+
+</html>

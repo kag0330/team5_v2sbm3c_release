@@ -1,0 +1,41 @@
+.star-rating {
+            display: flex;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            font-size: 2rem;
+            flex-direction: row;
+            float:left;
+}            
+.star {
+            font-size: 2rem;
+            cursor: pointer;
+            color: lightgray;
+}
+        .star.selected {
+            color: gold;
+}
+
+.rating {
+            margin-right:5px;
+            font-size: 2rem;
+}
+
+.update_star-rating {
+            display: flex;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            font-size: 2rem;
+            flex-direction: row;
+            float:left;
+}            
+.update_star {
+            font-size: 2rem;
+            cursor: pointer;
+            color: lightgray;
+}
+        .update_star.selected {
+            color: gold;
+}
+
+.update_rating {
+            margin-right:5px;
+            font-size: 2rem;
+}

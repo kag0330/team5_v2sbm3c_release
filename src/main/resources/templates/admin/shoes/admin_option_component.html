@@ -1,0 +1,106 @@
+<div th:fragment="admin_option_fragment">
+  <!-- <div th:replace=... -->
+  <table class="table table-hover" style="width:80%; margin-left:10%;">
+    <colgroup>
+      <col style='width: 15%;' />
+      <col style='width: 20%;' />
+      <col style='width: 25%;' />
+      <col style='width: 15%;' />
+      <col style='width: 25%;' />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="th_bs">옵션 번호</th>
+        <th class="th_bs">사이즈</th>
+        <th class="th_bs">색상</th>
+        <th class="th_bs">재고</th>
+        <th class="th_bs">재고 수정 / 삭제</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="optionVO, status:${list}">
+        <input type="hidden" id="optionno" name="optionno" th:value="${optionVO.optionno}">
+        <td class="td_bs" th:text="|${(now_page-1) * 5 + status.index + 1}|"></td>
+        <td class="td_bs" th:text="${optionVO.sizes}"></td>
+        <td class="td_bs" th:text="${optionVO.color}"></td>
+        <td class="td_bs" name="amount" th:text="${optionVO.amount}"></td>
+        <td class="td_bs">
+          <a href="#" onclick="optionUpdate(this)"><i class="fas fa-edit"></i></a> /
+          <a href="#" onclick="optionDelete(this)"><i class="fas fa-trash"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이지 버튼 목록 출력 시작 -->
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  <!-- 페이지 버튼 목록 출력 종료 -->
+
+  <script>
+    function optionUpdate(option) {
+      var tr = option.closest('tr');
+      var optionno = tr.querySelector('input[name="optionno"]').value;
+      var amount = prompt("수량을 입력하세요.");
+
+      if (amount === null || amount.trim() === '') {
+        alert("수량을 입력하세요.");
+      } else if (/[^0-9]/.test(amount)) {
+        alert('올바른 재고를 입력해주세요.');
+      }
+      else {
+        if (confirm(amount + '개로 재고를 변경하시겠습니까?')) {
+          fetch('/admin/shoes/option_update', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              optionno: parseInt(optionno, 10),
+              amount: parseInt(amount, 10)
+            })
+          })
+            .then(response => response.json())
+            .then(response => {
+              if (response.success) {
+                tr.querySelector('td[name="amount"]').textContent = amount;
+                alert('재고를 수정하였습니다.');
+              } else {
+                console.error('재고 수정에 실패했습니다.');
+              }
+            })
+            .catch(error => console.error('Error:', error));
+
+        }
+      }
+
+    }
+
+    function optionDelete(option) {
+      var shoesno =document.getElementById('shoesno').value;
+      var tr = option.closest('tr');
+      var optionno = tr.querySelector('input[name="optionno"]').value;
+
+      if (confirm('선택한 옵션을 삭제하시겠습니까?')) {
+        fetch('/admin/shoes/option_delete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            optionno: parseInt(optionno, 10)
+          })
+        })
+          .then(response => response.json())
+          .then(response => {
+            if (response.success) {
+              alert('옵션을 삭제하였습니다.');
+              window.location.href = "/admin/shoes/admin_read/" + shoesno + '?now_page=1';
+            } else {
+              console.error('재고 수정에 실패했습니다.');
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    }
+  </script>
+</div>

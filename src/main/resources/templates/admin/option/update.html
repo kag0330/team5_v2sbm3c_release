@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<!-- layout.html 상속 -->
+
+<head>
+  <title>옵션 수정</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="title_line">옵션 번호 >
+      <span th:text="${shoesoptionVO.optionno}" style="font-size: 25px;" class="title_line_text"></span>
+      수정
+    </div>
+    <div>
+      <aside class="aside_right">
+        <a href="/shoes/list_all?now_page=1">목록</a>
+        <span class="menu_devide">│</span>
+        <a th:href="@{|/shoes/delete/${shoesoptionVO.shoesno}?word=${word}&now_page=${now_page}|}">옵션 삭제</a>
+        <span class="menu_devide">│</span>
+        <a href="javascript: location.reload();">새로고침</a>
+      </aside>
+      <div class="top_menu_line"></div>
+    </div>
+    <form name="frm" th:object="${shoesoptionVO}" method="post" action="/shoes/option_update">
+      <input type="hidden" name="shoesno" th:value="${shoesVO.shoesno}">
+      <input type="hidden" name="optionno" th:value="${shoesoptionVO.optionno}">
+      <div>
+        <label style="margin:0 auto;">옵션 번호</label>
+        <input type="" name="optionno" th:value="${shoesoptionVO.optionno}" autofocus="autofocus"
+          class="form-control form-control-sm" style="width: 20%; margin: 0 auto; text-align: center;"
+          th:field="*{optionno}" readonly>
+        <div th:if="${#fields.hasErrors('optionno')}" class="alert alert-danger" role="alert" style="margin-top: 5px;">
+          <div th:each="err : ${#lists.sort(#fields.errors('optionno'))}" th:text="${err}"></div>
+        </div>
+      </div>
+      <div>
+        <label for="sizes">사이즈</label>
+        <select name="sizes" id="sizes" class="form-control form-control-sm"
+          style="width: 20%; margin: 0 auto; text-align: center;">
+          <option th:if="${shoesoptionVO.sizes}" th:value="${shoesoptionVO.sizes}" th:text="${shoesoptionVO.sizes}">
+          </option>
+          <!-- 직접 사이즈 값 추가 -->
+          <!-- 220부터 300까지의 옵션 추가 -->
+          <option th:each="size : ${#numbers.sequence(220, 300, 5)}" th:value="${size}" th:text="${size}"
+            th:selected="${shoesoptionVO.sizes == size}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('sizes')}" class="alert alert-danger" role="alert" style="margin-top: 5px;">
+          <div th:each="err : ${#lists.sort(#fields.errors('sizes'))}" th:text="${err}"></div>
+        </div>
+      </div>
+
+      <div>
+        <label>재고</label>
+        <input type="number" name="cnt" th:value="${shoesoptionVO.amount}" class="form-control form-control-sm"
+          style="width: 20%; margin: 0 auto; text-align: center;" th:field="*{amount}">
+        <div th:if="${#fields.hasErrors('amount')}" class="alert alert-danger" role="alert" style="margin-top: 5px;">
+          <div th:each="err : ${#lists.sort(#fields.errors('amount'))}" th:text="${err}"></div>
+        </div>
+      </div>
+      <div>
+        <label>색깔</label>
+        <input type="text" name="color" th:value="${shoesoptionVO.color}" class="form-control form-control-sm"
+          style="width: 20%; margin: 0 auto; text-align: center;" th:field="*{color}">
+        <div th:if="${#fields.hasErrors('color')}" class="alert alert-danger" role="alert" style="margin-top: 5px;">
+          <div th:each="err : ${#lists.sort(#fields.errors('color'))}" th:text="${err}"></div>
+        </div>
+      </div>
+
+      <div class="content_body_bottom">
+        <button type="submit" class="btn btn-secondary btn-sm">저장</button>
+        <button type="button"
+          th:attr="onclick=|location.href='/shoes/read/${shoesoptionVO.optionno}?word=${word}&now_page=${now_page}'|"
+          class="btn btn-secondary btn-sm">취소</button>
+      </div>
+
+    </form>
+    <div th:replace="~{admin/option/option_read_component::option_read_fragment}"></div>
+
+  </div>
+</body>
+
+</html>

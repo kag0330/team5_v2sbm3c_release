@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<div layout:fragment="content">
+  <style type="text/css">
+    .collapsible {
+      background-color: #777;
+      color: white;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .active,
+    .collapsible:hover {
+      background-color: #555;
+    }
+
+    .contents {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+      background-color: #f1f1f1;
+    }
+
+    .clearfix::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    .active:after {
+      content: "\2212";
+    }
+
+    .color-white {
+      color: white;
+    }
+
+    .block {
+      display: block;
+    }
+    
+    .status-select-span{
+      width: 70px;
+      position: relative;
+    }
+    
+    .flex-center{
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox-btn{
+      padding-left: 0px;
+      padding-right: 0px;
+      overflow: hidden;
+      height: 2rem;
+      width: 100px;
+      margin: 0px 2px 0px 2px;
+      text-overflow: ellipsis;
+    }
+  </style>
+  <div class="title_line">
+    주문정보 검색
+    <span th:if="${not #strings.isEmpty(param.word)}" th:text="|[${param.word}] ${count} 건|"></span>
+  </div>
+  <div style="max-width: 950px; margin: 0px auto;">
+  <div class="clearfix">
+  
+    <div style="float: right;">
+      <aside style="text-align: right;"> 
+        <a href="javascript: location.reload();">새로 고침</a>
+      </aside>
+      <div style="float: right; text-align: right; clear: both; display: flex;">
+        <form name="frm_search" method="post" th:action="@{/admin/payment/list(now_page=${param.now_page})}">
+          <select style="height: 2rem;">
+            <option>Id + Nickname</option>
+          </select>
+          <input type="text" name="word" id="word" th:value="${param.word}" style="height: 2rem;">
+          <button type='submit' class='btn btn-secondary btn-sm' style="padding: 2px 8px 3px 8px; margin: 0px 0px 2px 0px;">검색</button>
+          <th:block th:if="${not #strings.isEmpty(param.word)}">
+            <button type='button' class='btn btn-secondary btn-sm' style="padding: 2px 8px 3px 8px; margin: 0px 0px 2px 0px;" th:onclick="location.href='/admin/payment/list'">검색 취소</button>
+          </th:block>  
+        </form>
+      </div>
+      <div style="float:right; clear: both;">
+        검색된 항목 수 : <span id="countSpan"></span> 건
+      </div>
+    </div>
+    <div style="width: 100%;display: flex;float: left;justify-content: space-between;">
+    <div> 
+      <div style="margin: 1px 5px 1px 5px;" class="flex-center">
+        <span class="status-select-span block">결제상태</span>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-PS-1" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-PS-1" >입금전</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-PS-2" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-PS-2" style="height: 2rem;">추가입금대기</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-PS-3" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-PS-3" style="height: 2rem;">입금완료(수동)</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-PS-4" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-PS-4" style="height: 2rem;">입금완료(자동)</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-PS-5" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-PS-5" style="height: 2rem;">결제완료</label><br>
+      </div>
+      
+      <div style="margin: 1px 5px 1px 5px; clear: both;" class="flex-center">
+        <span class="status-select-span block">주문상태</span>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-S-1" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-S-1" >상품준비중</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-S-2" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-S-2" >배송준비중</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-S-3" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-S-3" >배송보류</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-S-4" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-S-4" >배송대기</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-S-5" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-S-5" >배송중</label><br>
+       
+        <input type="checkbox" class="btn-check" id="btn-check-S-6" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-S-6" >배송완료</label><br>
+        
+      </div>
+      
+      <div style="margin: 1px 5px 1px 5px; clear: both;" class="flex-center">
+        <span class="status-select-span block">C S 상태</span>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-CSS-1" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-CSS-1" >NULL</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-CSS-2" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-CSS-2" >취소</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-CSS-3" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-CSS-3" >교환</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-CSS-4" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-CSS-4" >반품</label><br>
+        
+        <input type="checkbox" class="btn-check" id="btn-check-CSS-5" autocomplete="off">
+        <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-CSS-5" >환불</label><br>
+        
+      </div>
+    </div>
+    
+    <div>
+      <input type="radio" class="btn-check" id="btn-check-new" name="btn-check-order" autocomplete="off" value="desc" checked>
+      <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-new" >최근주문 최신순</label><br>
+      <div style="height: 2rem;"></div>
+      <input type="radio" class="btn-check" id="btn-check-old" name="btn-check-order" autocomplete="off" value="asc"  >
+      <label class="btn btn-outline-secondary checkbox-btn" for="btn-check-old" >최근주문 오래된순</label><br>  
+    </div>
+  </div>
+  </div>
+  
+
+  <div th:replace="~{admin/payment/list_all_component::list_all_fragment}"></div>
+  
+  </div>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+      let word = /*[[${param.word == null ? '' : param.word.toString()}]]*/"";
+      let now_page = /*[[${param.now_page == null ? '1' : param.now_page.toString()}]]*/"";
+    /*]]>*/
+  </script>
+  <script src="/admin/payment/js/list.js" th:inline="javascript"></script>
+</div>
+
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.loginHistory.LoginHistoryDAOInter">
+
+	<insert id="create" parameterType="dev.mvc.loginHistory.LoginHistoryVO">
+		INSERT INTO LOGIN_HISTORY(loginno, ip, rdate, memberno)
+		VALUES (login_seq.nextval, #{ip}, sysdate, #{memberno})
+	</insert>
+	
+	<select id="readByMembernoRdateDesc" parameterType="int" resultType="dev.mvc.loginHistory.LoginHistoryVO">
+	SELECT loginno, ip, rdate, memberno
+  FROM login_history
+  where memberno = #{memberno}
+  ORDER BY rdate desc
+	</select>
+	
+	<delete id="delete" parameterType="int">
+	  DELETE FROM login_history
+    WHERE memberno=#{memberno}
+	</delete>
+	
+	<delete id="deleteOld" parameterType="int">
+    DELETE FROM login_history
+    WHERE loginno IN (
+      SELECT loginno
+      FROM login_history
+      WHERE loginno NOT IN (
+        SELECT loginno
+        FROM (
+          SELECT loginno
+          FROM login_history
+          WHERE memberno = #{memberno}
+          ORDER BY rdate DESC
+        )
+        WHERE ROWNUM &lt;= 10
+      )
+    )
+  </delete>
+</mapper>

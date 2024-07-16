@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.report.ReportDAOInter">
+
+  <!-- 신고 작성 -->
+  <insert id="create" parameterType="dev.mvc.report.ReportVO">
+    INSERT INTO report(reportno, title, contents, rdate, typeno, memberno, reviewno)
+    VALUES(REPORT_SEQ.nextval, #{title}, #{contents}, sysdate, #{typeno}, #{memberno}, #{reviewno})
+  </insert>
+
+  <select id="report_count" parameterType="Map">
+    SELECT count(*) FROM report WHERE memberno = #{memberno} AND reviewno = #{reviewno}
+  </select>
+  
+  <!-- 검색된 레코드 수 -->
+  <select id="list_search_count" resultType="int" parameterType="String">
+    SELECT COUNT(*) as cnt
+    FROM report r
+    JOIN report_type rt ON r.typeno = rt.typeno
+    JOIN member m ON r.memberno = m.memberno
+    JOIN review re ON r.reviewno = re.reviewno
+    <if test="word != null and word != ''">
+    WHERE
+    (
+        UPPER(r.title) LIKE '%' || UPPER('a') || '%' 
+        OR UPPER(r.contents) LIKE '%' || UPPER('a') || '%'
+        OR UPPER(rt.type) LIKE '%' || UPPER('a') || '%'
+        OR UPPER(m.nickname) LIKE '%' || UPPER('a') || '%' 
+    )
+    </if>
+  </select>
+
+  <!-- 페이징 -->
+  <!-- 페이징 검색 -->
+  <select id="list_search_paging" resultMap="ReportResult" parameterType="Map">
+    SELECT reportno, title, contents, rdate, report_visible, type, nickname FROM (
+        SELECT r.reportno as reportno, r.title as title, r.contents as contents, r.rdate as rdate, r.report_visible as report_visible, rt.type as type, m.nickname as nickname, 
+        ROW_NUMBER() OVER(
+            ORDER BY
+                CASE
+                    WHEN report_visible = 'N' THEN 0
+                    ELSE 1
+                END,
+               reportno DESC
+        ) AS r
+        FROM report r
+        JOIN report_type rt ON r.typeno = rt.typeno
+        JOIN member m ON r.memberno = m.memberno
+        JOIN review re ON r.reviewno = re.reviewno
+    <if test="word != null and word != ''">
+        WHERE
+        (
+            UPPER(r.title) LIKE '%' || UPPER(#{word}) || '%' 
+            OR UPPER(r.contents) LIKE '%' || UPPER(#{word}) || '%'
+            OR UPPER(rt.type) LIKE '%' || UPPER(#{word}) || '%'
+            OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%'  
+        )
+    </if>
+    ) WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+  </select>
+
+  <resultMap id="ReportResult" type="dev.mvc.report.ReportInfoVO">
+    <association property="reportVO" javaType="dev.mvc.report.ReportVO">
+      <id property="reportno" column="reportno" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="report_visible" column="report_visible" />
+    </association>
+
+    <association property="reportTypeVO" javaType="dev.mvc.reportType.ReportTypeVO">
+      <result property="type" column="type" />
+    </association>
+
+    <association property="memberVO" javaType="dev.mvc.member.MemberVO">
+      <result property="nickname" column="nickname" />
+    </association>
+  </resultMap>
+
+  <select id="read" resultMap="ReadReport" parameterType="Integer">
+    SELECT r.reportno as reportno, r.title as title, r.contents as contents, r.rdate as rdate, r.report_visible as report_visible, r.report_contents as report_contents, rt.type as type, m.nickname as nickname
+    FROM report r
+    JOIN report_type rt ON r.typeno = rt.typeno
+    JOIN member m ON r.memberno = m.memberno
+    JOIN review re ON r.reviewno = re.reviewno
+    WHERE reportno = #{reportno}
+  </select>
+
+  <resultMap id="ReadReport" type="dev.mvc.report.ReportInfoVO">
+    <association property="reportVO" javaType="dev.mvc.report.ReportVO">
+      <id property="reportno" column="reportno" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="report_visible" column="report_visible" />
+      <result property="report_contents" column="report_contents" />
+    </association>
+
+    <association property="reportTypeVO" javaType="dev.mvc.reportType.ReportTypeVO">
+      <result property="type" column="type" />
+    </association>
+
+    <association property="memberVO" javaType="dev.mvc.member.MemberVO">
+      <result property="nickname" column="nickname" />
+    </association>
+
+  </resultMap>
+
+  <update id="answer" parameterType="Map">
+    UPDATE report
+    SET report_visible = #{report_visible}, report_contents = #{report_contents}
+    WHERE reportno = #{reportno}
+  </update>
+
+  <select id="myReportCount" parameterType="Integer">
+    SELECT COUNT(*)
+    FROM report r
+    JOIN report_type rt ON r.typeno = rt.typeno
+    WHERE memberno = #{memberno}
+  </select>
+
+  <select id="myReport" resultMap="myReport" parameterType="Integer">
+    SELECT r.reportno AS reportno, r.title AS title, r.contents AS contents, r.rdate AS rdate, 
+        r.report_visible AS report_visible, r.report_contents AS report_contents, r.memberno AS memberno, r.reviewno AS reviewno, 
+        rt.type AS type
+    FROM report r
+    JOIN report_type rt ON r.typeno = rt.typeno
+    WHERE memberno = #{memberno}
+  </select>
+
+  <resultMap id="myReport" type="dev.mvc.report.ReportInfoVO">
+    <association property="reportVO" javaType="dev.mvc.report.ReportVO">
+      <id property="reportno" column="reportno" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="report_visible" column="report_visible" />
+      <result property="report_contents" column="report_contents" />
+      <result property="memberno" column="memberno" />
+      <result property="reviewno" column="reviewno" />
+    </association>
+
+    <association property="reportTypeVO" javaType="dev.mvc.reportType.ReportTypeVO">
+      <result property="type" column="type" />
+    </association>
+  </resultMap>
+</mapper>

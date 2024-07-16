@@ -1,0 +1,22 @@
+@media (min-width : 800px) {
+	.navbar-expand-lg .navbar-nav {
+		flex-direction: row;
+	}
+}
+
+.nav-link {
+	margin: 0px 5px 0px 5px;
+	width: auto;
+}
+
+.nav-link.dropdown-toggle {
+	color: inherit !important;
+}
+
+.nav-link.dropdown-toggle:focus, .nav-link.dropdown-toggle:hover, .nav-link.dropdown-toggle:active {
+	color: inherit !important;
+}
+
+.dropdown-menu {
+	position: absolute !important;
+}

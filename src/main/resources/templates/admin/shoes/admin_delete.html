@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+
+  <div class="container mt-3" style="max-width: 800px;">
+    <div class="card">
+      <div class="card-header bg-primary text-white text-center">
+        카테고리 >
+        <span th:text="${shoesVO.shoesno}" class="title_line_text"></span>
+        <span th:if="${shoesVO.shoesno != '-'}" th:text="' > ' + ${shoesVO.shoesno}" class="title_line_text"></span>
+        삭제
+
+        <aside class="aside_right">
+          <a href="/admin/shoes/admin_list_all?now_page=1" title="카테고리 목록"><i class="fas fa-list"></i></a>
+          <span class="menu_devide">│</span>
+          <a href="/admin/shoes/admin_create" title="카테고리 등록"><i class="fas fa-plus-circle"></i></a>
+          <span class="menu_devide">│</span>
+          <a th:href="@{|/admin/shoes/update/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}" title="카테고리 수정"><i
+              class="fas fa-edit"></i></a>
+          <span class="menu_devide">│</span>
+          <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+        </aside>
+      </div>
+
+      <div class="menu_line"></div>
+
+      <div id='panel_delete'
+        style='padding: 10px 0px 10px 0px; background-color: #F9F9F9; width: 100%; text-align: center;'>
+
+        <form name="frm" th:object="${shoesVO}" method="post" action="/admin/shoes/admin_delete">
+          <input type="hidden" name="shoesno" th:value="${shoesVO.shoesno}">
+          <input type="hidden" name="word" th:value="${word}">
+          <input type="hidden" name="now_page" th:value="${now_page}">
+
+          <div class="msg_warning">카테고리를 삭제하면 복구 할 수 없습니다.</div>
+          <label>카테고리 이름</label>: <span th:text="${shoesVO.title}"></span>
+
+          - <span th:text="${shoesVO.title}"></span>
+
+          <div class="content_body_bottom">
+             <button type="submit" class="btn btn-primary btn-sm">삭제</button>
+            <button type="button"
+              th:attr="onclick=|location.href='/admin/shoes/admin_read/${shoesVO.shoesno}?word=${word}&now_page=${now_page}'|"
+              class="btn btn-secondary btn-sm">취소</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /templates/cate/list_all_component.html 파일의 list_all_fragment import -->
+
+<div th:replace="~{admin/shoes/list_all_component::list_all_fragment}"></div>
+</div>
+
+</html>

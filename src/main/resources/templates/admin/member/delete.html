@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <div class='title_line'>
+        회원 정보 >
+        <span th:text="|${memberVO.name}(${memberVO.nickname})|" class="title_line_text"></span>
+    </div>
+
+  <aside class="aside_right">
+    <a href="/admin/member/list?now_page=1">회원 목록</a>
+    <span class="menu_devide">│</span>
+    <a href="/admin/member/create">회원 등록</a>
+    <span class="menu_devide">│</span>
+    <a th:href="@{/admin/member/update(memberno=${param.memberno})}">회원 수정</a>
+    <span class="menu_devide">│</span>
+    <a th:href="@{/admin/member/delete(memberno=${param.memberno})}">회원 삭제</a>
+    <span class="menu_devide">│</span>
+    <a href="javascript: location.reload();">새로 고침</a>
+  </aside>
+  
+  
+  <div class="menu_line"></div>
+
+  <div id='panel_delete'
+    style='padding: 10px 0px 10px 0px; background-color: #F9F9F9; width: 100%; text-align: center;'>
+
+    <form name="frm" th:object="${memberVO}" method="post" action="/admin/member/delete">
+      <input type="hidden" name="categoryno" th:field="*{memberno}">
+
+      <div class="msg_warning">회원을 삭제하면 복구 할 수 없습니다.</div>
+      <span th:text="|회원 ID: *{id}(*{nickname})|"></span>
+
+      <div class="content_body_bottom">
+        <button type="submit" class="btn btn-secondary btn-sm">삭제</button>
+        <button type="button" th:onclick="|location.href='@{/admin/member/read(memberno=${param.memberno}, word=${param.word}, key=${param.key}, now_page=${param.now_page})}'|" class="btn btn-secondary btn-sm">취소</button>
+      </div>
+    </form>
+
+  </div>
+  
+  <div th:replace="~{admin/member/list_all_component::list_all_fragment}"></div>
+
+</div>
+
+</html>

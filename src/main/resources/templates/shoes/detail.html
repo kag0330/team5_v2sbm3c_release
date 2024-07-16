@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}" xmlns:th="www.thymeleaf.org">
+<!-- layout.html 상속-->
+
+<div layout:fragment="content">
+    <style type="text/css">
+        #wrap {
+          max-width: 870px;
+          display: flex;
+          align-items: flex-start;
+        }
+
+        /* 상세 정보 컨테이너 */
+        .product {
+          flex-grow: 1;
+          text-align: center;
+          /* 공간을 최대한 채우도록 설정 */
+        }
+
+        .product-details {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .size-title,
+        .color-title {
+          margin-top: 5px;
+          font-size: 20px;
+          text-align: center;
+        }
+
+        .product-description {
+          margin-top: 10px;
+          font-size: 25px;
+          white-space: pre-wrap;
+          /* 긴 텍스트 줄바꿈 처리 */
+        }
+
+        /* 설명 및 가격 스타일 */
+        .product-afterprice {
+          font-size: 25px;
+          margin-top: 40px;
+        }
+
+
+        .product-price {
+          text-decoration: line-through;
+          /* 가격에 취소선 추가 */
+          color: gray;
+          font-size: 30px;
+        }
+
+        .detail_btnl:hover,
+        .detail_btnr:hover {
+          background-color: #ddd;
+        }
+
+        .sale {
+          color: red;
+          font-weight: bold;
+          animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+          0% {
+            opacity: 1;
+          }
+
+          50% {
+            opacity: 0;
+          }
+
+          100% {
+            opacity: 1;
+          }
+        }
+
+        .selection-box {
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 20px;
+          padding: 15px;
+          border-radius: 10px;
+          width: 300px;
+          height: 130px;
+        }
+
+        .size-selection,
+        .color-selection {
+          text-align: center;
+          /* 가운데 정렬 */
+          margin-bottom: 20px;
+          /* 아래 여백 */
+        }
+
+        .size-select,
+        .color-select {
+          height: 3rem;
+          text-align: center;
+          /* 폼 컨트롤 너비 조정 */
+          
+          /* 위 여백 */
+          display: inline-block;
+          /* 인라인 요소로 표시하여 가운데 정렬 적용 */
+
+          /*width: 100%;*/
+          padding: 10px;
+          /*margin-top: 10px;*/
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          text-align: center;
+          font-size: 15px;
+        }
+
+        .image-box {
+          border: 1px solid #ccc;
+          border-radius: 10px;
+          padding: 10px;
+          margin-bottom: 20px;
+        }
+
+        .image-box img {
+          max-width: 350px;
+          border-radius: 10px;
+          margin-right: 20px;
+          /* 이미지와 상세 정보 사이 여백 */
+          height: 350px;
+        }
+
+        .button-container {
+          justify-content: center;
+          gap: 20px;
+        }
+
+        .detail_btnl,
+        .detail_btnr {
+          padding: 10px 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-top: 5px;
+          background-color: #f8f8f8;
+          font-size: 16px;
+        }
+        
+        .optionDiv {
+      width: max-content;
+      margin: 0px auto;
+    }
+
+    .optionDiv::after {
+      content: '';
+      display: block;
+      clear: both;
+      }
+      
+      </style>     
+    <div class="detail_container">
+      <input type="hidden" id="mymemberno" th:data-mymemberno="${memberno}" th:if="${not #strings.isEmpty(session.login)}">
+      <input type="hidden" id="shoesno" th:data-shoesno="${shoesAllVO.shoesVO.shoesno}">
+
+      
+
+      <div id="wrap" class="product">
+        <!-- 왼쪽: 이미지 -->
+        <div class="image-box">
+          <img src="/images/nike.jpg" alt="스니커즈1">
+        </div>
+
+        <!-- 오른쪽: 상세 정보 -->
+        <div class="product-details">
+          <h1 class="title" th:text="${shoesAllVO.shoesVO.title}"></h1>
+          <p class="product-description" th:text="'설명 : ' + ${shoesAllVO.shoesVO.contents}"></p>
+<span th:if="${shoesAllVO.shoesVO.discount > 0}" class="sale" style="font-size: 30px;">SALE </span>
+          <span th:if="${shoesAllVO.shoesVO.discount > 0}" class="" style="font-size: 30px;"
+            th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.discount, 1, 'COMMA')}  + '%'"></span>
+          <p th:if="${shoesAllVO.shoesVO.discount > 0}" style="font-size: 30px;">원가:</span>
+            <span th:if="${shoesAllVO.shoesVO.discount > 0}" class="product-price"
+              th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.price, 3, 'COMMA')} +'원 '"></span>
+
+          <p th:if="${shoesAllVO.shoesVO.discount == 0}" style="font-size: 30px;">원가:</span>
+            <span th:if="${shoesAllVO.shoesVO.discount == 0}" style="font-size: 30px;"
+              th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.price, 3, 'COMMA')} +'원 '"></span>
+          <p th:if="${shoesAllVO.shoesVO.discount > 0}" style="font-size: 30px;">할인가:</span>
+            <span th:if="${shoesAllVO.shoesVO.discount > 0}" class="product-afterprice" style="font-size: 30px;"
+              th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.price - (shoesAllVO.shoesVO.price * shoesAllVO.shoesVO.discount / 100), 3, 'COMMA')}  + '원'">
+              <spanp>
+
+                <span th:if="${shoesAllVO.shoesVO.discount == 0}" style="font-size: 25px;"
+                  th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.price, 3, 'COMMA')} +'원 '"></span>
+
+          <div class="color-selection">
+        <h2>옵션 선택</h2>
+        <div class="optionDiv">
+          <select class="color-select" id="optionSelect">
+            <option selected>옵션을 선택해주세요.</option>
+            <option th:each="option :${options}" th:disabled="${option.amount <= 0}" th:value="${option.optionno}">
+              <th:block th:utext="${@ThymeleafUtils.formatnbsp(
+                                   optionStat.count + '.    ' + 
+                                   '크기: ' + option.sizes + '    ' +
+                                   '색상: ' + option.color + '    ' +
+                                   '남은 수량: ' + option.amount + '개')}">
+              </th:block>
+            </option>
+          </select>
+          <div style="border: 1px solid black; float: right; height: 3.1rem; background-color: #ddd;">수량선택
+            <input style="width: 50px; height: 2.9rem; border: 0px;" type="number" id="amountInput" min="1" disabled>
+          </div>
+        </div>
+      </div>
+          
+          <!-- 버튼들 -->
+          <div class="button-container">
+            <button class="detail_btnl">장바구니</button>
+            <button class="detail_btnr" onclick="send()">구매하기</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="~{review/review_component::review_fragment}"></div>
+    <div th:replace="~{report/report_component::report_fragment}"></div>
+          
+
+<!--                 <div class="size-selection">
+                  <p class="size-title">SIZE</p>
+                  <select name="sizes" id="sizes" class="size-select sizes">
+                    <option value="">사이즈</option>
+                    <option th:each="size : ${size_list}" th:value="${size}" th:text="${size}"></option>
+                  </select>
+                </div>
+
+                <!-- 색상 선택 
+                <div class="color-selection">
+                  <p class="color-title">색상</p>
+                  <select name="color" id="color" class="color-select color">
+                    <option>색상을 선택해주세요.</option>
+                    <option th:each="color : ${coloramount}" th:value="${color}" th:text="${color}">색상을 선택하세요</option>
+                  </select>
+                </div>
+
+                <!-- 버튼들 
+                <div class="button-container">
+                  <button class="detail_btnl">장바구니</button>
+                  <button class="detail_btnr" onclick="send()">구매하기</button>
+                </div> 
+        </div>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var wrap = document.getElementById('wrap');
+          var sizes = wrap.querySelectorAll('.sizes');
+          var sizeslist = sizes[sizes.length - 1];
+
+          selectColor(sizeslist);
+
+        });
+
+        function selectColor(sizeslist) {
+          sizeslist.addEventListener('change', function () {
+            var shoesno = document.getElementById("shoesno").getAttribute("data-shoesno");
+            var wrap = document.getElementById('wrap');
+            var colorsSelect = wrap.querySelectorAll('.color');
+
+            colorlist = colorsSelect[colorsSelect.length - 1]; // 색상 리스트
+            colorlist.innerHTML = '<option value="">색상을 선택하세요</option>';
+
+            if (this.value) {
+              fetch('/options/option_color', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  shoesno: parseInt(shoesno, 10),
+                  sizes: parseInt(this.value, 10)
+                })
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                  }
+                  return response.json();
+                })
+                .then(data => {
+
+                  data.coloramount.forEach(list => {
+                    var option = document.createElement('option');
+                    option.value = list.color;
+                    if (list.amount === 0) {
+                      option.textContent = list.color + ' [품절]';
+                    } else {
+                      option.textContent = list.color + ' [' + list.amount + ']';
+                    }
+
+                    colorlist.appendChild(option);
+                  });
+
+                })
+                .catch(error => {
+                  console.error('색상을 불러오는 데 실패했습니다.', error);
+                });
+            }
+          });
+        }
+      </script>
+-->
+
+    <!-- 후기 답글 -->
+    <div class="widget_item_comment_container">
+      <div class="widget_answer_img"></div>
+      <div class="widget_item_comment_content">
+        <p>내용<br></p>
+        <div class="widget_item_comment_content_1">운영자</div>
+      </div>
+    </div>
+    <div class="between_line"></div>
+    <!-- 후기 답글 끝-->
+
+  
+  <script th:inline="javascript">
+    const memberno = /*[[${session.login != null ? session.login.memberno : null}]]*/"";
+    let options = /*[[${options}]]*/"";
+
+    let optionSelect = document.getElementById('optionSelect');
+    let amountInput = document.getElementById('amountInput');
+
+    let sizes = "";
+    let color = "";
+
+    optionSelect.addEventListener('change', function () {
+      let selectedValue = this.value;
+      let selectedOption = options.find(option => option.optionno == selectedValue);
+      if (selectedOption) {
+        amountInput.disabled = false;
+        amountInput.max = selectedOption.amount;
+        sizes = selectedOption.sizes;
+        color = selectedOption.color;
+      } else {
+        amountInput.disabled = true;
+        amountInput.value = null;
+      }
+    });
+
+    amountInput.addEventListener('change', function () {
+      if (parseInt(amountInput.value) > parseInt(amountInput.max)) {
+        amountInput.value = amountInput.max;
+      }
+
+      if (parseInt(amountInput.value) <= parseInt(amountInput.min)) {
+        amountInput.value = amountInput.min;
+      }
+    });
+
+
+
+    function send() {
+      let basketList = [];
+      
+      let price = document.querySelector(".product-afterprice").innerText.replace(/[^0-9]/g, '');
+
+      let amountInput = document.getElementById('amountInput');
+      let optionSelect = document.getElementById('optionSelect');
+      let selected = optionSelect.options[optionSelect.selectedIndex].value;
+      if (amountInput.value == null || amountInput.value == 0 || (amountInput.value < amountInput.max)) {
+        amountInput.focus();
+        return false;
+      }
+      if (memberno == null || memberno == "") {
+        alert("로그인 후 구매하실 수 있습니다.");
+        return false;
+      }
+
+      basketList.push({
+        optionno: selected,
+        amount: parseInt(amountInput.value),
+        price: parseInt(price) * parseInt(amountInput.value)
+      });
+
+      fetch(window.location.pathname + '/payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          basket: basketList,
+          memberno: memberno,
+        }),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok' + response.statusText);
+        }
+        return response.text();
+      })
+        .then((data) => {
+          if (!data) {
+            alert('결제주문이 실패하였습니다.');
+            return false;
+          }
+          alert('결제주문이 성공하였습니다.');
+          location.href = '/member/payment/order';
+        })
+        .catch((error) => {
+          alert('에러가 발생하였습니다. 관리자에게 연락하세요.');
+        });
+    }
+  </script>
+  <script src="/js/basket.js"></script>
+</div>
+</html>
+

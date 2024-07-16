@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+
+<link href="/admin/css/style.css" rel="Stylesheet" type="text/css"> <!-- /static 기준 -->
+<link rel="shortcut icon" href="/images/star.png" />
+
+<div layout:fragment="content">
+  <div class="title_line">
+
+    <span th:if="${word!=null and word!=''}" th:text="|${word} ${no} 건|">
+  </div>
+  <div class="container mt-3">
+    <div class="card">
+      <div class="card-header bg-primary text-white text-center" style="font-size: 20px;">
+        신발 목록
+        <aside class="aside_right">
+          <a href="/admin/shoes/admin_create" title="등록" class="text-white"><i class="fas fa-plus-circle"></i></a>
+          <span class="menu_devide">│</span>
+          <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+        </aside>
+        <div th:replace="~{admin/shoes/list_search_component::list_search_fragment}"></div>
+      </div>
+      <div th:replace="~{admin/shoes/list_all_component::list_all_fragment}"></div>
+    </div>
+  </div>
+
+</html>

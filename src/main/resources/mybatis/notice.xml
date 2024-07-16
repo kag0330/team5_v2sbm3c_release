@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.notice.NoticeDAOInter">
+
+  <resultMap id="NoticeMemberFileResultMap" type="dev.mvc.notice.NoticeMemberFileVO">
+    <id property="noticeno" column="noticeno"/>
+    <result property="title" column="title"/>
+    <result property="contents" column="contents"/>
+    <result property="rdate" column="rdate"/>
+    <result property="views" column="views"/>
+    <result property="nickname" column="nickname"/>
+    <collection property="noticeFileVOs" ofType="dev.mvc.noticeFile.NoticeFileVO" javaType="ArrayList">
+      <id property="notice_file_no" column="notice_file_no"/>
+      <result property="name" column="name"/>
+      <result property="sizes" column="sizes"/>
+      <result property="ex" column="ex"/>
+      <result property="src" column="src"/>
+    </collection>
+  </resultMap>
+
+
+  <!-- 공지 생성 -->
+  <insert id="create" parameterType="Map">
+    DECLARE
+        v_noticeno NUMBER;
+    BEGIN
+        INSERT INTO notice (noticeno, title, contents, rdate, memberno)
+        VALUES (NOTICE_SEQ.nextval, #{title}, #{contents}, SYSDATE, 1)
+        RETURNING noticeno INTO v_noticeno;
+    <if test="files != null">
+	    <foreach collection="files" item="file">
+	      INSERT INTO notice_file (notice_file_no, name, sizes, ex, src, noticeno)
+	      VALUES (NOTICE_FILE_SEQ.nextval, #{file.name}, #{file.sizes}, #{file.ex}, #{file.src}, v_noticeno);
+	    </foreach>
+    </if> 
+    END;
+  </insert>
+
+  <!-- 전체 목록 -->
+  <select id="list_all" resultType="dev.mvc.notice.NoticeMemberVO">
+    SELECT n.noticeno, n.title, n.contents, n.rdate, n.views, m.nickname
+    FROM notice n, member m
+    WHERE n.memberno = m.memberno
+    ORDER BY n.rdate DESC
+  </select>
+
+  <!-- 검색된 레코드 수 -->
+  <select id="list_search_count" resultType="int" parameterType="String">
+    SELECT COUNT(*) as cnt
+    FROM notice
+    <if test="word != null and word != ''">
+      WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(contents) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY rdate DESC
+  </select>
+
+  <!-- 페이징 -->
+  <select id="list_search_paging" resultMap="NoticeMemberFileResultMap" parameterType="Map">
+		WITH notice_with_rownum AS (
+		  SELECT n.noticeno, n.title, n.contents, n.rdate, n.views, 
+		         m.nickname,
+		         ROW_NUMBER() OVER (ORDER BY n.rdate DESC) as r
+		  FROM notice n
+		  INNER JOIN member m ON n.memberno = m.memberno
+		  <if test="word != null and word != ''">
+		    WHERE (
+		      UPPER(n.title) LIKE '%' || UPPER(#{word}) || '%' 
+		      OR UPPER(n.contents) LIKE '%' || UPPER(#{word}) || '%' 
+		      OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%' 
+		    )
+		  </if>
+		),
+		distinct_notices AS (
+		  SELECT noticeno, title, contents, rdate, views, nickname, r
+		  FROM notice_with_rownum
+		  WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+		)
+		SELECT dn.noticeno, dn.title, dn.contents, dn.rdate, dn.views, 
+		       dn.nickname, 
+		       nf.notice_file_no, nf.name, nf.sizes, nf.ex, nf.src
+		FROM distinct_notices dn
+		LEFT JOIN notice_file nf ON dn.noticeno = nf.noticeno
+		ORDER BY dn.r
+  </select>
+
+  <!-- 공지사항의 파일 유무 확인 -->
+  <select id="file_count" resultType="int" parameterType="int">
+     select count(*) as cnt
+     FROM notice_file 
+    WHERE noticeno = #{noticeno}
+  </select>
+
+  <!-- 공지사항 상세 -->
+  <select id="read" resultMap="NoticeMemberFileResultMap" parameterType="int">
+	  SELECT n.noticeno, m.memberno, nf.notice_file_no, n.title, n.contents, n.rdate, n.views, m.nickname, nf.notice_file_no, nf.name, nf.sizes, nf.ex, nf.src
+	  FROM notice n
+	  JOIN member m 
+	  ON n.memberno = m.memberno
+	  LEFT JOIN notice_file nf ON n.noticeno = nf.noticeno
+	  WHERE n.noticeno = #{noticeno}
+  </select>
+
+  <!-- 공지사항 조회수 1 상승 -->
+  <update id="increased_views" parameterType="int">
+    UPDATE notice
+    SET views = views + 1
+    WHERE noticeno = #{noticeno}
+  </update>
+
+  <!-- 공지사항 조회한 후 조회 수 -->
+  <select id="views" parameterType="int">
+     select views
+     FROM notice 
+     WHERE noticeno = #{noticeno}
+  </select>
+
+  <!-- 공지사항 수정 -->
+  <update id="update" parameterType="dev.mvc.notice.NoticeMemberFileVO">
+	  UPDATE notice 
+	  SET title = #{title}, 
+	  contents = #{contents}
+	  WHERE noticeno = #{noticeno}
+  </update>
+ 
+
+  <delete id="delete" parameterType="Integer">
+    DELETE FROM notice WHERE noticeno = #{notice}
+  </delete>
+
+
+</mapper>

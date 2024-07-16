@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.hates.HatesDAOInter">
+
+  <insert id="increased_hates" parameterType="Map">
+    INSERT INTO hates(hatesno, reviewno, memberno)
+    VALUES(hates_seq.nextval, #{reviewno}, #{memberno})
+  </insert>
+
+  <delete id="decreased_hates" parameterType="Map">
+    DELETE FROM hates
+    WHERE reviewno = #{reviewno} AND memberno = #{memberno}
+  </delete>
+
+  <delete id="delete" parameterType="Integer">
+    DELETE FROM hates
+    WHERE hatesno = #{reviewno}
+  </delete>
+
+  <select id="hates_count" parameterType="Integer">
+    SELECT COUNT(*)
+    FROM hates
+    WHERE reviewno = #{reviewno}
+  </select>
+
+  <select id="myhates" parameterType="Integer">
+    SELECT COUNT(*)
+    FROM myhates
+    WHERE reviewno = #{reviewno} AND memberno = #{memberno}
+  </select>
+
+</mapper>

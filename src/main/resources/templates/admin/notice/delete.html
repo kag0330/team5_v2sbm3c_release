@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <div class="title_line">
+    공지사항 > <span th:text="${noticememberfileVO.title}" class="title_line_text"></span> 삭제
+  </div>
+
+  <aside class="aside_right">
+    <a href="/admin/notice/create">공지사항 등록</a>
+    <span class='menu_divide'>│</span>
+    <a th:href="@{|../update/${noticememberfileVO.noticeno}?word=${word }&now_page=${now_page}|}">글 수정</a>
+    <span class='menu_divide'>│</span>
+    <a href="javascript:location.reload();">새로고침</a>
+  </aside>
+  <div class="menu_line"></div>
+
+  <div id='panel_delete'
+    style='padding: 10px 0px 10px 0px; background-color: #F9F9F9; width: 100%; text-align: center;'>
+
+    <form name="frm" th:object="${noticememberfileVO}" method="post" action="/admin/notice/delete">
+      <input type="hidden" name="noticeno" th:value="${noticememberfileVO.noticeno}">
+      <input type="hidden" name="word" th:value="${word}">
+      <input type="hidden" name="now_page" th:value="${now_page}">
+
+      <div class="msg_warning">공지사항을 삭제하면 복구 할 수 없습니다.</div>
+      <label>공지사항 명</label>: <span th:text="${noticememberfileVO.title}"></span>
+
+      <div class="content_body_bottom">
+        <button type="submit" class="btn btn-secondary btn-sm">삭제</button>
+        <button type="button" class="btn btn-secondary btn-sm"
+          th:onclick="|location.href='/admin/notice/read/' + ${noticememberfileVO.noticeno}|">취소</button>
+      </div>
+
+  </div>
+  </form>
+  <div th:replace="~{admin/notice/list_all_component::list_all_fragment}"></div>
+</div>
+
+
+
+</div>
+
+</html>

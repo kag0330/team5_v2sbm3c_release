@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.option.OptionDAOInter">
+
+  <insert id="option_create" parameterType="dev.mvc.option.OptionVO">
+    INSERT INTO OPTIONS (OPTIONNO, SIZES, AMOUNT, COLOR, SHOESNO)
+    VALUES (OPTION_SEQ.nextval, #{sizes}, #{amount}, #{color}, #{shoesno})
+  </insert>
+
+  <select id="option_list" resultType="dev.mvc.option.OptionVO"
+    parameterType="Integer">
+    SELECT optionno, sizes, amount, color, shoesno
+    FROM options
+    WHERE shoesno = #{shoesno}
+  </select>
+
+  <update id="option_update" parameterType="Map">
+    UPDATE options
+    SET AMOUNT = #{amount}
+    WHERE optionno = #{optionno}
+  </update>
+  
+  <update id="option_update_amount" parameterType="Map">
+    UPDATE OPTIONS
+    SET amount = amount - #{amount}
+    WHERE OPTIONNO = #{optionno}
+  </update>
+
+  <delete id="option_delete" parameterType="Integer">
+    DELETE FROM OPTIONS WHERE OPTIONNO = #{optionno}
+  </delete>
+
+
+  <select id="option_search_count" resultType="int">
+    SELECT COUNT(*) as cnt
+    FROM options
+    WHERE shoesno = #{shoesno}
+    ORDER BY optionno ASC
+  </select>
+
+
+  <select id="option_paging" resultType="dev.mvc.option.OptionVO"
+    parameterType="Map">
+    SELECT o.optionno, o.shoesno, o.sizes, o.amount, o.color, o.r
+    FROM (
+    SELECT optionno, shoesno, sizes, amount, color,
+    ROW_NUMBER() OVER (ORDER BY sizes DESC) AS r
+    FROM options
+    WHERE shoesno = #{shoesno}
+    ) o
+    JOIN shoes s ON o.shoesno = s.shoesno
+    WHERE o.r &gt; = #{start_num} AND o.r &lt; = #{end_num}
+  </select>
+
+  <select id="parent_count" parameterType="Integer">
+    SELECT COUNT(*) FROM options WHERE shoesno = #{shoesno}
+  </select>
+  
+  <select id="optionByshoesno" parameterType="int" resultType="dev.mvc.option.OptionVO">
+    SELECT DISTINCT
+      o.optionno,
+      o.sizes,
+      o.color,
+      o.amount
+      
+    FROM 
+      shoes s
+      INNER JOIN category_list cl ON s.shoesno = cl.shoesno
+      INNER JOIN category c ON cl.categoryno = c.categoryno
+      INNER JOIN options o ON s.shoesno = o.shoesno
+    WHERE 
+      s.shoesno = #{shoesno}
+    ORDER BY 
+      o.sizes
+  </select>
+
+  <select id="option_sizes" resultType="int" parameterType="Integer">
+    SELECT distinct sizes
+    FROM options
+    WHERE shoesno = #{shoesno}
+    ORDER BY sizes
+  </select>
+
+  <select id="option_coloramount" resultType="dev.mvc.option.OptionVO"
+    parameterType="Map">
+    SELECT color, amount
+    FROM options
+    WHERE shoesno = #{shoesno}
+    AND sizes = #{sizes}
+  </select>
+  
+    <select id="option_color" resultType="String" parameterType="Integer">
+    SELECT distinct o.color
+    FROM shoes s
+    JOIN category_list cl ON s.shoesno = cl.shoesno
+    JOIN category c ON cl.categoryno = c.categoryno
+    JOIN options o ON s.shoesno = o.shoesno
+    WHERE s.shoesno = #{shoesno}
+  </select>
+</mapper>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.delivery.DeliveryDAOInter">
+  <select id="list_all" parameterType="int" resultType="dev.mvc.delivery.DeliveryVO">
+    SELECT deliveryno, title, recipient, phone, zipcode, addr1, addr2, requests, memberno
+    FROM delivery
+    WHERE memberno = #{memberno}
+    ORDER BY deliveryno ASC
+  </select>
+  
+  <select id="count" parameterType="int" resultType="int">
+    SELECT COUNT(*) as cnt
+    FROM delivery
+    WHERE memberno = #{memberno}
+  </select>
+  
+  <delete id="delete" parameterType="int">
+    DELETE FROM delivery
+    WHERE deliveryno = #{deliveryno}
+  </delete>
+
+  <insert id="create" parameterType="dev.mvc.delivery.DeliveryVO">
+    INSERT INTO delivery(deliveryno, title, recipient, phone, zipcode, addr1, addr2, requests, memberno)
+    VALUES (delivery_seq.nextval, #{title}, #{recipient}, #{phone}, #{zipcode}, #{addr1}, #{addr2}, #{requests}, #{memberno})
+  </insert>
+  
+  <select id="read" parameterType="int" resultType="dev.mvc.delivery.DeliveryVO">
+    select deliveryno, title, recipient, phone, zipcode, addr1, addr2, requests, memberno
+    from delivery
+    where deliveryno = #{deliveryno}
+  </select>
+  
+  <update id="update" parameterType="dev.mvc.delivery.DeliveryVO">
+  UPDATE delivery
+  SET title=#{title}, recipient=#{recipient}, phone=#{phone}, zipcode=#{zipcode}, addr1=#{addr1}, addr2=#{addr2}, requests=#{requests}
+  WHERE memberno=#{memberno} AND deliveryno = #{deliveryno}
+  </update>
+  
+  <delete id="deleteAdmin" parameterType="int">
+    DELETE FROM delivery
+    WHERE memberno = #{memberno}
+  </delete>
+
+</mapper>

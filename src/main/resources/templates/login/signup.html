@@ -1,0 +1,141 @@
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+
+<body>
+  <div layout:fragment="content">
+    <form style="width:80%; margin:0 auto;" class="row g-3" id="frm" name="frm" method="post" action="./signup" enctype="multipart/form-data" th:object="${memberVO}">
+      <span>*표시는 필수 입력 항목입니다.</span>
+      <div class="col-md-12">
+        <label for="id" class="form-label">아이디*</label>
+        <input id="id" type="text" class="form-control" th:field="*{id}" onkeyup='checkId()' autofocus>
+      </div>
+      <span id="checkIdText"></span>
+
+
+
+      <div class="col-6">
+        <label class="form-label">패스워드*</label>
+        <input id="pw1" type='password' class="form-control" th:field="*{pw}" required="required" placeholder="패스워드">
+      </div>
+
+
+      <div class="col-6">
+        <label class="form-label">패스워드 확인*</label>
+        <input id="pw2" type='password' class="form-control" onkeyup="checkPw()" placeholder="패스워드 확인">
+      </div>
+      <span id="checkPwText"></span>
+
+      <div class="col-6">
+        <label class="form-label">성명*:</label>
+        <input id='name' type='text' class="form-control" required placeholder="성명" th:field="*{name}">
+        <span id="checkNameText"></span>
+      </div>
+      
+
+      <div class="col-6">
+        <label class="form-label">닉네임*:</label>
+        <input id='nick' type='text' class="form-control" required placeholder="닉네임" th:field="*{nickname}">
+        <span id="checkNickText"></span>
+      </div>
+     
+
+      <div class="col-6">
+        <label>전화 번호*</label>
+        <input id='phone' type='text' class="form-control" required placeholder="010-0000-0000" onkeyup="checkPhone()" th:field="*{phone}">
+        <span id="checkPhoneText"></span>
+      </div>
+      
+
+      <div class="col-6">
+        <label>이메일*</label>
+        <input id='email' type='text' class="form-control" required placeholder="email@email.com" onkeyup="checkEmail()" th:field="*{email}">
+        <span id="checkEmailText"></span>
+      </div>
+      
+
+      <label>생년월일*</label>
+
+      <input id="dateField" type='hidden' th:field="*{mdate}">
+
+      <div class="col-4">
+        <select id='year' class="form-select" th:with="year=${#dates.format(#dates.createNow(), 'yyyy')}">
+            <option selected>년</option>
+            <option th:each="num: ${#numbers.sequence(1900,year)}" th:value="${num}" th:text="${num}"></option>
+          </select>
+        </div>
+        
+        <div class="col-4">
+          <select id='month' class="form-select">
+            <option selected>월</option>
+            <option th:each="num: ${#numbers.sequence(1, 12)}" th:value="${num}" th:text="${num}"></option>
+          </select> 
+        </div>
+        
+        <div class="col-4">
+          <select id='day' class="form-select">
+            <option selected>일</option>
+            <option th:each="num: ${#numbers.sequence(1, 31)}" th:value="${num}" th:text="${num}"></option>
+          </select>
+      </div>
+      <span id="checkDateText"></span>
+      
+      <div class="col-6">
+        <label>성별*</label><br>
+          <select id='gender' class="form-select" name="gender">
+            <option selected>성별 선택</option>
+            <option th:value="남성">남성</option>
+            <option th:value="남성">여성</option>
+            <option th:value="남성">비공개</option>
+          </select>
+          <span id="checkGenderText"></span>
+      </div>
+      
+  
+      <div class="col-6">
+        <label>썸네일 이미지</label> 
+        <input type='file' class="form-control" required placeholder="파일 선택" th:field="*{mf}">
+      </div>
+      
+      <button type="button" id="btn_DaumPostcode" onclick="DaumPostcode()" class="btn btn-primary btn-sm">우편번호 찾기</button>
+      
+      <div class="col-2">
+        <label>우편 번호</label> 
+        <input type='text' id='zipcode' class="form-control form-control-sm" placeholder="우편번호" th:field="*{zipcode}" disabled>
+      </div>
+
+
+      <div class="col-4">
+        <label>주소</label> 
+        <input type='text' id='addr1' class="form-control form-control-sm" placeholder="주소" th:field="*{addr1}" disabled>
+      </div>
+
+
+      <div class="col-6">
+        <label>상세 주소</label> 
+        <input type='text' id='addr2' class="form-control form-control-sm" placeholder="상세 주소" th:field="*{addr2}">
+      </div>
+      
+      
+      
+      <!--/* ------------------------------ DAUM 우편번호 API 시작 ------------------------------ */-->
+      <div>
+        <div id="wrap" style="display: none; border: 1px solid; width: 500px; height: 300px; margin: 5px 0; position: relative">
+          <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" onclick="foldDaumPostcode()" alt="접기 버튼">
+        </div>
+      </div>
+      <!--/* ------------------------------ DAUM 우편번호 API 종료 ------------------------------ */-->
+      
+      <div class="content_body_bottom">
+        <button type="button" class="btn btn-secondary" onclick="send()">가입</button>
+        <button type="button" onclick="location.href='/'" class="btn btn-secondary">취소</button>
+      </div>
+    </form>
+    
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="/js/daumAddr.js"></script>
+    <script type="text/javascript" src="/js/signUp.js"></script>
+    
+    
+  </div>
+</body>
+</html>

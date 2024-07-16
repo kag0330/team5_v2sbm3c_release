@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shoes Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            display: flex;
+            background-color: #333;
+        }
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .navbar .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        .dropdown-menu a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .content_main {
+            margin-top: 20px;
+        }
+        .content_body {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .shoes {
+            flex: 0 0 16%; /* 한 줄에 6개씩 배치 */
+            box-sizing: border-box;
+            padding: 10px;
+            text-align: center;
+        }
+        .shoes img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div id="content" th:replace="/content :: content"></div>
+</body>
+</html>

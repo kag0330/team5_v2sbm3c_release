@@ -1,0 +1,46 @@
+<div th:fragment="list_all_fragment">
+  <!-- <div th:replace=... -->
+  <table class="table table-hover">
+    <colgroup>
+      <col style='width: 13%;' />
+      <col style='width: 26%;' />
+      <col style='width: 22%;' />
+      <col style='width: 13%;' />
+      <col style='width: 13%;' />
+      <col style='width: 13%;' />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="th_bs">번호</th>
+        <th class="th_bs">문의 제목</th>
+        <th class="th_bs">작성자</th>
+        <th class="th_bs">날짜</th>
+        <th class="th_bs">답변 여부</th>
+        <th class="th_bs">답변하기</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="otherInquiryInfoVO, status:${list}">
+        <td class="td_bs" th:text="|${(now_page-1) * 5 + status.index + 1}|"></td>
+        <td class="td_bs"><a
+            th:href="@{|/admin/inquiry/other/${otherInquiryInfoVO.otherInquiryVO.other_inquiry_no}?word=${word}&now_page=${now_page}|}"
+            style="display: block;" th:text="${otherInquiryInfoVO.otherInquiryVO.title}"></a></td>
+        <td class="td_bs" th:text="${otherInquiryInfoVO.memberVO.nickname}"></a></td>
+        <td class="td_bs" th:text="${#dates.format(otherInquiryInfoVO.otherInquiryVO.rdate, 'yy/MM/dd')}"></td>
+        <td class="td_bs" th:text="${otherInquiryInfoVO.otherInquiryVO.answer_visible}"></td>
+        <td class="td_bs">
+          <div th:if="${#strings.equals(otherInquiryInfoVO.otherInquiryVO.answer_visible, 'N')}">
+            <a
+              th:href="@{|/admin/inquiry/other/${otherInquiryInfoVO.otherInquiryVO.other_inquiry_no}?word=${word}&now_page=${now_page}|}"><i class="fas fa-edit"></i></a>
+          </div>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이지 버튼 목록 출력 시작 -->
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  <!-- 페이지 버튼 목록 출력 종료 -->
+
+</div>

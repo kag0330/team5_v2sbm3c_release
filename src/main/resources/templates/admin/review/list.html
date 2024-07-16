@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <div class="title_line">
+  </div>
+      <div th:replace="~{admin/review/list_search_component::list_search_fragment}"></div>
+      <div th:replace="~{admin/review/list_all_component::list_all_fragment}"></div>
+  </div>
+
+</html>

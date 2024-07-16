@@ -1,0 +1,120 @@
+<div th:fragment="list_all_fragment">
+  <!-- <div th:replace=... -->
+  <style>
+    .container {
+      max-width: 800px;
+      /* 최대 너비 설정 */
+      margin: 0 auto;
+      /* 가운데 정렬 */
+      padding: 20px;
+    }
+
+    .review-item {
+      margin-top: 30px;
+      border: 3px solid #ddd;
+      /* 리뷰 아이템 테두리 */
+      padding: 15px;
+      margin-bottom: 10px;
+      position: relative;
+      /* 삭제 버튼 위치 설정을 위해 */
+    }
+
+    .rating {
+      margin-bottom: 10px;
+    }
+
+    .review-content {
+      margin-bottom: 10px;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  </style>
+  <div class="container">
+    <h2 class="mb-4" style="text-align: center;">리뷰 목록</h2>
+    <div th:each="list : ${list}" class="review-item">
+      <input type="hidden" class="reviewno" th:value="${list.reviewVO.reviewno}">
+      <div class="review-no">
+        <span th:text="'리뷰번호: ' + ${list.reviewVO.reviewno}" style="font-size: 20px;"></span>
+      </div>
+      <input type="hidden" th:value="${shoesno}" class="shoesno">
+      <input type="hidden" th:value="${word}" class="word">
+      <div class="rating">
+        <!-- 숫자 평점 -->
+        <span th:each="star : ${#numbers.sequence(1, 5)}">
+          <span th:if="${star le list.reviewVO.rating}" style="color: yellow; font-size: 25px;">&#9733;</span>
+          <span th:unless="${star le list.reviewVO.rating}" style="font-size: 25px;">&#9734;</span>
+        </span>
+        <span class="review-date" th:text="${#dates.format(list.reviewVO.rdate, 'yyyy-MM-dd')}"
+          style="font-size: 17px;"></span>
+      </div>
+      <!-- 내용 영역-->
+      <div class="review-content-container">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">리뷰 내용</h5>
+            <p><a th:href="@{|/admin/review/read/${list.reviewVO.reviewno}|}" class="review-link"
+                th:text="${list.reviewVO.contents}"></a></p>
+            <!-- You can add more content or styling here -->
+          </div>
+        </div>
+      </div>
+      <!-- 삭제 버튼 -->
+      <a id="delete" class="btn btn-danger delete-btn" style="color: white">삭제</a>
+    </div>
+    <!-- 만약 리뷰가 없을 경우에 대한 처리 -->
+    <div th:if="${list.isEmpty()}" class="text-center" style="font-size: 20px;">
+      등록된 리뷰가 없습니다.
+    </div>
+  </div>
+
+  <div class="bottom_menu" th:utext="${paging}"></div>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var deletebtn = document.querySelectorAll('.delete-btn');
+
+      deletebtn.forEach(function (button) {
+        button.addEventListener('click', function () {
+          if (confirm('삭제하시겠습니까?')) {
+            var review = button.closest('.review-item');
+            var reviewno = review.querySelector('.reviewno').value;
+            var shoesno = review.querySelector('.shoesno').value;
+
+            fetch('/admin/review/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                reviewno: parseInt(reviewno)
+              })
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  alert('리뷰를 삭제했습니다.');
+                  console.log('리뷰 삭제에 성공했습니다.');
+                  window.location.href = "/admin/review/list/" + shoesno + "?now_page=1";
+                } else {
+                  console.error('리뷰 삭제에 실패했습니다.');
+                  alert('리뷰 삭제에 실패했습니다.');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                alert('리뷰 삭제 중 오류가 발생했습니다.');
+              });
+          }
+        });
+      });
+    });
+
+  </script>
+
+
+</div>

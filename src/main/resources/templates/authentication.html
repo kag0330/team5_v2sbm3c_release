@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <!-- layout.html 상속-->
+  <div class="message">
+    <fieldset class="fieldset_basic">
+      <ul>
+        <li class="li_none">
+          <div>
+            <span class="span_fail">로그인이 필요합니다.</span><br>
+            <button type="button" onclick="location='/login/signin'" class="btn btn-secondary btn-sm">로그인 하러가기</button>
+          </div>
+        </li>
+      </ul>
+    </fieldset>
+  </div>
+</div>
+</body>
+
+</html>

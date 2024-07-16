@@ -1,0 +1,44 @@
+<div th:fragment="inquiry_search_fragment">
+
+  <div id="search-popup" class="search-popup">
+    <div class="search-popup-content">
+      <span class="search-close-btn">&times;</span>
+
+      <h2>검색 결과</h2>
+      <div id="shoes-result" class="shoes-result" style="display: none;">
+        <h3>문의할 신발을 클릭하세요.</h3>
+        <table id="shoes-table">
+          <thead>
+            <tr>
+              <th>신발 이름</th>
+              <th>브랜드</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 테이블 데이터가 동적으로 추가될 자리 -->
+          </tbody>
+        </table>
+      </div>
+      <div id="payment-result" class="payment-result" style="display: none;">
+        <h3>문의할 주문을 클릭하세요.</h3>
+        <table id="payment-table">
+          <colgroup>
+            <col style='width: 20%;' />
+            <col style='width: 80%;' />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>주문번호</th>
+              <th>상품명/주문 옵션</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 테이블 데이터가 동적으로 추가될 자리 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <link rel="stylesheet" href="/css/popup.css">
+
+</div>

@@ -1,0 +1,50 @@
+<div th:fragment="list_all_fragment">
+  <!-- <div th:replace=... -->
+ <style>
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+    </style>
+  <table class="table table-hover">
+    <colgroup>
+      <col style='width: 10%;' />
+      <col style='width: 22%;' />
+      <col style='width: 10%;' />
+      <col style='width: 10%;' />
+      <col style='width: 30%;' />
+      <col style='width: 6%;' />
+      <col style='width: 6%;' />
+      <col style='width: 6%;' />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="th_bs">신발 번호</th>
+        <th class="th_bs">제목</th>
+        <th class="th_bs">브랜드명</th>
+        <th class="th_bs">가격</th>
+        <th class="th_bs">설명</th>
+        <th class="th_bs">판매여부</th>
+        <th class="th_bs">댓글 보기</th>
+        <th class="th_bs">신발 삭제</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="shoesVO : ${list}">
+        <td class="td_bs" th:text="${shoesVO.shoesno}"></td>
+        <td class="td_bs"><a th:href="@{|/admin/shoes/admin_read/${shoesVO.shoesno}|}" style="display: block;"
+            th:text="${shoesVO.title}"></a></td>
+        <td class="td_bs" th:text="${shoesVO.brand}"></td>
+        <td class="td_bs" th:text="${shoesVO.price}"></td>
+        <td class="td_bs" th:text="${shoesVO.contents}"></td>
+        <td class="td_bs" th:text="${shoesVO.visible}"></td>
+        <td class="td_bs"><img src="/cate/images/update.png" class="icon"></td>
+        <td class="td_bs"><img src="/cate/images/delete.png" class="icon"></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="bottom_menu" th:utext="${paging}"></div>
+</div>
+
+
+</div>

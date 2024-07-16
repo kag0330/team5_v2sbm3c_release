@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content" style="width: 80%; margin:40px auto; text-align: center;">
+
+  <h2 style="float:left; margin-left:10%;">공지사항</h2>
+  <span style="float:left; margin-left:10px;" th:if="${word!=null and word!=''}" th:text="|검색결과: ${no} 건|">
+  </span>
+
+  <div th:replace="~{notice/list_search_component::list_search_fragment}"></div>
+  <div th:replace="~{notice/list_all_component::list_all_fragment}"></div>
+  <script type="text/javascript" src="/js/notice/notice.js"></script>
+</div>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속 -->
+<div layout:fragment="content" class="content" style="align-items: center;">
+
+  <link href="/fotorama/fotorama.css" rel="stylesheet">
+  <script src="/fotorama/fotorama.js"></script>
+  <script src="/js/morebutton.js"></script>
+   <style>
+        .maincontainer {
+            display: flexbox;
+            flex-direction: column;
+            align-items: center;
+            width: 55%;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        .Bands-item {
+            margin: 10px;
+        }
+        .Band {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: lightgray;
+            border-radius: 10px;
+        }
+        .Link img {
+            width: 240px;
+            height: auto;
+        }
+        .Theme--dark {
+            color: #fff;
+        }
+        .align-center {
+            text-align: center;
+        }
+        
+           .Brand--5up {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .ProductBand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+    </style>
+  <div class="Brand--5up">
+    <ul class="row row--xs">
+      <li class="col Bands-item">
+        <div class="ProductBand"><a class="Link ProductBand-link" target="_self"
+            data-context="{&quot;content&quot;:&quot;hp-nav-call-out&quot;,&quot;type&quot;:&quot;hp-nav-call-out-3-men&quot;}"
+            href="/shoes/list?categoryno=2"><span>
+              <picture>
+                <source
+                  srcset="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2024/evergreen/navigation-espots/kr/spring/kr/men.png"
+                  media="(min-width: 56.25em)"><img alt="남성" class="ProductBand-image" loading="lazy"
+                  src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2024/evergreen/navigation-espots/kr/spring/kr/men-m.png"
+                  height="auto" width="270">
+              </picture>
+            </span></a></div>
+      </li>
+      <li class="col Bands-item">
+        <div class="ProductBand"><a class="Link ProductBand-link" target="_self"
+            data-context="{&quot;content&quot;:&quot;hp-nav-call-out&quot;,&quot;type&quot;:&quot;hp-nav-call-out-4-women&quot;}"
+            href="/shoes/list?categoryno=3"><span>
+              <picture>
+                <source
+                  srcset="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2024/evergreen/navigation-espots/kr/spring/kr/women.png"
+                  media="(min-width: 56.25em)"><img alt="여성" class="ProductBand-image" loading="lazy"
+                  src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2024/evergreen/navigation-espots/kr/spring/kr/women-m.png"
+                  height="auto" width="270">
+              </picture>
+            </span></a></div>
+      </li>
+      <li class="col Bands-item">
+        <div class="ProductBand"><a class="Link ProductBand-link" target="_self"
+            data-context="{&quot;content&quot;:&quot;hp-nav-call-out&quot;,&quot;type&quot;:&quot;hp-nav-call-out-6-sale&quot;}"
+            href="/shoes/sale_list"><span>
+              <picture>
+                <source
+                  srcset="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2024/evergreen/navigation-espots/kr/spring/en/sale.png"
+                  media="(min-width: 56.25em)"><img alt="세일" class="ProductBand-image" loading="lazy"
+                  src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2024/evergreen/navigation-espots/kr/spring/en/sale-m.png"
+                  height="auto" width="270">
+              </picture>
+            </span></a></div>
+      </li>
+    </ul>
+
+  </div>
+
+  <div class="band" style="margin-bottom: 50px; text-align: center;" >
+    <h2 class="Hero-header">Shop by Brands</h2>
+    <h2 class="Hero-header"></h2>
+    <p class="Hero-text">가장 좋아하는 브랜드 상품을 모아 보세요!</p>
+  </div>
+  
+  
+  
+  <!-- 메인화면 나이키 로고 -->
+  <div class="maincontainer">
+    <!-- 위에 2개 로고 -->
+    <ul class="row">
+        <li class="col Bands-item">
+            <div class="Band HeroBand Theme--dark align-center">
+                <a class="Link" target="_self"
+                   data-context="{&quot;content&quot;:&quot;2023-site/brand-bar-button-01-nike&quot;,&quot;type&quot;:&quot;nike-brand-bar-button&quot;}"
+                   href="/shoes/list?categoryno=30">
+                    <img alt="나이키 구매하기" class="Hero-image" loading="lazy"
+                         src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2021/australia/dct-launch/2023-kr-homepage/brand-button/brand-button-nike.png">
+                </a>
+            </div>
+        </li>
+        <li class="col Bands-item">
+            <div class="Band HeroBand Theme--dark align-center">
+                <a class="Link" target="_self"
+                   data-context="{&quot;content&quot;:&quot;dct-launch/2023-site/brand-bar-button-02-new-balance&quot;,&quot;type&quot;:&quot;new-balance-brand-bar-button&quot;}"
+                   href="/shoes/list?categoryno=31">
+                    <img alt="뉴발란스 구매하기" class="Hero-image" loading="lazy"
+                         src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2021/australia/dct-launch/2023-kr-homepage/brand-button/brand-button-new-balance.png">
+                </a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- 아래에 3개 로고 -->
+    <ul class="row">
+        <li class="col Bands-item">
+            <div class="Band HeroBand Theme--dark align-center">
+                <a class="Link" target="_self"
+                   data-context="{&quot;content&quot;:&quot;2023-site/brand-bar-button-04-adidas&quot;,&quot;type&quot;:&quot;adidas-brand-bar-button&quot;}"
+                   href="/shoes/list?categoryno=32">
+                    <img alt="아디다스 구매하기" class="Hero-image" loading="lazy"
+                         src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2021/australia/dct-launch/2023-kr-homepage/brand-button/brand-button-adidas.png">
+                </a>
+            </div>
+        </li>
+        <li class="col Bands-item">
+            <div class="Band HeroBand Theme--dark align-center">
+                <a class="Link" target="_self"
+                   data-context="{&quot;content&quot;:&quot;2023-site/brand-bar-button-05-crocs&quot;,&quot;type&quot;:&quot;crocs-brand-bar-button&quot;}"
+                   href="/shoes/list?categoryno=33">
+                    <img alt="크록스 구매하기" class="Hero-image" loading="lazy"
+                         src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2021/australia/dct-launch/2023-kr-homepage/brand-button/brand-button-crocs.png">
+                </a>
+            </div>
+        </li>
+        <li class="col Bands-item">
+            <div class="Band HeroBand Theme--dark align-center">
+                <a class="Link" target="_self"
+                   data-context="{&quot;content&quot;:&quot;2023-site/brand-bar-button-06-converse&quot;,&quot;type&quot;:&quot;converse-brand-bar-button&quot;}"
+                   href="/shoes/list?categoryno=34">
+                    <img alt="컨버스 구매하기" class="Hero-image" loading="lazy"
+                         src="https://images.footlocker.com/content/dam/final/footlockerasiapacific/site/homepage/2021/australia/dct-launch/2023-kr-homepage/brand-button/brand-button-converse.png">
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+  <!-- 메인 인기상품? -->
+  <div class="content_main">
+    <div class="content_body">
+      <div class="shoes" th:each="shoesVO : ${list}">
+        <a th:href="@{/shoes/product_details(shoesno=${shoesVO.shoesno})}">
+          <img th:src="@{/images/${shoesVO.brand}.jpg}" alt="신발 이미지"><!-- 이미지 및 기타 정보 -->
+        </a>
+        <p th:text="${shoesVO.contents}"></p>
+        <p th:text="${shoesVO.title}"></p>
+        <p th:text="'가격: ' + ${shoesVO.price} + '원'"></p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+</html>

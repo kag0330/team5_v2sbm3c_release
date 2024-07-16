@@ -1,0 +1,56 @@
+<div th:fragment="list_all_fragment"> <!-- <div th:replace=... -->
+ <style>
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+    </style>
+  <table class="table table-hover">
+  
+    <colgroup>
+      <col style='width: 10%;'/>
+      <col style='width: 25%;'/>
+      <col style='width: 25%;'/>  
+      <col style='width: 15%;'/>
+      <col style='width: 25%;'/>
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="th_bs">번호</th>
+        <th class="th_bs">카테고리명</th>
+        <th class="th_bs">서브 카테고리명</th>
+        <th class="th_bs">항목수</th>
+        <th class="th_bs">순서 / 수정 / 삭제</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="categoryVO, status:${list}">
+        <td class="td_bs" th:text="|${(now_page-1) * 5 + status.index + 1}|"></td>
+        <td class="td_bs"><a th:href="@{|/admin/category/read/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}" style="display: block;" th:text="${categoryVO.name}"></a></td>
+        <td class="td_bs"><a th:href="@{|/admin/category/read/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}" style="display: block;" th:text="${categoryVO.subname}"></a></td>
+        <td class="td_bs" th:text="${categoryVO.cnt}"></td>
+        <td class="td_bs">
+          <span th:text="${categoryVO.seq}" style="margin-right: 3px;"></span>              
+          <a th:href="@{|/admin/category/update/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}"><i class="fas fa-edit"></i></a>
+          <a th:href="@{|/admin/category/delete/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}"><i class="fas fa-trash-alt"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <!-- 페이지 버튼 목록 출력 시작 -->
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  <!-- 페이지 버튼 목록 출력 종료 --> 
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+

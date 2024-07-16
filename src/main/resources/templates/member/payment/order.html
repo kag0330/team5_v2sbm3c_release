@@ -1,0 +1,342 @@
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속 -->
+<body>
+  <div layout:fragment="content">
+    <style type="text/css">
+      table {
+        margin: 0px auto;
+        table-layout: fixed;
+        min-width: 750px;
+        max-width: 750px;
+        width: 750px;
+      }
+
+      caption {
+        caption-side: top;
+        font-size: 2rem;
+        text-align: left;
+      }
+
+      thead {
+        border-bottom: 1px solid #999;
+        border-top: 3px solid #594f4f;
+        background: f7f5f5;
+      }
+
+      thead > tr > td {
+        text-align: center;
+      }
+
+      tbody {
+        border-bottom: 2px solid #594f4f;
+      }
+
+      table li {
+        color: #666;
+        font-size: 0.8rem;
+        position: relative;
+      }
+
+      .main-container {
+        padding-left: 170px;
+        width: min-content;
+        margin: auto;
+        margin-top: 30px;
+      }
+
+      .dateDiv-main {
+        width: 100%;
+        text-align: left;
+        padding-left: 20px;
+        padding-right: 20px;
+        height: 80px;
+      }
+
+      .dateDiv-btn button {
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        width: 45px;
+        justify-content: center;
+        border: 1px solid #bbb;
+      }
+
+      ul {
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+      }
+
+      .title-payment {
+        text-align: left;
+        font-size: 3rem;
+      }
+
+      .clearfix::after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+
+      li {
+        height: 2rem;
+      }
+      
+      .orderlist{
+        margin: 0px auto; 
+        text-align: -webkit-center;
+        width: 80%;
+      }
+      
+      @media(max-width:1060px){
+        .orderlist{
+          margin: 0px;
+          text-align: -webkit-center;
+        }
+      }
+      
+    </style>
+
+    <div class="orderlist">
+      <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+      <div class="main-container">
+        <div class="title-payment">주문내역</div>
+        <div class="dateDiv-main clearfix">
+          <div style="float: left;">
+            <div class="dateDiv-btn" th:with="dates = ${not #strings.isEmpty(param.dates) ? param.dates : '7'}">
+              <button onclick="location.href='/member/payment/order?dates=0'"
+                th:style="${dates.toString() == '0'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">오늘</button>
+              <button onclick="location.href='/member/payment/order?dates=7'"
+                th:style="${dates.toString() == '7'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">1주일</button>
+              <button onclick="location.href='/member/payment/order?dates=30'"
+                th:style="${dates.toString() == '30'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">1개월</button>
+              <button onclick="location.href='/member/payment/order?dates=90'"
+                th:style="${dates.toString() == '90'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">3개월</button>
+              <button onclick="location.href='/member/payment/order?dates=180'"
+                th:style="${dates.toString() == '180'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">6개월</button>
+              <button onclick="location.href='/member/payment/order?dates=360'"
+                th:style="${dates.toString() == '360'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">12개월</button>
+            </div>
+            <div class="dateDiv-text" th:text="|• ${#dates.format(startDates,'yyyy-MM-dd')} ~ ${#dates.format(#dates.createToday(),'yyyy-MM-dd')}|"> •</div>
+          </div>
+
+          <div style="float: right; display: flex; align-items: center;">
+            <div style="margin-right: 10px;">
+              <span th:text="|조회된 항목 수 (${cnt})|">조회된 항목 수</span>
+            </div>
+            <div style="border: 1px solid #bbb;">
+              <form th:action="@{/member/payment/order(dates=${param.dates})}" method="get" id="search-frm">
+                <input style="border: 0px;" type="text" id="search-input" name="search" th:value="${param.search}">
+                <input type="hidden" name="dates" th:value="${param.dates}">
+                <img src="/images/search_48dp_FILL0_wght400_GRAD0_opsz48.svg" onclick="submit()" style="cursor: pointer;">
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <table style="margin-bottom: 0px;">
+          <colgroup>
+            <col width="20%">
+            <col width="50%">
+            <col width="10%">
+            <col width="10%">
+          </colgroup>
+          <thead>
+            <tr>
+              <td>주문일(주문번호)</td>
+              <td>상품명/주문옵션/주문번호</td>
+              <td>브랜드</td>
+              <td>주문상태</td>
+            </tr>
+          </thead>
+          <tbody th:if="${#lists.isEmpty(paymentsList)}">
+            <tr>
+              <td colspan="4">주문 내역이 존재하지 않습니다.</td>
+            </tr>
+          </tbody>
+          <tbody th:each="list : ${paymentsList}" th:attr="style=${listStat.index >= 3} ? 'display:none;' : ''">
+            <tr style="border-bottom: 1px solid #ddd;">
+              <!-- 주문일(주문번호) -->
+              <td th:rowspan="2" style="border-right: 1px solid #ddd;">
+                <div>
+                  <span th:text="${#dates.format(list.rdate,'yyyy-MM-dd')}">구매일표시</span>
+                  <span class="paymentno" style="color: #999;" th:text="|(${list.paymentno})|">주문번호표시</span>
+                </div>
+                <div style="border-top: 1px solid #ddd;">
+                  결제금액:<span style="font-size: 1.2rem;"
+                    th:text="|${#numbers.formatInteger(list.total_payment, 3, 'COMMA')}원|">결제금액표시</span>
+                  <div style="text-align: left; margin-left: 8px;">
+<!--                    <a style="color: #416de9; font-size: 12px;" href="">주문상세보기▶</a>-->
+                  </div>
+                </div>
+              </td>
+              <!-- 상품명/주문옵션/주문번호 -->
+              <td style="padding: 18px 5px 18px 20px;">
+                <div style="display: flex; align-items: center; height:120px;" th:each="pdo : ${list.payment_details_option}">
+                  <div>
+                    <a th:href="@{|/shoes/${pdo.shoesno}|}">
+                      <img style="width:60px; height: 60px; float:left; display: block;"
+                        th:src="@{|/file/storage/${pdo.src}|}" th:if="${not #strings.isEmpty(pdo.src)}">
+                      <img style="width:60px; height: 60px; float:left; display: block;" th:src="@{/images/none.png}" th:if="${#strings.isEmpty(pdo.src)}">
+                    </a>
+                  </div>
+                  <div>
+                    <a style="position: relative; font-size: 1.3rem;" th:href="@{|/shoes/${pdo.shoesno}|}" th:text="${pdo.title}" class="shoestitle">상품명</a>
+                    <ul style="list-style-type: none; padding: 0px;">
+                      <li th:text="|색상 / ${pdo.color} / ${#numbers.formatInteger(pdo.price, 3, 'COMMA')}원 / ${pdo.payment_amount}개|">
+                        색상/가격/수량</li>
+                      <li th:text="|수량 │ ${pdo.payment_amount}개 / 주문번호 ${pdo.payment_details_no}|">수량 | 주문번호 |</li>
+                      <li style="display: none;" class="payment_details_no" th:text="${pdo.payment_details_no}"></li>
+                    </ul>
+                  </div>
+                </div>
+              </td>
+              <!-- 브랜드 정보 -->
+              <td style="text-align: center;">
+                <div th:each="pdo : ${list.payment_details_option}"
+                  style="display: flex; flex-direction: column; justify-content: center; height: 120px;">
+                  <a style="color: #416de9; font-size: 12px; display: block;" th:href="@{/shoes/list(category=${pdo.categoryno})}" th:text="${pdo.brand}">브랜드</a>
+                </div>
+              </td>
+              <!-- 주문상태 -->
+              <td style="width: 30px; text-align:center">
+                <div>
+                  <span style="font-size: 0.8rem;"
+                    th:text="${list.payment_status == '입금완료(수동)' or list.payment_status == '입금완료(자동)' ? '입금완료' : list.payment_status}"></span><br>
+                  <span th:text="${list.status}">주문상태/CS상태</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <div style="display: flex; justify-content: space-between; margin: 0px 10px 0px 10px; height: 30px; align-items: center;">
+                  <div>
+                    <a th:href="@{|/member/inquiry/paymentinquiry/${list.paymentno}|}" class="paymentinquiry"
+                      style="color: #416de9; font-size: 12px; margin-right:10px;">문의하기▶</a>
+                    <a href="javascript:void(0);" class="deletepayment" style="color: #416de9; font-size: 12px;">주문내역삭제▶</a>
+                  </div>
+                  <div>
+                    <button class="btn btn-danger" th:if="${list.status == '상품준비중'}" onclick="cancel(event)">취소하기</button>
+                    <button class="btn btn-danger">구매후기</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <button id="morebtn" onclick="morebtnclick()" style="height: 3rem; width: 100%; background-color: #fff; border: 1px solid black;"></button>
+        
+      </div>
+
+      <div th:replace="~{inquiry/paymentinquiry::paymentinquiry_fragment}"></div>
+      <script type="text/javascript" th:inline="javascript">
+
+        let count = /*[[${cnt}]]*/"";
+        let morebtn = document.getElementById("morebtn");
+        window.onload = function(){
+          morebtnTextUpdate();
+        }
+        
+        function morebtnclick(){
+          const hidden_tbodys = document.querySelectorAll('tbody[style="display:none;"]');
+          if(hidden_tbodys.length > 0){
+            hidden_tbodys[0].style.display = '';
+            morebtnTextUpdate();
+          }
+        }
+        
+        function morebtnTextUpdate(){
+          let tbodycnt = 0;
+          const tbodys = document.querySelectorAll('tbody');
+          
+          tbodys.forEach(tbody =>{
+            if(tbody.style.display !=='none'){
+              tbodycnt++;  
+            }
+          })
+          
+          morebtn.innerText = `항목 더보기(${tbodycnt} / ${count})`;
+        }
+        
+        
+        document.addEventListener("DOMContentLoaded", function () {
+          // 모든 deletepayment 링크를 선택
+          let deleteLinks = document.querySelectorAll(".deletepayment");
+
+          deleteLinks.forEach(function (link) {
+            // 각 링크에 클릭 이벤트 리스너 추가
+            link.addEventListener("click", function () {
+              // paymentno 요소 찾기
+              let paynospan = this.closest("tr").previousElementSibling.querySelector(".paymentno");
+              // paymentno 텍스트 가져오기
+              let paytext = paynospan.textContent || paynospan.innerHTML;
+              // 숫자만 추출
+              let payno = paytext.match(/\d+/)[0];
+
+              if (confirm("정말로 주문내역을 삭제하시겠습니까?")) {
+                fetch('./delete?no=' + payno, {
+                  method: 'POST'
+                })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Network Error');
+                    }
+                    return response.text();
+                  })
+                  .then(rdata => {
+                    alert('주문내역이 삭제되었습니다.');
+                    location.reload(true);
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                  })
+              }
+            });
+          });
+        });
+
+        function submit() {
+          document.querySelector("#search-frm").submit();
+        }
+
+        document.querySelector('#search-input').addEventListener('keypress', (event) => {
+          if (event.key === 'Enter') {
+            submit();
+          }
+        });
+
+        function cancel(event) {
+          // 이벤트 객체에서 현재 클릭된 요소를 가져옴
+          let target = event.currentTarget;
+
+          if (confirm("정말 주문을 취소하시겠습니까?")) {
+            let paynospan = target.closest("tr").previousElementSibling.querySelector(".paymentno");
+            // paymentno 텍스트 가져오기
+            let paytext = paynospan.textContent || paynospan.innerHTML;
+            // 숫자만 추출
+            let payno = paytext.match(/\d+/)[0];
+
+            fetch('./cancel?no=' + payno, {
+              method: 'POST'
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network Error');
+                }
+                return response.text();
+              })
+              .then(rdata => {
+                alert('주문이 취소처리되었습니다.');
+                location.reload(true);
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              })
+          }
+        }
+      </script>
+    </div>
+  </div>
+</body>
+</html>

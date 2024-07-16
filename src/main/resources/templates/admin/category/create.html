@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카테고리 등록</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <script>
+      window.onload = () => {
+
+      }
+
+      function namecheck() {
+        var name = document.getElementById("name").value;
+
+        if (!name.trim()) {
+          alert("카테고리명을 입력해주세요.");
+          return;
+        }
+
+        var namebtn = document.getElementById("namebtn").innerText;
+        if (namebtn === "카테고리명 재입력") {
+          document.getElementById("name").value = "";
+          document.getElementById("name").disabled = false;
+          document.getElementById("subname").value = "";
+          document.getElementById("subname").disabled = false;
+          document.getElementById("namebtn").innerText = "카테고리명 중복 확인"
+          document.getElementById("subnamebtn").innerText = "서브 카테고리명 중복 확인"
+        } else {
+          $.ajax({
+            type: 'POST',
+            url: '/admin/category/checkName',
+            contentType: 'application/json',
+            data: JSON.stringify({name: name}),
+            success: function (response) {
+              if (response == 'new') {
+                alert("새로운 카테고리명입니다.");
+                document.getElementById("subname").value = "-";
+                document.getElementById("subname").disabled = true;
+                document.getElementById("namebtn").innerText = "카테고리명 재입력"
+                document.getElementById("subnamebtn").innerText = "새 카테고리"
+              } else if (response == 'old') {
+                alert("서브 카테고리명을 작성해주세요.");
+                document.getElementById("name").disabled = true;
+                document.getElementById("subname").disabled = false;
+                document.getElementById("namebtn").innerText = "카테고리명 재입력"
+
+              }
+            }
+          });
+        }
+      }
+
+      function subnamecheck() {
+        var name = document.getElementById("name").value;
+        var subname = document.getElementById("subname").value;
+        var subnamebtn = document.getElementById("subnamebtn").innerText;
+        if (!name.trim()) {
+          alert("카테고리명을 먼저 입력해주세요.");
+          return;
+        } else if (!subname.trim()) {
+          alert("서브 카테고리를 입력해주세요.");
+          return;
+        } else if (subnamebtn === "새 카테고리") {
+          alert("새로운 카테고리를 입력하셨습니다.");
+          return;
+        }
+
+
+        if (subnamebtn === "서브 카테고리명 재입력") {
+          document.getElementById("subname").value = "";
+          document.getElementById("subname").disabled = false;
+          document.getElementById("subnamebtn").innerText = "서브 카테고리 중복 확인"
+        } else {
+          $.ajax({
+            type: 'POST',
+            url: '/admin/category/checkSubName',
+            contentType: 'application/json',
+            data: JSON.stringify({name: name, subname: subname}),
+            success: function (response) {
+              if (response == 'new') {
+                alert("등록 가능합니다.");
+                document.getElementById("subname").disabled = true;
+                document.getElementById("subnamebtn").innerText = "서브 카테고리명 재입력"
+              } else if (response == 'old') {
+                alert("존재하는 서브 카테고리명입니다.");
+              }
+            }
+          });
+        }
+
+      }
+
+      function formsubmit() {
+        var namebtn = document.getElementById("namebtn").innerText;
+        var subnamebtn = document.getElementById("subnamebtn").innerText;
+
+        if (namebtn === "카테고리명 재입력" && (subnamebtn === "서브 카테고리명 재입력" || subnamebtn === "새 카테고리")) {
+          document.getElementById("name").disabled = false;
+          document.getElementById("subname").disabled = false;
+          document.forms["frm"].submit();
+        } else {
+          alert("중복 확인을 해주세요.");
+        }
+      }
+    </script>
+
+    <div class="container mt-3" style="max-width: 800px;">
+      <div class="card">
+        <div class="card-header bg-primary text-white text-center" style="font-size: 20px;">
+          카테고리 등록
+
+          <aside class="aside_right">
+            <a href="/admin/category/list?now_page=1" title="카테고리 목록"><i class="fas fa-list"></i></a>
+            <span class="menu_devide">│</span>
+            <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+          </aside>
+        </div>
+
+        <form name="frm" th:object="${categoryVO}" method="post" action="/admin/category/create"
+          style="width:50%; margin: 5px auto;">
+
+          <div class="form-group">
+            <label>카테고리명</label>
+            <button type="button" id="namebtn" name="namebtn" class="btn btn-secondary btn-sm"
+              onclick="namecheck()">카테고리명
+              중복 확인</button>
+            <input type="text" id="name" name="name" value="" autofocus="autofocus" class="form-control form-control-sm"
+              th:field="*{name}" placeholder="카테고리명">
+            <div th:if="${#fields.hasErrors('name')}" class="alert alert-danger" role="alert" style="margin-top: 5px;">
+              <div th:each="err : ${#lists.sort(#fields.errors('name'))}" th:text="${err}"></div>
+            </div>
+          </div>
+          <br>
+          <div class="form-group">
+            <label>서브 카테고리명</label>
+            <button type="button" id="subnamebtn" name="subnamebtn" class="btn btn-secondary btn-sm"
+              onclick="subnamecheck()">서브 카테고리명 중복 확인</button>
+            <input type="text" id="subname" name="subname" value="" class="form-control fom-control-sm"
+              th:field="*{subname}" placeholder="서브 카테고리명" disabled>
+            <div th:if="${#fields.hasErrors('subname')}" class="alert alert-danger" role="alert"
+              style="margin-top: 5px;">
+              <div th:each="err : ${#lists.sort(#fields.errors('subname'))}" th:text="${err}"></div>
+            </div>
+          </div>
+
+          <div class="content_body_bottom">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="formsubmit()">등록</button>
+            <button type="button" class="btn btn-secondary btn-sm"
+              th:attr="onclick=|location.href='/admin/category/list?now_page=1'|">취소</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

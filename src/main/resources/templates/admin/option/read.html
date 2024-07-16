@@ -1,0 +1,17 @@
+<div th:fragment="option_fragment">
+  <!-- <div th:replace=... -->
+  <div class="top_menu_line"></div>
+  
+  <div class="container mt-3" style="width: 50%; margin: 5px auto;">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">옵션 번호: <span th:text="${ShoesOptionVO.optionno}"></span></li>
+      <li class="list-group-item">SIZE: <span th:text="${ShoesOptionVO.sizes}"></span></li>
+      <li class="list-group-item">재고: <span th:text="${ShoesOptionVO.amount}"></span></li>
+      <li class="list-group-item">COLOR: <span th:text="${ShoesOptionVO.color}"></span></li>
+
+    </ul>
+  </div>
+  <!-- 페이지 버튼 목록 출력 시작 -->
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  <!-- 페이지 버튼 목록 출력 종료 -->
+</div>

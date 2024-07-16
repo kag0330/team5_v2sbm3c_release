@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content" style="width: 80%; margin:40px auto; text-align: center;">
+  <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+  <div th:replace="~{inquiry/myInquiry_component::myInquiry_fragment}"></div>
+  <script type="text/javascript" src="/js/inquiry/myInquiry.js"></script>
+</div>
+</div>
+
+</html>

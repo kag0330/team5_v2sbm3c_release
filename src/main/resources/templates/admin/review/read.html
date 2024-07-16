@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+
+
+  <body>
+    <div class="container mt-3" style="max-width: 800px;">
+      <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+          <span th:text="${reviewVO.reviewno}" style="font-size: 20px;"
+            class="bg-primary text-white text-center"></span>
+
+          <aside class="aside_right">
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/review/update/${reviewVO.reviewno}?word=${word}&now_page=${now_page}|}" title="수정"><i
+                class="fas fa-edit"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/review/delete/${reviewVO.reviewno}?word=${word}&now_page=${now_page}|}" title="삭제"><i
+                class="fas fa-trash"></i></a>
+            <span class="menu_devide">│</span>
+            <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+          </aside>
+        </div>
+        <div class="card-body">
+          <input type="hidden" name="reviewno" th:value="${reviewVO.reviewno}">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <strong>신발 번호:</strong> <span th:text="${reviewVO.reviewno}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>제목:</strong> <span th:text="${reviewVO.contents}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>평점:</strong> <span th:text="${reviewVO.rating}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>날짜:</strong> <span th:text="${reviewVO.rdate}"></span>
+            </li>
+          </ul>
+        </div>
+  </body>
+
+  <div th:replace="~{admin/review/list_all_component::list_all_fragment}"></div>
+  <div class="top_menu_line"></div>
+
+
+
+</html>

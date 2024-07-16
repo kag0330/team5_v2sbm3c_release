@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}"> <!-- layout.html 상속-->
+<div layout:fragment="content">
+
+
+
+  <div class="container mt-3" style="max-width: 800px;">
+    <div class="card">
+      <div class="card-header bg-primary text-white text-center">
+        <span th:text="${categoryVO.name}" class="bg-primary text-white text-center" style="font-size: 20px;"></span>
+
+        <span th:if="${categoryVO.subname != '-'}" th:text="' > ' + ${categoryVO.subname}"
+          class="title_line_text" style="color: white;"></span>
+      <aside class="aside_right">
+        <a href="/admin/category/list?now_page=1" title="카테고리 목록"><i class="fas fa-list"></i></a>
+        <span class="menu_devide">│</span>
+        <a href="/admin/category/create" title="카테고리 등록"><i class="fas fa-plus-circle"></i></a>
+        <span class="menu_devide">│</span>
+        <a th:href="@{|/admin/category/update/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}"
+          title="카테고리 수정"><i class="fas fa-edit"></i></a>
+        <span class="menu_devide">│</span>
+        <a th:href="@{|/admin/category/delete/${categoryVO.categoryno}?word=${word}&now_page=${now_page}|}"
+          title="카테고리 삭제"><i class="fas fa-trash-alt"></i></a>
+        <span class="menu_devide">│</span>
+        <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+      </aside>
+    </div>
+
+   <div class="card-body">
+    <input type="hidden" name="categoryno" th:value="${categoryVO.categoryno}">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <strong>번호:</strong> <span th:text="${categoryVO.categoryno}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>카테고리명:</strong> <span th:text="${categoryVO.name}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>서브 카테고리명:</strong> <span th:text="${categoryVO.subname}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>출력 순서:</strong> <span th:text="${categoryVO.seq}"></span>
+        </li>
+        <li class="list-group-item">
+            <strong>항목수:</strong> <span th:text="${categoryVO.cnt}"></span>
+        </li>
+    </ul>
+</div>
+
+
+    <!-- /templates/cate/list_all_component.html 파일의 list_all_fragment import -->
+    <div th:replace="~{admin/category/list_all_component::list_all_fragment}"></div>
+
+  </div>
+
+</html>

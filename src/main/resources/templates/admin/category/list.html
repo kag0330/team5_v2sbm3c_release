@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <div class="title_line">
+   
+    <span th:if="${word!=null and word!=''}" th:text="|${word} ${no} 건|">
+  </div>
+  <div class="container mt-3">
+    <div class="card">
+      <div class="card-header bg-primary text-white text-center" style="font-size: 20px;">
+         카테고리 목록
+
+        <div th:replace="~{admin/category/list_search_component::list_search_fragment}"></div>
+      </div>
+      <div th:replace="~{admin/category/list_all_component::list_all_fragment}"></div>
+    </div>
+</div>
+
+</html>

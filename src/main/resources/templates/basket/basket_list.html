@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <div style="width:80%; margin:0px auto;">
+    <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+    <div id="panel_delete">
+      <p class="panel-title">장바구니 담은 메뉴</p>
+      <div class="basket-list">
+        <div class="basket" th:each="ShoesAllVO, status:${list}">
+          <div class="item-details">
+            <img class="basket_img" src="/images/crocs.jpg" alt="장바구니1">
+            <div class="item-info">
+              <input type="hidden" class="basketno" th:value="${ShoesAllVO.basketVO.basketno}">
+              <input type="hidden" class="optionno" th:value="${ShoesAllVO.optionVO.optionno}">
+              <input type="hidden" class="price" th:value="${ShoesAllVO.shoesVO.price}">
+              <p class="item-title" th:text="${ShoesAllVO.shoesVO.title}"></p>
+              <p class="item-option"><span>색상:</span> <span th:text="${ShoesAllVO.optionVO.color}"></span></p>
+              <p class="item-option"><span>사이즈:</span> <span th:text="${ShoesAllVO.optionVO.sizes}"></span></p>
+              <div class="quantity-control">
+                <button class="quantity-btn decrease" onclick="decreaseQuantity()">-</button>
+                <span class="quantity" th:text="${ShoesAllVO.basketVO.amount}"></span>
+                <button class="quantity-btn increase" onclick="increaseQuantity()">+</button>
+              </div>
+              <p class="item-total">금액: <span class="total"
+                  th:text="${#numbers.formatInteger((ShoesAllVO.shoesVO.price * (100 - ShoesAllVO.shoesVO.discount) / 100) * ShoesAllVO.basketVO.amount, 3, 'COMMA')}"></span>원</p>
+            </div>
+          </div>
+          <button class="basket_btn">장바구니 취소</button>
+        </div>
+<!--        <button class="basket_btn">취소하기</button>-->
+        <button class="btn btn-info" style="display:block; text-align: center; margin: 0 auto;" onclick="send()">구매하기</button>
+      </div>
+    </div>
+    
+  </div>
+
+  
+    <script th:inline="javascript">
+      
+    function extractData() {
+      let basketElements = document.querySelectorAll('.item-details');
+      let basketList = [];
+      let priceStr = "";
+      let price = 0;
+      
+      basketElements.forEach((item) => {
+        priceStr = item.querySelector('.total').innerText;
+        price = parseInt(priceStr.match(/\d/g).join(''), 10);
+        
+        basketList.push({
+          optionno: item.querySelector('.optionno').value,
+          price: price,
+          amount: parseInt(item.querySelector('.quantity').innerText), // 변경된 수량을 가져옴
+        });
+      });
+
+      return basketList;
+    }
+
+    function send() {
+      
+      let basketList = extractData();
+
+      fetch(window.location.pathname + '/payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          basket: basketList,
+          memberno: /*[[${session.login.memberno}]]*/""
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok' + response.statusText);
+          }
+          return response.text();
+        })
+        .then((data) => {
+          if (!data) {
+            alert('결제주문이 실패하였습니다.');
+            return false;
+          }
+          alert('결제주문이 성공하였습니다.');
+          location.href = '/member/payment/order';
+        })
+        .catch((error) => {
+          alert('에러가 발생하였습니다. 관리자에게 연락하세요.');
+        });
+    }
+  </script>
+  <script src="/js/basket.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</div>
+
+</html>

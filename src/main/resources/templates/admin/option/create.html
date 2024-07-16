@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <div class="title_line">
+    <span th:text="${shoesVO.title}" style="font-size: 30px;" class="title_line_text"></span>
+    > 옵션 등록
+  </div>
+  <aside class="aside_right">
+    <a href="/shoes/list_all?now_page=1">목록</a>
+    <span class="menu_devide">│</span>
+    <a href="javascript: location.reload();">새로 고침</a>
+  </aside>
+  <div class="top_menu_line"></div>
+  <div>
+    <form th:object="${shoesoptionVO}" method="post" action="/shoes/option_create">
+      <input type="hidden" name="optionno" th:value="${shoesoptionVO.optionno}">
+      <input type="hidden" name="shoesno" th:value="${shoesoptionVO.shoesno}">
+      <input type="hidden" name="word" th:value="${word}">
+      <input type="hidden" name="now_page" th:value="${now_page}">
+      <div>
+        <label for="sizes">SIZE</label>
+        <select name="sizes" id="sizes" class="form-control form-control-sm" value="사이즈를 선택하세요"
+          style="width: 20%; margin: 0 auto; text-align: center;">
+          <!-- 220부터 300까지의 옵션 추가 -->
+          <option value="220">220</option>
+          <option value="225">225</option>
+          <option value="230">230</option>
+          <option value="235">235</option>
+          <option value="240">240</option>
+          <option value="245">245</option>
+          <option value="250">250</option>
+          <option value="255">255</option>
+          <option value="260">260</option>
+          <option value="265">265</option>
+          <option value="270">270</option>
+          <option value="275">275</option>
+          <option value="280">280</option>
+          <option value="285">285</option>
+          <option value="290">290</option>
+          <option value="295">295</option>
+          <option value="300">300</option>
+          <!-- 다른 옵션들을 필요에 따라 추가하세요 -->
+        </select>
+      </div>
+
+      <div>
+        <label for="color">색상</label>
+        <input type="text" name="color" id="color" value="" class="form-control form-control-sm"  placeholder="색상을 입력하세요."
+          style="width: 20%; margin: 0 auto; text-align: center;"
+          >
+      </div>
+
+      <div>
+        <label>신발 번호</label>
+        <input type="text" name="shoesno" value="" th:value="${shoesoptionVO.shoesno}" autofocus="autofocus"
+          class="form-control form-control-sm" style="width: 20%; margin: 0 auto; text-align: center;" readonly>
+      </div>
+
+      <button type="submit" class="btn btn-secondary btn-sm">등록</button>
+      <button type="button" onclick="location.href='../list_all'" class="btn btn-secondary btn-sm">목록</button>
+
+    </form>
+  </div>
+</div>
+</body>
+
+</html>

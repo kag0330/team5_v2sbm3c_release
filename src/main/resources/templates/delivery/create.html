@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charSet="utf-8" />
+  <title>발걸음</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'GmarketSansMedium';
+      src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    
+    * {
+      font-family: GmarketSansMedium;
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    *::-webkit-scrollbar {
+      display: none;
+      /* Chrome, Safari, Opera*/
+    }
+
+    body {
+      background-color: #f5f5f5;
+      overflow-x: hidden;
+      height: 800px;
+    }
+
+    .box__label {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      vertical-align: middle;
+      width: 66px;
+      
+    }
+
+    .box__input {
+      padding-left: 70px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .box__relative {
+      position: relative;
+      display: flex;
+      height: 46px;
+      margin-bottom:10px;
+    }
+
+    input {
+      width: 100%;
+      height: 46px;
+      border: 1px solid #bbb;
+    }
+
+    .addr__btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 44px;
+      background-color: gray;
+      color: #fff;
+      border: #bbb;
+    }
+
+    span {
+      line-height: 46px;
+    }
+    
+    .box__main{
+      width:100%; 
+      margin: 0px auto; 
+      background-color: #fff;
+      position: relative;
+      top: -30px;
+      height:45rem;
+    }
+    
+    textarea{
+      height: 5rem;
+      resize: none;
+      width: 100%;
+    }
+    
+    .box__submit{
+      position: fixed;
+      display: flex;
+      bottom: 0;
+      left: 0;
+      z-index: 310;
+      width: 100%;
+      padding: 10px 12px;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+      height:85px;
+    }
+    
+    .box__submit > button{
+      width: 50%;
+      border: 1px solid #bbb;
+      margin: 4px;
+      
+    }
+    
+    .modal-size {
+      width: 400px;
+      height: 270px;
+      border-radius: 0%;
+      margin: 0px auto;
+    }
+    
+    .modal-btn{
+      position: relative;
+      top: 90px;
+      background-color: #e63740;
+      color: #fff;
+      width: 90%;
+      height: 56px;
+      border: 1px solid #bbb;
+      
+    }
+  </style>
+</head>
+
+<body>
+  <div style="float:left; width:100%; border-bottom:1px solid #eee; background-color: #fff; height: 60px; align-content: center;">
+    <h2 style="width:100%; text-align: center; margin:5px">배송지 추가하기</h2>
+  </div>
+
+  <div style="position: relative; left:460px; top: -51px;">
+    <a href="./NewAddress"><img src="/images/close_40dp_FILL0_wght400_GRAD0_opsz40.svg"></a>
+  </div>
+
+  <div class="box__main">
+    <form id="frm" action="./create" method="post">
+      <div style="padding: 15px;">
+        <!--/*============ 배송지명 필드 START ============*/-->
+        <div class="box__relative">
+          <div class="box__label"><span>배송지명</span></div>
+          <div class="box__input"><input name="title" type="text"></div>
+        </div>
+        <!--/*============ 받는 분 필드 START ============*/-->
+        <div class="box__relative">
+          <div class="box__label"><span>받는 분</span></div>
+          <div class="box__input"><input name="recipient" type="text"></div>
+        </div>
+        <!--/*============ 연락처 필드 START ============*/-->
+        <div class="box__relative">
+          <div class="box__label"><span>연락처</span></div>
+          <div class="box__input"><input name="phone" type="text" maxlength="13" placeholder="'-' 없이 전화번호를 입력하세요."></div>
+        </div>
+        <!--/*============ 주소 필드 START ============*/-->
+        <div class="box__relative">
+          <div class="box__label"><span>주소</span></div>
+          <div class="box__input">
+            <input id="zipcode" name="zipcode" type="text" style="padding-right: 69px; width: 300px;" disabled>
+            <button type="button" class="addr__btn" id="btn_DaumPostcode" onclick="DaumPostcode()">주소 찾기</button>
+          </div>
+        </div>
+        <div class="box__relative">
+          <div class="box__input"><input id="addr1" name="addr1" type="text" disabled></div>
+        </div>
+        <div class="box__relative">
+          <div class="box__input"><input id="addr2" name="addr2" type="text"></div>
+        </div>
+        <!--/*============ 요청사항 필드 START ============*/-->
+        <div class="box__relative">
+          <div class="box__label"><span>요청사항</span></div>
+          <div class="box__input">
+            <select name="requests" style="height: 46px; width: 100%; border: 1px solid #bbb;">
+              <option value="none" selected>배송시 요청사항을 선택해 주세요.</option>
+              <option>직접 수령하겠습니다.</option>
+              <option>배송 전 연락바랍니다.</option>
+              <option>부재 시 경비실에 맡겨주세요.</option>
+              <option>부재 시 문 앞에 놓아주세요.</option>
+              <option>부재 시 택배함에 넣어주세요.</option>
+              <option value="custom">직접 입력</option>
+            </select>
+            <textarea id="customRequests" style="display: none;"></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--/*============ 다음 주소API ============*/-->
+  <div id="wrap" style="display: none; border: 1px solid; width: 500px; height: 300px; margin: 5px 0; position: relative; top: -520px">
+    <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor: pointer; position: absolute; right: 0px; top: -1px; z-index: 1" onclick="foldDaumPostcode()" alt="접기 버튼">
+  </div>
+
+  
+  <div class="box__submit">
+    <button type="button" onclick="location.href='./NewAddress'">취소</button>
+    <button type="button" style="color: #fff; background-color: #e63740;" onclick="submit()">저장</button>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-size">
+      <div class="modal-content modal-size">
+        <a style="margin-top:20px; cursor: pointer;" data-bs-dismiss="modal"><img style="float: right; margin-right: 10px;" src="/images/close_40dp_FILL0_wght400_GRAD0_opsz40.svg"></a>
+        <div id="modal-div" style="font-size: 1.2rem; margin: 0px 0px 20px 0px; text-align: center;">주소를 삭제하시겠습니까?</div>
+        <div style="margin: 0px auto; width:100%; text-align: center;">
+          <button class="modal-btn" data-bs-dismiss="modal">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="/delivery/js/daumAddr.js"></script>
+  <script>
+    window.onpageshow = function(event) {
+    if (event.persisted) {
+      document.querySelector('input[name="zipcode"]').disabled = true;
+      document.querySelector('input[name="addr1"]').disabled = true;
+      }
+    };
+    
+    const selectElement = document.querySelector('select[name="requests"]');
+    const options = selectElement.querySelectorAll('option');
+    const textareaElement = document.querySelector('#customRequests');
+
+    options.forEach(option => {
+      // option의 value 속성이 없거나 빈 문자열인 경우
+      if (!option.hasAttribute('value') || option.value == "") {
+        // option의 text 내용을 value 속성에 설정
+        option.value = option.textContent;
+        }
+      });
+  
+  
+
+    selectElement.addEventListener('change', function() {
+      if (this.value === 'custom') {
+        textareaElement.style.display = 'block';
+      } else {
+        textareaElement.style.display = 'none';
+        textareaElement.value = ''; // 선택이 변경되면 textarea 값을 초기화
+        requestsval.value="custom";
+      }
+    });
+  
+    function submit(){
+      let title     = document.querySelector('input[name="title"]');
+      let recipient = document.querySelector('input[name="recipient"]');
+      let phone     = document.querySelector('input[name="phone"]');
+      let zipcode   = document.querySelector('input[name="zipcode"]');
+      let addr1     = document.querySelector('input[name="addr1"]');
+      let addr2     = document.querySelector('input[name="addr2"]');
+      let requests  = document.querySelector('select[name="requests"]');
+      let text = "";
+      let requestsval = requests.options[requests.selectedIndex];
+      
+      if(title.value.trim().length == 0){
+        text = "배송지명을 입력하세요.";
+        title.style.border='1px solid #e63740';
+        title.placeholder = text;
+        modalshow(text);
+        return false;
+        
+      }
+      
+      if(recipient.value.trim().length == 0){
+        text = "받는 분을 입력하세요.";
+        recipient.style.border='1px solid #e63740';
+        recipient.placeholder = text;
+        modalshow(text);
+        return false;
+      }
+      
+      if(phone.value.trim().length == 0){
+        text = "연락처를 입력하세요.";
+        phone.style.border='1px solid #e63740';
+        phone.placeholder = text;
+        modalshow(text);
+        return false;
+      }
+      
+      if(zipcode.value.trim().length == 0){
+        text = "우편번호를 입력하세요.";
+        zipcode.style.border='1px solid #e63740';
+        zipcode.placeholder = text;
+        modalshow(text);
+        return false;
+      }
+      
+      if(addr1.value.trim().length == 0){
+        text = "주소를 입력하세요.";
+        addr1.style.border='1px solid #e63740';
+        addr2.placeholder = text;
+        modalshow(text);
+        return false;
+      }
+      
+      if(addr2.value.trim().length == 0){
+        text = "상세주소를 입력하세요.";
+        addr2.style.border='1px solid #e63740';
+        addr2.placeholder = text;
+        modalshow(text);
+        return false;
+      }
+      
+      if(requestsval.value === 'custom'){
+        requestsval.value = textareaElement.value;
+      }
+      
+      zipcode.disabled = false;
+      addr1.disabled = false;
+      document.querySelector('#frm').submit();
+      
+      
+    }
+    
+    function modalshow(message){
+      let modalDiv = document.querySelector("#modal-div");
+      modalDiv.textContent = message;
+      let deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'),{});
+        deleteModal.show();
+    }
+    
+    document.querySelector('input[name="phone"]').addEventListener('input', function (e) {
+      console.log(e);
+      let value = e.target.value.replace(/-/g, ''); // 하이픈 제거
+      if (value.length > 3) {
+        value = value.slice(0, 3) + '-' + value.slice(3);
+      }
+      if (value.length > 8) {
+        value = value.slice(0, 8) + '-' + value.slice(8);
+      }
+      e.target.value = value;
+    });
+</script>
+</body>
+
+</html>

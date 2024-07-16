@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<div layout:fragment="content">
+  <div style="text-align: center;">
+    <button class="btn btn-primary" onclick="create()">최신 이미지 생성하기</button>
+    <div>
+      <img class="viewimg" style="width: 70%;" src="/wordcloud/review_wordcloud.png"><br>
+      <button type="button" id="btn1" class="btn btn-primary" >WordCloud</button>
+      <button type="button" id="btn2" class="btn btn-primary" >Mask</button>
+      <button type="button" id="btn3" class="btn btn-primary" >ColorMap</button>
+    </div>
+  </div>
+  <script>
+    const url = window.location.origin;
+    
+    function create() {
+      fetch("http://localhost:9094/wordcloud", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.message == '이미지 생성 성공'){
+          document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud.png';
+          document.querySelector("#btn1").disabled = false;
+          document.querySelector("#btn2").disabled = false;
+          document.querySelector("#btn3").disabled = false; 
+        }else{
+          
+        }
+      })
+      .catch(error =>{
+        console.error('ERROR: ',error);
+      });
+      
+      document.querySelector(".viewimg").src = '/images/progress.gif';
+      
+    }
+    
+    document.querySelector("#btn1").addEventListener("click", function(){
+      document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud.png';
+    })
+    
+    document.querySelector("#btn2").addEventListener("click", function(){
+      document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud_mask.png';
+    })
+    
+    document.querySelector("#btn3").addEventListener("click", function(){
+      document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud_colormap.png';
+    })
+
+  </script>
+
+</div>
+
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content" style="width: 80%; margin:40px auto; text-align: center;">
+  <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+  <h2 style="float:left; margin-left:5%; margin-bottom:3%;">신고 관리</h2>
+
+  <div th:replace="~{report/myReport_component::myReport_fragment}"></div>
+  <script type="text/javascript" src="/js/report/myReport.js"></script>
+</div>
+
+</html>

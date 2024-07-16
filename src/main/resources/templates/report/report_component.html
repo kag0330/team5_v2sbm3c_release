@@ -1,0 +1,35 @@
+<div th:fragment="report_fragment">
+  
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <span class="close-btn">&times;</span>
+      <h2>신고</h2>
+      <input type="hidden" id="reviewno">
+      <p id="reportnickname">신고 대상:</p>
+      신고 유형<br>
+      <select name="reportType" id="reportType" class="form-control form-control-sm"
+        style="width: 50%; margin: 0 auto; margin-top: 8px; margin-bottom: 20px; text-align: center;">
+
+        <option value="">신고 유형을 선택하세요</option>
+        <option th:each="reportType : ${reportType}" th:value="${reportType.typeno}" th:text="${reportType.type}">
+        </option>
+      </select>
+
+      <div class="mb-3">
+        <label for="reportTitle" class="form-label">신고 제목:</label>
+        <input type="text" class="form-control" id="reportTitle" name="reportTitle" required>
+      </div>
+
+      <!-- 신고 내용 입력란 -->
+      <div class="mb-3">
+        <label for="reportContents" class="form-label">신고 내용:</label>
+        <textarea class="form-control" required="required" id="reportContents" name="reportContents"
+          rows="4"></textarea>
+      </div>
+
+      <button type="button" class="btn btn-secondary" id="createReport">신고하기</button>
+    </div>
+  </div>
+  <script src="/js/report/report.js"></script>
+  <link rel="stylesheet" href="/css/popup.css">
+</div>

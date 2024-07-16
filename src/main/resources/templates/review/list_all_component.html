@@ -1,0 +1,41 @@
+<div th:fragment="list_all_fragment">
+  <link rel="stylesheet" href="/css/review/style.css">
+  <!-- <div th:replace=... -->
+
+  <h1 class="title">후기 모두보기</h1>
+  <div class="review-list">
+    <div class="review-item" th:each="reviewVO, status:${list}">
+      <div class="review-info">
+        <span class="review-label">후기 번호:</span>
+        <span class="review-value" th:text="${reviewVO.reviewno}"></span>
+      </div>
+      <div class="review-info">
+        <span class="review-label">후기 내용:</span>
+        <span class="review-value" th:text="${reviewVO.contents}"></span>
+      </div>
+      <div class="review-info">
+        <span class="review-label">후기 점수:</span>
+        <span class="review-value" th:text="${reviewVO.rating}"></span>
+      </div>
+      <div class="review-info">
+        <span class="review-label">신발 번호:</span>
+        <span class="review-value" th:text="${reviewVO.shoesno}"></span>
+      </div>
+      <div class="review-info">
+        <span class="review-label">멤버 번호:</span>
+        <span class="review-value" th:text="${reviewVO.memberno}"></span>
+      </div>
+      <div class="review-info">
+        <span class="review-label">후기 작성일:</span>
+        <span class="review-value" th:text="${reviewVO.rdate}"></span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- 페이지 버튼 목록 출력 시작 -->
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  <!-- 페이지 버튼 목록 출력 종료 -->
+</div>

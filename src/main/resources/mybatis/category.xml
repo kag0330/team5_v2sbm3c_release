@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.category.CategoryDAOInter">
+  <select id="name_list">
+    SELECT distinct name
+    FROM category
+  </select>
+
+  <select id="parent_categoryno" parameterType="String" resultType="Integer">
+    SELECT categoryno
+    FROM category
+    WHERE name = #{name}
+    AND ROWNUM = 1
+  </select>
+
+  <select id="subname_list" parameterType="Integer">
+    SELECT subname
+    FROM category
+    WHERE parentno = #{categoryno}
+  </select>
+
+  <insert id="create" parameterType="dev.mvc.category.CategoryVO">
+    INSERT INTO category (categoryno, name, subname, seq, cnt, parentno)
+    SELECT 
+        CATEGORY_SEQ.nextval AS categoryno,
+        #{name} AS name,
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM CATEGORY WHERE name = #{name}) THEN #{subname}
+            ELSE '-'
+        END AS subname,
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM CATEGORY WHERE name = #{name}) 
+            THEN (SELECT MAX(seq) + 1 FROM CATEGORY WHERE name = #{name})
+            ELSE (SELECT COALESCE(CEIL(MAX(seq) / 10) * 10 + 1, 1) FROM CATEGORY)
+        END AS seq,
+        100 AS cnt,
+        CASE 
+            WHEN EXISTS (SELECT 1 FROM CATEGORY WHERE name = #{name}) 
+            THEN (SELECT categoryno FROM CATEGORY WHERE name = #{name} AND subname = '-')
+            ELSE NULL
+        END AS parentno
+    FROM dual
+  </insert>
+
+  <select id="list_all" resultType="dev.mvc.category.CategoryVO">
+    SELECT categoryno, name, subname, seq, cnt, parentno 
+    FROM category
+    WHERE subname != '-'
+    ORDER BY seq ASC
+  </select>
+
+  <select id="read" resultType="dev.mvc.category.CategoryVO" parameterType="Integer">
+    SELECT categoryno, name, subname, seq, cnt, parentno 
+    FROM category
+    WHERE categoryno = #{categoryno}
+  </select>
+
+  <update id="update" parameterType="dev.mvc.category.CategoryVO">
+    UPDATE category
+    SET name = #{name}, subname = #{subname}
+    WHERE categoryno = #{categoryno}
+  </update>
+
+  <delete id="delete" parameterType="Integer">
+    DELETE FROM category WHERE categoryno = #{categoryno}
+  </delete>
+
+  <!-- 회원/비회원에게 공개할 중분류 목록 -->
+  <select id="list_all_name" resultType="dev.mvc.category.CategoryVO">
+    SELECT categoryno, name
+    FROM category
+    WHERE name IN (
+        SELECT DISTINCT name
+        FROM category
+    ) AND subname = '-'
+    ORDER BY seq ASC
+  </select>
+
+  <!-- 회원/비회원에게 공개할 소분류 목록 -->
+  <select id="list_all_subname" resultType="dev.mvc.category.CategoryVO" parameterType="String">
+    SELECT categoryno, name, subname
+    FROM category
+    WHERE name = #{name} AND subname != '-'
+    ORDER BY seq ASC
+  </select>
+
+  <!-- 관리자용 검색 목록, Map은 VO class보다 적은 변수의 전달시 사용 -->
+  <select id="list_search" resultType="dev.mvc.category.CategoryVO" parameterType="String">
+    SELECT categoryno, name, subname, seq, cnt, parentno 
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(subname) LIKE '%' || UPPER(#{word}) || '%'  
+    </if>
+    ORDER BY seq ASC
+  </select>
+
+  <!-- 관리자용 검색 목록, Map은 VO class보다 적은 변수의 전달시 사용 -->
+  <select id="list_search_paging" resultType="dev.mvc.category.CategoryVO" parameterType="Map">
+    SELECT categoryno, name, subname, seq, cnt, parentno, r
+    FROM (
+        SELECT categoryno, name, subname, seq, cnt, parentno, rownum as r
+        FROM (
+            SELECT categoryno, name, subname, seq, cnt, parentno
+            FROM category
+    <if test="word != null and word != ''">
+              WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(subname) LIKE '%' || UPPER(#{word}) || '%'  
+            </if>
+    ORDER BY seq ASC
+        )
+    )
+    WHERE r &gt; = #{start_num} AND r &lt; = #{end_num}
+    <!-- WHERE r >= 1 AND r <= 3 -->
+  </select>
+
+  <!-- 검색된 레코드 수 -->
+  <select id="list_search_count" resultType="int" parameterType="String">
+    SELECT COUNT(*) as cnt
+    FROM category
+    <if test="word != null and word != ''">
+      WHERE UPPER(name) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(subname) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    ORDER BY seq ASC
+  </select>
+
+  <select id="category_select" resultType="dev.mvc.category.CategoryVO">
+    SELECT name, subname FROM category
+    WHERE categoryno = #{categoryno}
+  </select>
+
+  <select id="select_name" resultType="dev.mvc.category.CategoryVO" parameterType="java.util.ArrayList">
+    SELECT categoryno, name
+    FROM category
+    WHERE subname = '-'
+    <if test="list != null and list.size() > 0">
+      AND categoryno NOT IN
+      <foreach collection="list" item="categoryno" open="(" separator="," close=")">
+            #{categoryno}
+        </foreach>
+    </if>
+  </select>
+
+  <select id="select_subname" resultType="dev.mvc.category.CategoryVO" parameterType="Integer">
+     SELECT categoryno, subname
+    FROM category
+    WHERE parentno = 
+    (SELECT categoryno  FROM category
+    WHERE categoryno = #{categoryno})
+  </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+

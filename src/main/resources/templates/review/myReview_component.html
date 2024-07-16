@@ -1,0 +1,86 @@
+<div th:fragment="myReview_fragment">
+  <style>
+    table.table tr td {
+      border-color: #e9e9e9;
+    }
+
+    table.table thead th {
+      border-color: #e9e9e9;
+    }
+
+    .td_bs {
+      text-align: center;
+    }
+
+    .zoom {
+      cursor: pointer;
+    }
+
+    .contents {
+      display: none;
+    }
+
+    .contents td {
+      text-align: center;
+    }
+
+    .line {
+      margin: 0px 0px 10px 0px;
+      clear: both;
+      border-bottom: 0.5px dotted #000;
+      padding-bottom: 5px;
+    }
+    
+  </style>
+  <div style="width:100%; padding-left: 280px;">
+    <div class="search-box">
+      <div class="input-group">
+
+      </div>
+    </div>
+    <div class="container">
+      <div class="table-wrapper">
+        <div class="table-title">
+        </div>
+        <table class="table table-bordered">
+          <colgroup>
+            <col style='width: 35%;' />
+            <col style='width: 10%;' />
+            <col style='width: 12%;' />
+            <col style='width: 35%;' />
+            <col style='width: 8%;' />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="th_bs">리뷰 신발명</th>
+              <th class="th_bs">평점</th>
+              <th class="th_bs">날짜</th>
+              <th class="th_bs">신발 상세보기</th>
+              <th class="th_bs"></th>
+            </tr>
+          </thead>
+          <tbody th:each="shoesAllVO, status:${list}">
+            <tr>
+              <input type="hidden" id="shoesno" name="shoesno" th:value="${shoesAllVO.shoesVO.shoesno}">
+              <td class="td_bs" th:text="${shoesAllVO.shoesVO.title}"></td>
+              <td class="td_bs" th:text="${shoesAllVO.reviewVO.rating}"></td>
+              <td class="td_bs" th:text="${#dates.format(shoesAllVO.reviewVO.rdate, 'yy/MM/dd')}"></td>
+              <td class="td_bs">
+                <a th:href="@{|/shoes/${shoesAllVO.shoesVO.shoesno}|}" th:text="|${shoesAllVO.shoesVO.title} 상세|"></a>
+              </td>
+              <td class="td_bs zoom">+</td>
+            </tr>
+            <tr class="contents">
+              <td colspan="5" style="font-size: 20px; padding-left: 7%;">
+                리뷰 내용
+                <div class='line'></div><br>
+                <span style="padding-left: 10%; margin-bottom: 30px;" th:text="${shoesAllVO.reviewVO.contents}"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="bottom_menu" th:utext="${paging}"></div>
+      </div>
+    </div>
+  </div>
+</div>

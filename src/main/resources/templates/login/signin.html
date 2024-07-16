@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속 -->
+<div layout:fragment="content">
+
+  <div style="border: 1px solid #bbb; width: 80%; margin: 0px auto; margin-top: 50px;">
+
+
+    <form style="width:80%; margin:20px auto; text-align: center;" class="row g-3" id="frm" name="frm" method="post" action="./signin">
+    
+
+      <div class="col-8" style="margin:10px auto;">
+        <label for="id" class="form-label" style="text-align: center;">아이디 │ admin1</label>
+        <input id="id" type="text" class="form-control" name="id" placeholder="아이디" th:value="${ck_id}" autofocus
+          style="text-align: center; float:left;">
+      </div>
+      <span id='id_msg'></span>
+
+
+
+      <div class="col-8" style="margin:0 auto;">
+        <label class="form-label">패스워드 │ admin123</label>
+        <input id="pw1" type='password' class="form-control" name="pw" required="required" th:value="${ck_pw}"
+          placeholder="패스워드" style="text-align: center;">
+      </div>
+      <span id='pw_msg'></span>
+
+
+      <div class="col-12">
+        <input type="checkbox" name="save" th:checked="${save}">
+        <label for="save"
+          style="-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">로그인
+          정보 기억하기</label>
+      </div>
+      
+      
+
+      <div class="col-4">
+        <button type="button" class="btn btn-secondary btn-sm" id="submitBtn" onclick="send()">로그인</button>
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/login/signup'">회원가입</button>
+      </div>
+
+      <div class="col-4">
+        <button type="button" onclick="location.href='/'" class="btn btn-secondary btn-sm">취소</button>
+      </div>
+      
+      <div class="col-12">
+        <button type="button" onclick="location.href='/login/findid'" class="btn btn-secondary btn-sm">아이디 찾기</button>
+      </div>
+      
+      <div class="col-12">        
+        <button type="button" onclick="location.href='/login/findpw'" class="btn btn-secondary btn-sm">비밀번호 찾기</button>
+      </div>  
+    </form>
+    
+  </div>
+  <script type="text/javascript" src="/js/signin.js"></script>
+</div>
+
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+
+
+  <body>
+    <div class="container mt-3" style="max-width: 800px;">
+      <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+          <span th:text="${shoesVO.title}" style="font-size: 20px;" class="bg-primary text-white text-center"></span>
+
+          <aside class="aside_right">
+            <a href="/admin/shoes/admin_create" title="신발 등록"><i class="fas fa-plus-circle"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/shoes/admin_update/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}"
+              title="신발 수정"><i class="fas fa-edit"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/shoes/admin_delete/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}"
+              title="신발 삭제"><i class="fas fa-trash"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/shoes/option_create/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}"
+              title="옵션 추가"><i class="fas fa-plus"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/review/list/${shoesVO.shoesno}|}" title="후기 보기"><i class="fas fa-comments"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/shoes/admin_list_all?word=${word}&now_page=${now_page}|}" title="목록"><i
+                class="fas fa-list"></i></a>
+          </aside>
+        </div>
+        <div class="card-body">
+          <input type="hidden" id="shoesno" name="shoesno" th:value="${shoesVO.shoesno}">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <strong>신발 번호:</strong> <span th:text="${shoesVO.shoesno}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>제목:</strong> <span th:text="${shoesVO.title}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>브랜드명:</strong> <span th:text="${shoesVO.brand}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>금액:</strong> <span th:text="${shoesVO.price}"></span>
+            </li>
+            <li class="list-group-item">
+              <strong>내용:</strong> <span th:text="${shoesVO.contents}"></span>
+            </li>
+          </ul>
+        </div>
+  </body>
+  <div class="top_menu_line"></div>
+
+  <div th:replace="~{admin/shoes/admin_option_component::admin_option_fragment}"></div>
+
+
+</html>

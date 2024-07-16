@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.payment.PaymentDAOInter">
+  <insert id="create" parameterType="Map">
+  INSERT INTO payment(paymentno, rdate, status, payment_status, total_price, delivery, total_payment, memberno)
+  VALUES (payment_seq.nextval, sysdate, '상품준비중', '입금전', #{total_price}, #{delivery}, (#{total_price} + #{delivery}), #{memberno})
+  <selectKey keyProperty="paymentno" resultType="int" order="AFTER">
+      SELECT payment_seq.CURRVAL FROM DUAL
+    </selectKey>
+  </insert>
+
+  
+  <select id="list_all" parameterType="int" resultType="dev.mvc.payment.PaymentVO">
+  SELECT paymentno, rdate, status, payment_status, cs_status, total_price, delivery, total_payment, memberno
+  FROM payment
+  WHERE memberno = #{memberno}
+  ORDER BY rdate ASC
+  </select>
+  
+  <delete id="delete" parameterType="int">
+    delete from payment
+    where paymentno = #{paymentno}
+  </delete>
+  
+  <update id="update" parameterType="Map">
+  UPDATE payment
+  SET payment_status=#{payment_status}, status=#{status}, cs_status=#{cs_status}
+  WHERE paymentno = #{paymentno}
+  </update>
+  
+  <update id="cancel" parameterType="int">
+    UPDATE payment
+    SET cs_status = '취소'
+    WHERE paymentno = #{paymentno}
+  </update>
+  
+  
+</mapper>

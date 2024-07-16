@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+<div layout:fragment="content">
+  <!-- layout.html 상속-->
+  <div class="message">
+    <fieldset class="fieldset_basic">
+      <ul>
+        <li class="li_none">
+          <div>
+            <span class="span_fail">권한이 부족합니다. <br>
+                                    관리자에게 문의부탁드립니다.</span><br>
+            <button type="button" onclick="history.back()" class="btn btn-secondary btn-sm">돌아가기</button>
+          </div>
+        </li>
+      </ul>
+    </fieldset>
+  </div>
+</div>
+</body>
+
+</html>

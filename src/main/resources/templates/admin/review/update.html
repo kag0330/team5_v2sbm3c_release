@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+
+<head>
+  <meta charset="UTF-8">
+  <title>리뷰 수정</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/admin/css/style.css" rel="Stylesheet" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+<div layout:fragment="content">
+
+  <div class='title_line'></div>
+  <body>
+
+    <div class="container mt-3" style="max-width: 800px;">
+      <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+          <span th:text="${reviewVO.reviewno}+ '  >  수정'"  style="font-size: 20px;" class="bg-primary text-white text-center"></span>
+        
+        
+          <aside class="aside_right">
+            <a href="/admin/shoes/admin_list_all?now_page=1" title="신발 목록"><i class="fas fa-list"></i></a>
+            <span class="menu_devide">│</span>
+            <a href="/admin/shoes/admin_create" title="신발 등록"><i class="fas fa-plus-circle"></i></a>
+            <span class="menu_devide">│</span>
+            <a th:href="@{|/admin/shoes/admin_delete/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}"
+              title="신발 삭제"><i class="fas fa-trash-alt"></i></a>
+            <span class="menu_devide">│</span>
+            <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+          </aside>
+        </div>
+        
+        <div class="card-body">
+          <form name="frm" th:object="${shoesVO}" method="post" action="/admin/shoes/admin_update">
+            <input type="hidden" name="shoesno" th:value="${shoesVO.shoesno}">
+
+            <div class="form-group">
+              <label>리뷰 번호</label>
+              <input type="text" name="reviewno" th:value="${reviewVO.reviewno}" class="form-control" th:field="*{reviewno}">
+              <div th:if="${#fields.hasErrors('reviewno')}" class="alert alert-danger" role="alert"
+                style="margin-top: 5px;">
+                <div th:each="err : ${#fields.errors('title')}" th:text="${err}"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>내용</label>
+              <input type="text" name="contents" th:value="${reviewVO.contents}" class="form-control" th:field="*{contents}">
+              <div th:if="${#fields.hasErrors('contents')}" class="alert alert-danger" role="alert"
+                style="margin-top: 5px;">
+                <div th:each="err : ${#fields.errors('contents')}" th:text="${err}"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>평점</label>
+              <input type="text" name="rating" th:value="${reviewVO.rating}" class="form-control" th:field="*{rating}">
+              <div th:if="${#fields.hasErrors('rating')}" class="alert alert-danger" role="alert"
+                style="margin-top: 5px;">
+                <div th:each="err : ${#fields.errors('rating')}" th:text="${err}"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>날짜</label>
+              <textarea name="rdate" class="form-control"  th:value="${reviewVO.rdate}" rows="5" th:field="*{rdate}"></textarea>
+              <div th:if="${#fields.hasErrors('rdate')}" class="alert alert-danger" role="alert"
+                style="margin-top: 5px;">
+                <div th:each="err : ${#fields.errors('rdate')}" th:text="${err}"></div>
+              </div>
+            </div>
+
+            <div class="content_body_bottom">
+              <button type="submit" class="btn btn-primary btn-sm">저장</button>
+              <button type="button"
+                th:attr="onclick=|location.href='/admin/shoes/admin_read/${shoesVO.shoesno}?word=${word}&now_page=${now_page}'|"
+                class="btn btn-secondary btn-sm">취소</button>
+            </div>
+
+
+            <div th:replace="~{admin/review/list_all_component::list_all_fragment}"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+
+
+</html>

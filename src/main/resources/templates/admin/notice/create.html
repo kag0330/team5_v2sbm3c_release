@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}">
+<!-- layout.html 상속-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공지사항 등록</title>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class='title_line' th:if="${not #lists.isEmpty(session.login)}" th:text="|
+         공지사항 등록 > 작성자 : ${session.login.id}(${session.login.nickname})
+        |">
+    </div>
+    <aside class="aside_right">
+      <a href="/admin/notice/list?now_page=1">공지사항 목록</a>
+      <span class="menu_devide">│</span>
+      <a href="javascript: location.reload();">새로 고침</a>
+    </aside>
+
+    <form name="frm" th:object="${noticefileVO}" method="post" action="/admin/notice/create"
+      style="width:80%; margin: 5px auto;" enctype="multipart/form-data">
+      <div>
+        <label>제목</label>
+        <input type='text' name='title' placeholder="공지사항 제목" autofocus="autofocus" class="form-control"
+          style='width: 100%;' required>
+      </div>
+
+      <div>
+        <label>내용</label>
+        <div id="editor"></div>
+        <script>
+          const {Editor} = toastui;
+          const {colorSyntax} = Editor.plugin;
+
+          const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),
+            height: 'auto',
+            initialEditType: 'wysiwyg',
+            previewStyle: 'vertical',
+            language: 'ko',
+            plugins: [colorSyntax]
+          });
+        </script>
+      </div>
+
+
+      <div id="fileInputContainer">
+        <div class="file-input-wrapper">
+          <label>파일</label>
+          <input type='file' class="form-control" name='fileSelect' id='fileSelect' value='' placeholder="파일 선택">
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-light" style="margin-top: 15px;" onclick="addFileInput()">파일 추가</button>
+
+
+
+      <div class="content_body_bottom">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="send()">등록</button>
+        <button type="button" class="btn btn-secondary btn-sm"
+          th:onclick="location.href='/admin/notice/list?now_page=1'">취소</button>
+      </div>
+
+
+    </form>
+    <script>
+      function addFileInput() {
+        // fileInputContainer에서 첫 번째 파일 입력 필드를 클론합니다.
+        const container = document.querySelector('#fileInputContainer');
+        const originalInput = container.querySelector('.file-input-wrapper');
+        const newInput = originalInput.cloneNode(true);
+
+        // 클론된 파일 입력 필드의 값을 비웁니다.
+        newInput.querySelector('input').value = '';
+
+        // 새로운 파일 입력 필드를 container에 추가합니다.
+        container.appendChild(newInput);
+      }
+
+      function send() {
+        let title = document.querySelector('input[name="title"]');
+        let contentHTML = editor.getHTML();
+        let contentMarkdown = editor.getMarkdown();
+        let files = document.querySelectorAll('input[type=file]');
+
+        const formData = new FormData();
+
+        if (contentMarkdown.trim().length == 0) {
+          return false;
+        }
+
+        formData.append('title', title.value);
+        formData.append('contents', contentHTML);
+
+        files.forEach(function (value, index, arr) {
+          formData.append('files', value.files[0]);
+        });
+
+
+        fetch('/admin/notice/create', {
+          method: 'POST',
+          headers: {},
+          body: formData
+        })
+          .then(response => response.json())
+          .then(success => {
+            if(success){
+              location.href='/admin/notice/list?now_page=1';
+            }else{
+              alert('등록 실패! 다시 시도해주십시오.');
+              location.reload(true);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    </script>
+  </div>
+</body>
+
+</html>

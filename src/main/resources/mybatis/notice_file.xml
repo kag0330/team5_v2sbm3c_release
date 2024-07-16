@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.noticeFile.NoticeFileDAOInter">
+	<insert id="create" parameterType="dev.mvc.noticeFile.NoticeFileVO">
+		INSERT INTO notice_file (notice_file_no, name, sizes, ex, src, noticeno)
+		VALUES (NOTICE_FILE_SEQ.nextval, #{name}, #{sizes}, #{ex}, #{src}, #{noticeno})
+	</insert>
+
+
+	<delete id="deleteByNoticeno" parameterType="int">
+		DELETE FROM notice_file WHERE noticeno = #{notice}
+	</delete>
+
+	<delete id="deleteByNoticefileno" parameterType="int">
+		DELETE
+		FROM notice_file
+		WHERE notice_file_no = #{notice_file_no}
+	</delete>
+	
+	 <select id="findByNoticeno" parameterType="int" resultType="dev.mvc.noticeFile.NoticeFileVO">
+	   SELECT notice_file_no, name, sizes, ex, src, noticeno
+     FROM notice_file
+     WHERE noticeno = #{noticeno}
+	 </select>
+
+</mapper>

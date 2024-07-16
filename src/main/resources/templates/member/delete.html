@@ -1,0 +1,25 @@
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+
+<body>
+  <div layout:fragment="content">
+
+    <div class="clearfix" style="text-align: -webkit-center; width:80%; margin: 0px auto;" >
+      <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+
+      <div style="width: max-content; padding: 200px;">
+        회원탈퇴를 하시려면 비밀번호를 입력해주세요.
+        <form style="margin:0 auto;" id="frm" name="frm" method="post" action="./delete">
+          <label>비밀번호 입력</label>
+          <input type="password" name="pw">
+          <button class="btn btn-danger">회원 탈퇴</button><br>
+          <span th:if="${code == 0}" class="span_fail">틀린 비밀번호입니다.<br>
+              다시 시도해주세요.</span>
+        </form>
+      </div>
+      
+    </div>
+    <script type="text/javascript" src="/js/member/delete.js"></script>
+  </div>
+</body>
+</html>

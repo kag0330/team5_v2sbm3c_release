@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}" xmlns:th="www.thymeleaf.org">
+<!-- layout.html 상속 -->
+<div layout:fragment="content">
+  <div style="width:80%; margin: 0px auto;">
+      
+    <div th:replace="~{fragment/infoSidebarFragment::infoSidebarFragment}"></div>
+    
+    <div style="margin-top: 10px; text-align: center;">
+      <h2>최근기록 10건만 저장됩니다.</h2>
+      <input type="hidden" id="memberno" th:value="${#lists.isEmpty(list) ? '' : list[0].memberno}">
+      <button class="btn btn-secondary btn-lg" onclick="deleteAll()" th:disabled="${#lists.isEmpty(list)}">모두 삭제</button>
+      <table class="table table-hover" style="width:70%; margin: 0 auto;">
+        <colgroup>
+          <col style="width: 10%;" />
+          <col style="width: 45%;" />
+          <col style="width: 45%;" />
+        </colgroup>
+        <tr>
+          <th style="text-align: center;">번호</th>
+          <th style="text-align: center;">IP주소</th>
+          <th style='text-align: center;'>접속일</th>
+        </tr>
+        
+        
+        <th:block  th:if="${not #lists.isEmpty(list)}">
+          <tr style="height: 70px; vertical-align: middle;" th:each="lh: ${list}">
+            <td class="td_basic" style="align-content: center;" th:text="${lhStat.count}"></td>
+            <td class="td_basic" style="align-content: center;" th:text="${lh.ip}"></td>
+            <td class="td_basic" style="align-content: center;" th:text="${#dates.format(lh.rdate, 'yyyy년/MM월/dd일 HH:mm:ss')}"></td>
+        </tr>
+        </th:block>
+        
+        <th:block th:unless="${not #lists.isEmpty(list)}">
+          <tr style="height: 70px; vertical-align: middle;">
+            <td class="td_basic" colspan="3" style="font-size:30px;">데이터가 없습니다.</td>
+          </tr>
+          </th:block>
+        </table>
+      </div>
+    </div>
+  <script>
+    function deleteAll() {
+      let memberno = document.querySelector('#memberno').value;
+
+      fetch('./history/delete?memberno=' + memberno, {
+        method: 'POST'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.text();
+      })
+      .then(data => {
+        if (data === 'Success') {
+          alert('모든 기록이 삭제되었습니다.');
+          location.reload(); // 페이지 새로고침하여 테이블 갱신
+        } else {
+          alert('삭제에 실패했습니다.');
+        }
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('오류가 발생했습니다.');
+      });
+    }
+  </script> 
+</div>
+
+</html>

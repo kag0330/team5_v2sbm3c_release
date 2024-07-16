@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.member.MemberDAOInter">
+
+	<!-- 회원 생성(회원가입) -->
+	<insert id="create" parameterType="dev.mvc.member.MemberVO">
+		INSERT INTO member(memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role)
+		VALUES (member_seq.nextval, #{id}, #{pw}, #{name}, #{nickname}, #{phone}, #{email}, #{thumb}, #{addr1}, #{addr2}, #{zipcode}, #{mdate}, sysdate, 0, #{gender}, 1, 'USER')
+	</insert>
+	
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="checkId" parameterType="String" resultType="int">
+		SELECT COUNT(id) as cnt
+		FROM member
+		WHERE id=#{id}
+	</select>
+	
+	
+	<!-- Master 권한 최소 1개이상 유지를 위한 권한체크 -->
+	<select id="checkRoleMaster" resultType="int">
+	  SELECT COUNT(role) AS cnt
+    FROM member
+    WHERE UPPER(role) = UPPER('master')
+	</select>
+	
+	
+	<!-- 아이디값으로 멤버회원 조회 -->
+	<select id="readById" parameterType="String" resultType="dev.mvc.member.MemberVO">
+		SELECT memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role
+		FROM member
+		WHERE id=#{id}
+	</select>
+	
+	
+	<!-- primarykey값으로 멤버회원 조회 -->
+	<select id="readByMemberno" parameterType="int" resultType="dev.mvc.member.MemberVO">
+		SELECT memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role
+		FROM member
+		WHERE memberno=#{memberno}
+	</select>
+	
+	
+	<!-- 일반 회원 정보 수정 -->
+	<update id="update" parameterType="dev.mvc.member.MemberVO">
+		UPDATE member
+		SET pw=#{pw}, name=#{name}, nickname=#{nickname}, phone=#{phone}, email=#{email},
+		thumb=#{thumb}, addr1=#{addr1}, addr2=#{addr2}, zipcode=#{zipcode}, mdate=#{mdate}, gender=#{gender}
+		WHERE memberno=#{memberno}
+	</update>
+	
+	
+	<!-- 어드민 회원 정보 수정 -->
+	<update id="updateAdmin" parameterType="dev.mvc.member.MemberVO">
+		UPDATE member
+		SET nickname=#{nickname}, phone=#{phone}, email=#{email},
+		thumb=#{thumb}, addr1=#{addr1}, addr2=#{addr2}, zipcode=#{zipcode}, mdate=#{mdate}, point=#{point}, gender=#{gender}, grade=#{grade}, role=#{role}
+		WHERE memberno=#{memberno}
+	</update>
+
+
+	<!-- 일반 회원 삭제처리(등급 탈퇴회원인 99로 지정) -->
+	<update id="delete" parameterType="int">
+		UPDATE member
+		SET grade=99, role='DELETE'
+		WHERE memberno=#{memberno}
+	</update>
+	
+	
+	<!-- 어드민 회원 삭제처리(완전 삭제) -->
+  <delete id="deleteAdmin" parameterType="int">
+    DELETE FROM member
+    WHERE memberno=#{memberno}
+  </delete>
+  
+  
+	<!-- 모든 회원 조회 -->
+	<!--
+	<select id="list_all" resultType="dev.mvc.member.MemberVO">
+		SELECT memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role
+		FROM member
+		ORDER BY memberno ASC
+	</select> -->
+
+
+	<!-- 모든 회원 조회 페이징처리 -->
+	<select id="list_search_paging" resultType="dev.mvc.member.MemberVO" parameterType="Map">
+		SELECT memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role, r
+		FROM (
+		SELECT memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role, rownum as r
+		FROM (
+		SELECT memberno, id, pw, name, nickname, phone, email, thumb, addr1, addr2, zipcode, mdate, rdate, point, gender, grade, role
+		FROM member
+		<!-- key와 word가 모두 존재할 때 -->
+		<if test="(key != null and key != '') and (word != null and word != '')">
+			WHERE UPPER(${key}) LIKE '%' || UPPER(#{word}) || '%'
+		</if>
+		<!-- key가 없고 word만 존재할 때 -->
+		<if test="(key == null or key == '') and (word != null and word != '')">
+			WHERE UPPER(id) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(nickname) LIKE '%' || #{word} || '%'
+		</if>
+		ORDER BY memberno ASC
+		)
+		)
+		WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+	</select>
+
+
+	<!-- 검색된 레코드 수 -->
+	<select id="list_search_count" resultType="int" parameterType="Map">
+		SELECT COUNT(*) as cnt
+		FROM member
+		<!-- key와 word가 모두 존재할 때 -->
+		<if test="(key != null and key != '') and (word != null and word != '')">
+			WHERE UPPER(${key}) LIKE '%' || UPPER(#{word}) || '%'
+		</if>
+		<!-- key가 없고 word만 존재할 때 -->
+		<if test="(key == null or key == '') and (word != null and word != '')">
+			WHERE UPPER(id) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(nickname) LIKE '%' || #{word} || '%'
+		</if>
+		ORDER BY memberno ASC
+	</select>
+
+
+	<!-- 아이디찾기 -->
+	<select id="findid" resultType="String" parameterType="String">
+		SELECT id
+		FROM member
+		WHERE email=#{email}
+	</select>
+	
+	<!-- 패스워드찾기(변경) -->
+	<update id="findpw" parameterType="Map">
+		UPDATE MEMBER
+		SET pw=#{pw}
+		<if test="email != 'pass'">
+		  WHERE id=#{id} and email=#{email}
+		</if>
+		<if test="email == 'pass'">
+		  WHERE id=#{id}
+		</if>
+		
+	</update>
+	
+	<!-- ROLE 변경 -->
+	<update id="changeRole" parameterType="Map">
+	  UPDATE member
+    SET role=#{role}
+    WHERE memberno=#{memberno}
+	</update>
+	
+
+</mapper>

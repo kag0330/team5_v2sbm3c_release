@@ -1,0 +1,23 @@
+<div th:fragment="paymentinquiry_fragment">
+
+  <div id="paymentpopup" class="paymentpopup">
+    <div class="paymentpopup-content">
+      <span class="payment-close-btn">&times;</span>
+      <h3 id = "shoesname"></h3>
+      <div class="mb-3">
+        <label for="inquiryTitle" class="form-label">문의 제목:</label>
+        <input type="text" class="form-control" id="paymentinquiryTitle" name="paymentinquiryTitle" required>
+      </div>
+
+      <!-- 신고 내용 입력란 -->
+      <div class="mb-3">
+        <label for="inquiryContents" class="form-label">문의 내용:</label>
+        <textarea class="form-control" required="required" id="paymentinquiryContents" name="paymentinquiryContents"
+          rows="4"></textarea>
+      </div>
+
+      <button type="button" class="btn btn-secondary" id="paymentcreateInquiry">신고하기</button>
+    </div>
+    <script src="/js/inquiry/paymentinquiry.js"></script>
+    <link rel="stylesheet" href="/css/paymentpopup.css">
+  </div>

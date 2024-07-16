@@ -1,0 +1,25 @@
+<div th:fragment="list_search_fragment"> <!-- <div th:replace=... -->
+  <div style="text-align: right; clear: both;">
+    <form name="frm_search" method="get" action="/admin/member/list">
+      <select name="key" style="height: 2rem;">
+        <th:block th:if="${param.key} != null">
+        <option th:selected="${param.key[0]} == ''" value="">Id + Nickname</option>
+        <option th:selected="${param.key[0]} == 'name'" value="name">이름</option>
+        <option th:selected="${param.key[0]} == 'phone'" value="phone">전화번호</option>
+        <option th:selected="${param.key[0]} == 'email'" value="email">이메일</option>
+        </th:block>
+        <th:block th:if="${param.key} == null">
+        <option selected value="">Id + Nickname</option>
+        <option value="name">이름</option>
+        <option value="phone">전화번호</option>
+        <option value="email">이메일</option>
+        </th:block>
+      </select>
+      <input type="text" name="word" id="word" th:value="${param.word}" style="height: 2rem;">
+      <button type='submit' class='btn btn-secondary btn-sm' style="padding: 2px 8px 3px 8px; margin: 0px 0px 2px 0px;">검색</button>
+      <th:block th:if="${not #strings.isEmpty(param.word)}">
+        <button type='button' class='btn btn-secondary btn-sm' style="padding: 2px 8px 3px 8px; margin: 0px 0px 2px 0px;" th:onclick="location.href='/admin/member/list'">검색 취소</button>
+      </th:block>  
+    </form>
+  </div>
+</div>

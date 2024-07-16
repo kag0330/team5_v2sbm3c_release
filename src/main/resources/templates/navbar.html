@@ -1,0 +1,89 @@
+<div th:fragment="navbarFragment">
+
+  <div class="top_menu_img" onclick="location.href='/'" style="cursor: pointer;">
+    <div class="top_menu_label">발 걸 음</div>
+  </div>
+
+
+
+      <nav class="navbar navbar-expand-lg fixed-navbar" style="background-color: black;">
+      <div class="container">
+<!--/*
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav"> 
+*/-->
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navbarDropdown1" role="button" aria-haspopup="true"
+                aria-expanded="false" style="color:white;">
+                스니커즈/슬립온
+              </a>
+              <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown1">
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=20">스니커즈</a>
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=21">슬립온</a>
+              </div>
+            </li> 
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navbarDropdown2" role="button" aria-haspopup="true"
+                aria-expanded="false" style="color:white;">
+                부츠/워커
+              </a>
+              <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown2">
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=22">부츠</a>
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=23">워커</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navbarDropdown3" role="button" aria-haspopup="true"
+                aria-expanded="false" style="color:white;">
+                샌들/슬리퍼
+              </a>
+              <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown3">
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=24">샌들</a>
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=25">슬리퍼</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navbarDropdown4" role="button" aria-haspopup="true"
+                aria-expanded="false" style="color:white;">
+                러닝화
+              </a>
+              <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown4">
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=26">러닝화</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navbarDropdown5" role="button" aria-haspopup="true"
+                aria-expanded="false" style="color:white;">
+                로퍼
+              </a>
+              <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown5">
+                <a class="dropdown-item link-style" href="/shoes/list?categoryno=27">로퍼</a>
+              </div>
+            </li>
+            
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navbarDropdown6" role="button" aria-haspopup="true"
+                aria-expanded="false" style="color:white;">
+                COMMUNITY
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown6">
+                <a class="dropdown-item link-style" href="/notice/list">공지사항</a>
+                <a class="dropdown-item link-style" href="/shoes/guide">이용안내 FAQ</a>
+              </div>
+            </li>
+
+          </ul>
+<!--/*        </div> */-->
+      </div>
+    </nav>
+
+    <script src="/js/dropdown.js"></script>
+    <script src="/js/showlist.js"></script>
+
+</div>

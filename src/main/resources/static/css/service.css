@@ -1,0 +1,54 @@
+  /* ver 2.4 2024_0426 */
+
+  /* 폰트 선언 */
+  @font-face {
+    font-family: 'TTHakgyoansimMonggeulmonggeulR';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_keris@1.0/TTHakgyoansimMonggeulmonggeulR.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  /* 모든 태그에 적용 */
+  * {
+    font-family: TTHakgyoansimMonggeulmonggeulR;
+    font-size: 14px;
+    margin: 0px;
+    /* top right bottom left */
+    padding: 0px;
+    color: #555555;
+  }
+
+.service {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.service_btn {
+    text-align: center;
+}
+
+.service_btn input[type="submit"],
+.service_btn input[type="button"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.service_btn input[type="submit"]:hover,
+.service_btn input[type="button"]:hover {
+    background-color: #45a049;
+}
+.btn{
+    padding: 10px 20px;
+    background-color: #4CAF50;
+}
+.btn:hover{
+    background-color: #45a049;
+}

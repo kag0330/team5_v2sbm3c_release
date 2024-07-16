@@ -1,0 +1,46 @@
+<div th:fragment="list_all_fragment">
+  <!-- <div th:replace=... -->
+  <table class="table_basic">
+    <colgroup>
+      <col style='width: 5%;' />
+      <col style='width: 5%;' />
+      <col style='width: 20%;' />
+      <col style='width: 10%;' />
+      <col style='width: 5%;' />
+      <col style='width: 10%;' />
+      <col style='width: 5%;' />
+      <col style='width: 40%;' />
+      <col style='width: 5%;' />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="th_bs">신발 번호</th>
+        <th class="th_bs">회원번호</th>
+        <th class="th_bs">제목</th>
+        <th class="th_bs">브랜드명</th>
+        <th class="th_bs">평점</th>
+        <th class="th_bs">가격</th>
+        <th class="th_bs">할인율</th>
+        <th class="th_bs">설명</th>
+        <th class="th_bs">판매여부</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="shoesVO, status:${list}">
+        <td class="td_bs"><a th:href="@{|/admin/shoes/admin_read/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}" style="display: block;" th:text="${shoesVO.shoesno}"></a></td>
+         <td class="td_bs" th:text="${shoesVO.memberno}"></td>
+         <td class="td_bs" th:text="${shoesVO.title}"></td>
+         <td class="td_bs" th:text="${shoesVO.brand}"></td>
+         <td class="td_bs" th:text="${shoesVO.rating}"></td>
+         <td class="td_bs" th:text="${shoesVO.price}"></td>
+         <td class="td_bs" th:text="${shoesVO.discount}"></td>
+         <td class="td_bs" th:text="${shoesVO.contents}"></td>
+         <td class="td_bs" th:text="${shoesVO.visible}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이지 버튼 목록 출력 시작 -->
+  <div class="bottom_menu" th:utext="${paging}"></div>
+  <!-- 페이지 버튼 목록 출력 종료 -->
+</div>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{layout}">
+<!-- layout.html 상속-->
+
+<div layout:fragment="content">
+
+
+  <body>
+    <div class="detail_container" style="margin-top:5%">
+
+      <div th:replace="~{review/review_all_component::review_all_fragment}"></div>
+      <div th:replace="~{report/report_component::report_fragment}"></div>
+
+    </div>
+</div>
+
+
+</html>

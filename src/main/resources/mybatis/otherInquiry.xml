@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.mvc.otherInquiry.OtherInquiryDAOInter">
+
+  <!-- 생성 -->
+  <insert id="create" parameterType="dev.mvc.otherInquiry.OtherInquiryVO">
+    INSERT INTO other_inquiry(other_inquiry_no, title, contents, rdate, memberno)
+    VALUES(OTHER_INQUIRY_SEQ.nextval, #{title}, #{contents}, sysdate, #{memberno})
+  </insert>
+
+  <!-- 검색된 레코드 수 -->
+  <select id="list_search_count" resultType="int" parameterType="String">
+    SELECT COUNT(*) as cnt
+    FROM other_inquiry oi
+    JOIN member m ON oi.memberno = m.memberno
+    <if test="word != null and word != ''">
+      WHERE
+      (
+        UPPER(oi.title) LIKE '%' || UPPER(#{word}) || '%' 
+        OR UPPER(oi.contents) LIKE '%' || UPPER(#{word}) || '%'
+        OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%' 
+      )
+     </if>
+  </select>
+
+  <!-- 페이징 -->
+  <!-- 페이징 검색 -->
+  <select id="list_search_paging" resultMap="InquiryResult" parameterType="Map">
+    SELECT other_inquiry_no, title, contents, rdate, answer_visible, nickname FROM (
+    SELECT oi.other_inquiry_no as other_inquiry_no, oi.title as title, oi.contents as contents, oi.rdate as rdate, oi.answer_visible as answer_visible, m.nickname as nickname, 
+    ROW_NUMBER() OVER(
+        ORDER BY
+            CASE
+                WHEN answer_visible = 'N' THEN 0
+                ELSE 1
+            END,
+            other_inquiry_no DESC
+    ) AS r
+    FROM other_inquiry oi
+    JOIN member m ON oi.memberno = m.memberno
+    <if test="word != null and word != ''">
+    WHERE
+    (
+      UPPER(oi.title) LIKE '%' || UPPER(#{word}) || '%' 
+      OR UPPER(oi.contents) LIKE '%' || UPPER(#{word}) || '%'
+      OR UPPER(m.nickname) LIKE '%' || UPPER(#{word}) || '%' 
+    )
+    </if>
+    ) WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+  </select>
+
+  <resultMap id="InquiryResult" type="dev.mvc.otherInquiry.OtherInquiryInfoVO">
+    <association property="otherInquiryVO" javaType="dev.mvc.otherInquiry.OtherInquiryVO">
+      <id property="other_inquiry_no" column="other_inquiry_no" />
+      <result property="title" column="title" />
+      <result property="contents" column="contents" />
+      <result property="rdate" column="rdate" />
+      <result property="answer_visible" column="answer_visible" />
+      <result property="answer_contents" column="answer_contents" />
+    </association>
+
+    <association property="memberVO" javaType="dev.mvc.member.MemberVO">
+      <result property="nickname" column="nickname" />
+    </association>
+  </resultMap>
+
+  <update id="answer" parameterType="Map">
+    UPDATE other_inquiry
+    SET answer_visible = #{answer_visible}, answer_contents = #{answer_contents}
+    WHERE other_inquiry_no = #{other_inquiry_no}
+  </update>
+
+  <select id="read" resultMap="InquiryResult" parameterType="Integer">
+    SELECT oi.other_inquiry_no as other_inquiry_no, oi.title as title, oi.contents as contents, 
+    oi.rdate as rdate, oi.answer_visible as answer_visible, m.nickname as nickname, oi.answer_contents as answer_contents
+    FROM other_inquiry oi
+    JOIN member m ON oi.memberno = m.memberno
+    WHERE other_inquiry_no = ${other_inquiry_no}
+  </select>
+
+  <select id="myInquiryCount" parameterType="Integer">
+    SELECT COUNT(*)
+    FROM other_inquiry
+    WHERE memberno = #{memberno}
+  </select>
+  
+  <select id="myInquiry" resultType="dev.mvc.otherInquiry.OtherInquiryVO" parameterType="Map">
+        SELECT other_inquiry_no, title, contents, rdate, answer_visible, answer_contents FROM (
+      SELECT other_inquiry_no, title, contents, rdate, answer_visible, answer_contents,
+      ROW_NUMBER() OVER(
+        ORDER BY
+          CASE
+            WHEN answer_visible = 'N' THEN 0
+            ELSE 1
+          END
+      ) AS r
+      FROM other_inquiry oi
+      WHERE oi.memberno = #{memberno}
+      ORDER BY other_inquiry_no desc
+    ) WHERE r &gt;= #{start_num} AND r &lt;= #{end_num}
+  </select>
+</mapper>

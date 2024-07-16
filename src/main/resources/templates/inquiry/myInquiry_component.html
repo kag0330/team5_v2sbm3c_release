@@ -1,0 +1,49 @@
+<div th:fragment="myInquiry_fragment">
+  <style>
+    table.table tr td {
+      border-color: #e9e9e9;
+    }
+
+    table.table thead th {
+      border-color: #e9e9e9;
+    }
+
+    .td_bs {
+      text-align: center;
+    }
+
+    .zoom {
+      cursor: pointer;
+    }
+
+    .contents {
+      display: none;
+    }
+
+    .contents td {
+      text-align: center;
+    }
+
+    .line {
+      margin: 0px 0px 10px 0px;
+      clear: both;
+      border-bottom: 0.5px dotted #000;
+      padding-bottom: 5px;
+    }
+  </style>
+  <div style="width:100%; padding-left: 280px;">
+    <div style="float: left;">
+      <h2 style="margin-bottom:3%; width:300px;">문의 내역 확인</h2>
+      <div style="margin-left: 1%;">
+        <button onclick="location.href='/inquiry/myInquiry/shoes'"
+          th:style="${type == 'shoes'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">신발 문의</button>
+        <button onclick="location.href='/inquiry/myInquiry/payment'"
+          th:style="${type == 'payment'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">주문 문의</button>
+        <button onclick="location.href='/inquiry/myInquiry/other'"
+          th:style="${type == 'other'} ? 'background-color: #aaa;' : 'background-color: #fff;' ">기타 문의</button>
+      </div>
+    </div>
+    <div th:replace="~{inquiry/shoes_component::shoes_fragment}"></div>
+    <div th:replace="~{inquiry/payment_component::payment_fragment}"></div>
+    <div th:replace="~{inquiry/other_component::other_fragment}"></div>
+  </div>
