@@ -25,6 +25,7 @@
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data);
         if(data.message == '이미지 생성 성공'){
           document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud.png';
           document.querySelector("#btn1").disabled = false;
