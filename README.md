@@ -1,6 +1,6 @@
 # SpringBoot + Python 활용 Project
 발걸음 : 맞춤 신발 추천 쇼핑몰 <br>
-SpringBoot Python을 활용한 신발 추천 쇼핑몰 사이트
+SpringBoot를 활용한 신발 추천 쇼핑몰 사이트
 
 ## 🖥️ 프로젝트 소개
 프로젝트 소개란 작성 요망
