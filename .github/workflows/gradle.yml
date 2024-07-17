@@ -69,6 +69,7 @@ jobs:
         script: |
           chmod +x /home/ubuntu/deploy/deploy.sh
           chmod +x /home/ubuntu/deploy/wordcloud.sh
+          
           sh /home/ubuntu/deploy/deploy.sh
           sh /home/ubuntu/deploy/wordcloud.sh
 
