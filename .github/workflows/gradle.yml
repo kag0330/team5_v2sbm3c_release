@@ -59,7 +59,7 @@ jobs:
         target: "/home/ubuntu/deploy"
         strip_components: 2
 
-    - name: Execute deploy wordcloud script
+    - name: Execute deploy script
       uses: appleboy/ssh-action@master
       with:
         username: ${{ secrets.SERVER_USERNAME }}
@@ -68,9 +68,17 @@ jobs:
         script_stop: true
         script: |
           chmod +x /home/ubuntu/deploy/deploy.sh
-          chmod +x /home/ubuntu/deploy/wordcloud.sh
-          
           sh /home/ubuntu/deploy/deploy.sh
+
+    - name: Execute wordcloud script
+      uses: appleboy/ssh-action@master
+      with:
+        username: ${{ secrets.SERVER_USERNAME }}
+        host: ${{ secrets.SERVER_HOST }}
+        key: ${{ secrets.SERVER_KEY }}
+        script_stop: false
+        script: |
+          chmod +x /home/ubuntu/deploy/wordcloud.sh
           sh /home/ubuntu/deploy/wordcloud.sh
 
         
