@@ -79,7 +79,7 @@ jobs:
         script_stop: false
         script: |
           chmod +x /home/ubuntu/deploy/wordcloud.sh
-          sh /home/ubuntu/deploy/wordcloud.sh
+          nohup sh /home/ubuntu/deploy/wordcloud.sh > /dev/null 2>&1 &
 
         
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
