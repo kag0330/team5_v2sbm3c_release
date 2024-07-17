@@ -57,11 +57,34 @@ public class ReviewCont {
   public int record_per_page = 5;
   public int page_per_block = 5;
 
+  private void review_table_paging(Model model, int shoesno, String word, String selectType, int now_page) {
+    ArrayList<ShoesAllVO> review = this.reviewProc.list_search_paging(shoesno, word, selectType, now_page,
+        this.record_per_page);
+    model.addAttribute("rating", this.reviewProc.review_avg(shoesno));
+    model.addAttribute("word", word);
+    if (review.size() == 0) {
+      model.addAttribute("no_review", true);
+    } else {
+
+      model.addAttribute("review", review);
+
+      int search_count = this.reviewProc.list_search_count(shoesno, word);
+      String paging = this.reviewProc.pagingBox(now_page, "", "/review/list/" + shoesno, search_count,
+          this.record_per_page, this.page_per_block);
+      int no = search_count - ((now_page - 1) * this.record_per_page);
+      model.addAttribute("paging", paging);
+      model.addAttribute("now_page", now_page);
+      model.addAttribute("no", no);
+      model.addAttribute("selectType", selectType);
+    }
+  }
+
   /* 후기 작성 */
   @PostMapping(value = "/create")
   @ResponseBody
   public Map<String, Object> create(HttpSession session, Model model, @RequestBody Map<String, String> map) {
 
+    MemberVO memberVO = (MemberVO)session.getAttribute("login");
     // session memberno 추가
     // int memberno = session.getMemberno();
 
@@ -69,7 +92,7 @@ public class ReviewCont {
     reviewVO.setContents(map.get("contents"));
     reviewVO.setRating(Double.valueOf(map.get("rating")));
     reviewVO.setShoesno(Integer.parseInt(map.get("shoesno")));
-    reviewVO.setMemberno(1);
+    memberVO.getMemberno();
 
     int cnt = this.reviewProc.create(reviewVO);
     Map<String, Object> response = new HashMap<>();
@@ -92,30 +115,16 @@ public class ReviewCont {
    */
   @GetMapping(value = "/list/{shoesno}")
   public String list(HttpSession session, Model model, @PathVariable("shoesno") Integer shoesno,
+      @RequestParam(name = "selectType", defaultValue = "") String selectType,
       @RequestParam(name = "word", defaultValue = "") String word,
-      @RequestParam(name = "now_page", defaultValue = "1") int now_page) {
-    MemberVO memberVO = (MemberVO)session.getAttribute("login");
-    if(memberVO != null) {
+      @RequestParam(name = "now_page", defaultValue = "1") int now_page
+      ) {
+    MemberVO memberVO = (MemberVO) session.getAttribute("login");
+    if (memberVO != null) {
       model.addAttribute("memberno", memberVO.getMemberno());
       model.addAttribute("nickname", memberVO.getNickname());
     }
-    
-    ArrayList<ShoesAllVO> review = this.reviewProc.list_search_paging(shoesno, word, now_page, this.record_per_page);
-    if (review.size() == 0) {
-      model.addAttribute("no_review", true);
-    }else {
-      model.addAttribute("review", review);
-      
-      int search_count = this.reviewProc.list_search_count(shoesno, word);
-      String paging = this.reviewProc.pagingBox(now_page, "", "/review/list/"+shoesno, search_count, this.record_per_page,
-          this.page_per_block);
-
-      int no = search_count - ((now_page - 1) * this.record_per_page);
-
-      model.addAttribute("paging", paging);
-      model.addAttribute("now_page", now_page);
-      model.addAttribute("no", no);
-    }
+    review_table_paging(model, shoesno, word, selectType, now_page);
     return "review/list";
   }
 

@@ -272,7 +272,28 @@
     min-width: 1120px;
     padding: 0 30px;
   }
-
+  
+  /* 리뷰 - 좋아요, 최신, 평점, 검색 영역  */
+  .review_select {
+    background-color: slategray;
+    border-radius: 5px;
+    padding: 8px;
+    width: 50%;
+    margin-bottom: 15px;
+    justify-content: center;
+    /* 수평 가운데 정렬 */
+    flex-direction: column;
+    /* 내부 요소들을 세로로 배치 */
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 margin 설정 */
+    margin-bottom:15px;
+  }
+  
+  .review_select_type:hover {
+    color: white;
+    text-decoration: none;
+  }
+  
   /* 상세 후기 */
   .review {
     border: 1px solid #ccc;

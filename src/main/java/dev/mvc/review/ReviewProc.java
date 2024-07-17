@@ -132,7 +132,7 @@ public class ReviewProc implements ReviewProcInter {
   }
 
   @Override
-  public ArrayList<ShoesAllVO> list_search_paging(int shoesno, String word, int now_page, int record_per_page) {
+  public ArrayList<ShoesAllVO> list_search_paging(int shoesno, String word, String selectType, int now_page, int record_per_page) {
     int begin_of_page = (now_page - 1) * record_per_page;
 
     int start_num = begin_of_page + 1;
@@ -142,6 +142,7 @@ public class ReviewProc implements ReviewProcInter {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("shoesno", shoesno);
     map.put("word", word);
+    map.put("selectType", selectType);
     map.put("shoesno", shoesno);
     map.put("start_num", start_num);
     map.put("end_num", end_num);
@@ -149,4 +150,11 @@ public class ReviewProc implements ReviewProcInter {
     return list;
   }
 
+  @Override
+  public double review_avg(int shoesno) {
+    Double avg = this.reviewDAO.review_avg(shoesno);
+    return avg;
+  }
+
 }
+

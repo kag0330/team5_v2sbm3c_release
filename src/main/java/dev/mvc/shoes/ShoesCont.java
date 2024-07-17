@@ -178,7 +178,6 @@ public class ShoesCont {
    */
   @GetMapping(value = "/{shoesno}")
   public String details(HttpSession session, Model model, @PathVariable("shoesno") Integer shoesno,
-      @RequestParam(name = "sizes", required = false) Integer sizes,
       @RequestParam(name = "categoryno", defaultValue = "0", required = false) int categoryno) {
     // session에 들어있는 로그인 값
     MemberVO memberVO = (MemberVO) session.getAttribute("login");
@@ -186,29 +185,25 @@ public class ShoesCont {
       model.addAttribute("memberno", memberVO.getMemberno());
       model.addAttribute("nickname", memberVO.getNickname());
     }
-
+    
     ShoesAllVO shoesAllVO = this.shoesProc.read(shoesno);
     model.addAttribute("shoesAllVO", shoesAllVO);
     
-    
 //    ArrayList<Integer> sizes = this.optionProc.option_sizes(shoesno);
 //    model.addAttribute("sizes", sizes);
-
-    ArrayList<String> color = this.optionProc.option_color(shoesno);
-    model.addAttribute("color", color);
-
+//    ArrayList<String> color = this.optionProc.option_color(shoesno);
+//    model.addAttribute("color", color);
+    
     System.out.println(shoesAllVO.toString());
-
-
-    ArrayList<Integer> size_list = this.optionProc.option_sizes(shoesno);
-    model.addAttribute("size_list", size_list);
     
     ArrayList<ShoesAllVO> review = this.reviewProc.review_list(shoesno);
+    
+    model.addAttribute("rating", this.reviewProc.review_avg(shoesno));
     if (review.size() == 0) {
       model.addAttribute("no_review", true);
     }
+    
     model.addAttribute("review", review);
-
     ArrayList<ReportTypeVO> reportType = this.reportTypeProc.search_type();
     model.addAttribute("reportType", reportType); 
     

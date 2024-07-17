@@ -57,24 +57,37 @@
       </if>
   </select>
 
-  <select id="list_search_paging" resultMap="reviewPaging" parameterType="Map">
-    SELECT * FROM (
-      SELECT r.reviewno, r.contents, r.rating, r.rdate, s.title, m.memberno, m.nickname, s.shoesno,
-        (SELECT COUNT(*) FROM likes l WHERE l.reviewno = r.reviewno) AS likes,
-        (SELECT COUNT(*) FROM hates h WHERE h.reviewno = r.reviewno) AS hates,
-      ROWNUM AS rnum FROM review r
-      JOIN shoes s ON r.shoesno = s.shoesno
-      JOIN member m ON r.memberno = m.memberno
-      WHERE r.shoesno = #{shoesno}
+   <select id="list_search_paging" resultMap="reviewPaging" parameterType="Map">
+  SELECT * FROM (
+    SELECT r.reviewno, r.contents, r.rating, r.rdate, s.title, m.memberno, m.nickname, s.shoesno,
+      (SELECT COUNT(*) FROM likes l WHERE l.reviewno = r.reviewno) AS likes,
+      (SELECT COUNT(*) FROM hates h WHERE h.reviewno = r.reviewno) AS hates,
+    ROWNUM AS rnum FROM review r
+    JOIN shoes s ON r.shoesno = s.shoesno
+    JOIN member m ON r.memberno = m.memberno
+    WHERE r.shoesno = #{shoesno}
     <if test="word != null and word != ''">
-        AND UPPER(r.contents) LIKE '%' || UPPER(#{word}) || '%'
-      </if>
-    ORDER BY r.reviewno DESC
-      )
-      WHERE rnum &gt; = #{start_num} AND rnum &lt; = #{end_num}
-  </select>
-  
-    <resultMap id="reviewPaging" type="dev.mvc.shoes.ShoesAllVO">
+      AND UPPER(r.contents) LIKE '%' || UPPER(#{word}) || '%'
+    </if>
+    <choose>
+      <when test="selectType == null or selectType == '' or selectType == 'new'">
+        ORDER BY r.reviewno DESC
+      </when>
+      <when test="selectType == 'high'">
+        ORDER BY r.rating DESC
+      </when>
+      <when test="selectType == 'low'">
+        ORDER BY r.rating ASC
+      </when>
+      <otherwise>
+        ORDER BY r.reviewno DESC
+      </otherwise>
+    </choose>
+    )
+    WHERE rnum &gt;= #{start_num} AND rnum &lt;= #{end_num}
+</select>
+
+  <resultMap id="reviewPaging" type="dev.mvc.shoes.ShoesAllVO">
     <association property="reviewVO" javaType="dev.mvc.review.ReviewVO">
       <id property="reviewno" column="reviewno" />
       <result property="contents" column="contents" />
@@ -94,6 +107,11 @@
       <result property="nickname" column="nickname" />
     </association>
   </resultMap>
+  
+  <select id="review_avg" resultType="Double" parameterType="Integer">
+    SELECT NVL(AVG(rating), 0) as rating FROM review
+    WHERE shoesno = #{shoesno}
+  </select>
   
   <insert id="create" parameterType="dev.mvc.review.ReviewVO">
     INSERT INTO review(reviewno, contents, rating, rdate, shoesno, memberno)

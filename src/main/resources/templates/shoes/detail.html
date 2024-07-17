@@ -3,7 +3,16 @@
 <!-- layout.html 상속-->
 
 <div layout:fragment="content">
-    <style type="text/css">
+
+    <div class="detail_container">
+      <span th:if="${not #strings.isEmpty(session.login)}">
+        <input type="hidden" id="mymemberno" th:data-mymemberno="${memberno}">
+      </span>
+      <input type="hidden" id="shoesno" th:data-shoesno="${shoesAllVO.shoesVO.shoesno}">
+
+
+
+      <style type="text/css">
         #wrap {
           max-width: 870px;
           display: flex;
@@ -99,7 +108,7 @@
           height: 3rem;
           text-align: center;
           /* 폼 컨트롤 너비 조정 */
-          
+
           /* 위 여백 */
           display: inline-block;
           /* 인라인 요소로 표시하여 가운데 정렬 적용 */
@@ -143,24 +152,19 @@
           background-color: #f8f8f8;
           font-size: 16px;
         }
-        
+
         .optionDiv {
-      width: max-content;
-      margin: 0px auto;
-    }
+          width: max-content;
+          margin: 0px auto;
+        }
 
-    .optionDiv::after {
-      content: '';
-      display: block;
-      clear: both;
-      }
-      
-      </style>     
-    <div class="detail_container">
-      <input type="hidden" id="mymemberno" th:data-mymemberno="${memberno}" th:if="${not #strings.isEmpty(session.login)}">
-      <input type="hidden" id="shoesno" th:data-shoesno="${shoesAllVO.shoesVO.shoesno}">
+        .optionDiv::after {
+          content: '';
+          display: block;
+          clear: both;
+        }
+      </style>
 
-      
 
       <div id="wrap" class="product">
         <!-- 왼쪽: 이미지 -->
@@ -172,7 +176,7 @@
         <div class="product-details">
           <h1 class="title" th:text="${shoesAllVO.shoesVO.title}"></h1>
           <p class="product-description" th:text="'설명 : ' + ${shoesAllVO.shoesVO.contents}"></p>
-<span th:if="${shoesAllVO.shoesVO.discount > 0}" class="sale" style="font-size: 30px;">SALE </span>
+          <span th:if="${shoesAllVO.shoesVO.discount > 0}" class="sale" style="font-size: 30px;">SALE </span>
           <span th:if="${shoesAllVO.shoesVO.discount > 0}" class="" style="font-size: 30px;"
             th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.discount, 1, 'COMMA')}  + '%'"></span>
           <p th:if="${shoesAllVO.shoesVO.discount > 0}" style="font-size: 30px;">원가:</span>
@@ -190,41 +194,43 @@
                 <span th:if="${shoesAllVO.shoesVO.discount == 0}" style="font-size: 25px;"
                   th:text="${#numbers.formatInteger(shoesAllVO.shoesVO.price, 3, 'COMMA')} +'원 '"></span>
 
-          <div class="color-selection">
-        <h2>옵션 선택</h2>
-        <div class="optionDiv">
-          <select class="color-select" id="optionSelect">
-            <option selected>옵션을 선택해주세요.</option>
-            <option th:each="option :${options}" th:disabled="${option.amount <= 0}" th:value="${option.optionno}">
-              <th:block th:utext="${@ThymeleafUtils.formatnbsp(
+                <div class="color-selection">
+                  <h2>옵션 선택</h2>
+                  <div class="optionDiv">
+                    <select class="color-select" id="optionSelect">
+                      <option selected>옵션을 선택해주세요.</option>
+                      <option th:each="option :${options}" th:disabled="${option.amount <= 0}"
+                        th:value="${option.optionno}">
+                        <th:block th:utext="${@ThymeleafUtils.formatnbsp(
                                    optionStat.count + '.    ' + 
                                    '크기: ' + option.sizes + '    ' +
                                    '색상: ' + option.color + '    ' +
                                    '남은 수량: ' + option.amount + '개')}">
-              </th:block>
-            </option>
-          </select>
-          <div style="border: 1px solid black; float: right; height: 3.1rem; background-color: #ddd;">수량선택
-            <input style="width: 50px; height: 2.9rem; border: 0px;" type="number" id="amountInput" min="1" disabled>
-          </div>
-        </div>
-      </div>
-          
-          <!-- 버튼들 -->
-          <div class="button-container">
-            <button class="detail_btnl">장바구니</button>
-            <button class="detail_btnr" onclick="send()">구매하기</button>
-          </div>
-          
+                        </th:block>
+                      </option>
+                    </select>
+                    <div style="border: 1px solid black; float: right; height: 3.1rem; background-color: #ddd;">수량선택
+                      <input style="width: 50px; height: 2.9rem; border: 0px;" type="number" id="amountInput" min="1"
+                        disabled>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 버튼들 -->
+                <div class="button-container">
+                  <button class="detail_btnl">장바구니</button>
+                  <button class="detail_btnr" onclick="send()">구매하기</button>
+                </div>
+
         </div>
       </div>
     </div>
 
     <div th:replace="~{review/review_component::review_fragment}"></div>
     <div th:replace="~{report/report_component::report_fragment}"></div>
-          
 
-<!--                 <div class="size-selection">
+
+    <!--                 <div class="size-selection">
                   <p class="size-title">SIZE</p>
                   <select name="sizes" id="sizes" class="size-select sizes">
                     <option value="">사이즈</option>
@@ -308,106 +314,96 @@
       </script>
 -->
 
-    <!-- 후기 답글 -->
-    <div class="widget_item_comment_container">
-      <div class="widget_answer_img"></div>
-      <div class="widget_item_comment_content">
-        <p>내용<br></p>
-        <div class="widget_item_comment_content_1">운영자</div>
-      </div>
-    </div>
-    <div class="between_line"></div>
-    <!-- 후기 답글 끝-->
-
-  
-  <script th:inline="javascript">
-    const memberno = /*[[${session.login != null ? session.login.memberno : null}]]*/"";
-    let options = /*[[${options}]]*/"";
-
-    let optionSelect = document.getElementById('optionSelect');
-    let amountInput = document.getElementById('amountInput');
-
-    let sizes = "";
-    let color = "";
-
-    optionSelect.addEventListener('change', function () {
-      let selectedValue = this.value;
-      let selectedOption = options.find(option => option.optionno == selectedValue);
-      if (selectedOption) {
-        amountInput.disabled = false;
-        amountInput.max = selectedOption.amount;
-        sizes = selectedOption.sizes;
-        color = selectedOption.color;
-      } else {
-        amountInput.disabled = true;
-        amountInput.value = null;
-      }
-    });
-
-    amountInput.addEventListener('change', function () {
-      if (parseInt(amountInput.value) > parseInt(amountInput.max)) {
-        amountInput.value = amountInput.max;
-      }
-
-      if (parseInt(amountInput.value) <= parseInt(amountInput.min)) {
-        amountInput.value = amountInput.min;
-      }
-    });
 
 
+    <script th:inline="javascript">
+      const memberno = /*[[${session.login != null ? session.login.memberno : null}]]*/"";
+      let options = /*[[${options}]]*/"";
 
-    function send() {
-      let basketList = [];
-      
-      let price = document.querySelector(".product-afterprice").innerText.replace(/[^0-9]/g, '');
-
-      let amountInput = document.getElementById('amountInput');
       let optionSelect = document.getElementById('optionSelect');
-      let selected = optionSelect.options[optionSelect.selectedIndex].value;
-      if (amountInput.value == null || amountInput.value == 0 || (amountInput.value < amountInput.max)) {
-        amountInput.focus();
-        return false;
-      }
-      if (memberno == null || memberno == "") {
-        alert("로그인 후 구매하실 수 있습니다.");
-        return false;
-      }
+      let amountInput = document.getElementById('amountInput');
 
-      basketList.push({
-        optionno: selected,
-        amount: parseInt(amountInput.value),
-        price: parseInt(price) * parseInt(amountInput.value)
+      let sizes = "";
+      let color = "";
+
+      optionSelect.addEventListener('change', function () {
+        let selectedValue = this.value;
+        let selectedOption = options.find(option => option.optionno == selectedValue);
+        if (selectedOption) {
+          amountInput.disabled = false;
+          amountInput.max = selectedOption.amount;
+          sizes = selectedOption.sizes;
+          color = selectedOption.color;
+        } else {
+          amountInput.disabled = true;
+          amountInput.value = null;
+        }
       });
 
-      fetch(window.location.pathname + '/payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          basket: basketList,
-          memberno: memberno,
-        }),
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok' + response.statusText);
+      amountInput.addEventListener('change', function () {
+        if (parseInt(amountInput.value) > parseInt(amountInput.max)) {
+          amountInput.value = amountInput.max;
         }
-        return response.text();
-      })
-        .then((data) => {
-          if (!data) {
-            alert('결제주문이 실패하였습니다.');
-            return false;
-          }
-          alert('결제주문이 성공하였습니다.');
-          location.href = '/member/payment/order';
-        })
-        .catch((error) => {
-          alert('에러가 발생하였습니다. 관리자에게 연락하세요.');
-        });
-    }
-  </script>
-  <script src="/js/basket.js"></script>
-</div>
-</html>
 
+        if (parseInt(amountInput.value) <= parseInt(amountInput.min)) {
+          amountInput.value = amountInput.min;
+        }
+      });
+
+
+
+      function send() {
+        let basketList = [];
+
+        let price = document.querySelector(".product-afterprice").innerText.replace(/[^0-9]/g, '');
+
+        let amountInput = document.getElementById('amountInput');
+        let optionSelect = document.getElementById('optionSelect');
+        let selected = optionSelect.options[optionSelect.selectedIndex].value;
+        if (amountInput.value == null || amountInput.value == 0 || (amountInput.value < amountInput.max)) {
+          amountInput.focus();
+          return false;
+        }
+        if (memberno == null || memberno == "") {
+          alert("로그인 후 구매하실 수 있습니다.");
+          return false;
+        }
+
+        basketList.push({
+          optionno: selected,
+          amount: parseInt(amountInput.value),
+          price: parseInt(price) * parseInt(amountInput.value)
+        });
+
+        fetch(window.location.pathname + '/payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            basket: basketList,
+            memberno: memberno,
+          }),
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok' + response.statusText);
+          }
+          return response.text();
+        })
+          .then((data) => {
+            if (!data) {
+              alert('결제주문이 실패하였습니다.');
+              return false;
+            }
+            alert('결제주문이 성공하였습니다.');
+            location.href = '/member/payment/order';
+          })
+          .catch((error) => {
+            alert('에러가 발생하였습니다. 관리자에게 연락하세요.');
+          });
+      }
+    </script>
+    <script src="/js/basket.js"></script>
+</div>
+
+</html>

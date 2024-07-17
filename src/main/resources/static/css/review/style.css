@@ -39,3 +39,41 @@
             margin-right:5px;
             font-size: 2rem;
 }
+
+  /* 상세 후기 */
+  .review {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    width: 50%;
+    margin-bottom: 15px;
+    justify-content: center;
+    /* 수평 가운데 정렬 */
+    flex-direction: column;
+    /* 내부 요소들을 세로로 배치 */
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 margin 설정 */
+
+  }
+  
+  
+  .review_create {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    width: 50%;
+    margin-bottom: 15px;
+    justify-content: center;
+    /* 수평 가운데 정렬 */
+    flex-direction: column;
+    /* 내부 요소들을 세로로 배치 */
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 margin 설정 */
+
+  }
+
+  
+  .title{
+    text-align: center;
+    font-size: 30px;
+  }

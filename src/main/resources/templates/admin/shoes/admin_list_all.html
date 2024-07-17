@@ -11,14 +11,14 @@
 
     <span th:if="${word!=null and word!=''}" th:text="|${word} ${no} 건|">
   </div>
-  <div class="container mt-3">
+  <div class="container mt-3" style="max-width: 1000px;">
     <div class="card">
-      <div class="card-header bg-primary text-white text-center" style="font-size: 20px;">
+      <div class="text-center" style="font-size: 25px; background: lightgray;" >
         신발 목록
         <aside class="aside_right">
-          <a href="/admin/shoes/admin_create" title="등록" class="text-white"><i class="fas fa-plus-circle"></i></a>
+          <a href="/admin/shoes/admin_create" title="등록" ><i class="fas fa-plus-circle"></i></a>
           <span class="menu_devide">│</span>
-          <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+          <a href="javascript: location.reload();" style="margin-right: 10px;" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
         </aside>
         <div th:replace="~{admin/shoes/list_search_component::list_search_fragment}"></div>
       </div>

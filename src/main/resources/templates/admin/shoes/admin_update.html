@@ -20,9 +20,9 @@
 
     <div class="container mt-3" style="max-width: 800px;">
       <div class="card">
-        <div class="card-header bg-primary text-white text-center">
+        <div class="text-center" style="background: lightgray;">
           <span th:text="${shoesVO.title} + '  >  수정 '" style="font-size: 20px;"
-            class="bg-primary text-white text-center"></span>
+            class="text-center"></span>
 
 
           <aside class="aside_right">
@@ -33,7 +33,7 @@
             <a th:href="@{|/admin/shoes/admin_delete/${shoesVO.shoesno}?word=${word}&now_page=${now_page}|}"
               title="신발 삭제"><i class="fas fa-trash-alt"></i></a>
             <span class="menu_devide">│</span>
-            <a href="javascript: location.reload();" title="새로 고침"><i class="fas fa-sync-alt"></i></a>
+            <a href="javascript: location.reload();" title="새로 고침" style="margin-right: 10px;"><i class="fas fa-sync-alt"></i></a>
           </aside>
         </div>
 
@@ -88,7 +88,7 @@
             </div>
 
             <div class="content_body_bottom">
-              <button type="submit" class="btn btn-primary btn-sm">저장</button>
+              <button type="submit" class="btn btn-sm" style="background:lightgray;">저장</button>
               <button type="button"
                 th:attr="onclick=|location.href='/admin/shoes/admin_read/${shoesVO.shoesno}?word=${word}&now_page=${now_page}'|"
                 class="btn btn-secondary btn-sm">취소</button>

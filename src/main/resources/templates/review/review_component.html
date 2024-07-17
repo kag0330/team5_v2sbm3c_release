@@ -1,6 +1,6 @@
 <div th:fragment="review_fragment">
   <link rel="stylesheet" href="/css/review/style.css">
-  <h2 class="title">상품후기<span class="all">
+  <h2 class="title">상품후기 <span class="title" th:text="'(' + ${#numbers.formatDecimal(rating, 1, 1)} + '점)'"></span><span class="all">
       <a th:href="@{|/review/list/${shoesno}|}">
         상품 후기 모두보기
       </a>

@@ -1,7 +1,13 @@
 <div th:fragment="review_all_fragment">
   <link rel="stylesheet" href="/css/review/style.css">
+  <span th:if="${not #strings.isEmpty(session.login)}">
+    <input type="hidden" id="mymemberno" th:data-mymemberno="${memberno}">
+  </span>
   <input type="hidden" id="shoesno" th:data-shoesno="${shoesno}">
-  <h2 class="title">상품후기<span class="all">
+
+  <input type="hidden" id="shoesno" th:data-shoesno="${shoesno}">
+  <h2 class="title">상품후기 <span th:text="'(' + ${#numbers.formatDecimal(rating, 1, 1)} + '점)'"></span><span
+      class="all">
       <a th:href="@{|/shoes/${shoesno}|}">
         상품으로 이동
       </a>
@@ -12,8 +18,31 @@
         </svg></i>
     </span>
   </h2>
+  <div class="review_select">
+    <a class="review_select_type" th:href="@{|/review/list/${shoesno}?selectType=new|}"
+      th:style="${selectType == 'new'} ? 'margin-left: 1%; color: white;' : 'margin-left: 1%; color: silver;'">최신순</a>
+    <span class="menu_devide">│</span>
+    <a class="review_select_type" th:href="@{|/review/list/${shoesno}?selectType=high|}"
+      th:style="${selectType == 'high'} ? 'color: white;' : 'color: silver;'">평점 높은 순</a>
+    <span class="menu_devide">│</span>
+    <a class="review_select_type" th:href="@{|/review/list/${shoesno}?selectType=low|}"
+      th:style="${selectType == 'low'} ? 'color: white;' : 'color: silver;'">평점 낮은 순</a>
+
+    <div style="float:right;">
+      <form name="frm_search" method="get" th:action="@{|/review/list/${shoesno}|}">
+        <input type="text" name="word" id="word" th:value="${word}">
+        <button type='submit' class='btn-secondary'
+          style="padding: 2px 8px 0px 8px; margin: 0px 0px 2px 0px; border-radius: 5px;">검색</button>
+        <span th:if="${word != null and word != ''}">
+          <button type='button' class='btn-secondary'
+            style="padding: 2px 8px 0px 8px; margin: 0px 0px 2px 0px; border-radius: 5px;"
+            th:attr="onclick=@{|location.href='/review/list/${shoesno}'|}">검색 취소</button>
+        </span>
+      </form>
+    </div>
+  </div>
   <div class="no_review" th:if="${no_review}">
-    후기가 없습니다. 후기를 작성해주세요.
+    후기가 없습니다.
   </div>
   <div class="review" th:each="review : ${review}">
     <input type="hidden" class="nickname" th:value="${review.memberVO.nickname}">
@@ -56,7 +85,7 @@
       </div>
     </div>
   </div>
-
+  <div class="bottom_menu" th:utext="${paging}"></div>
   <div id="nickname" th:data-nickname="${nickname}"></div>
   <div class="review_create" style="margin-top: 20px;">
     <div style="font-size: 20px;">후기 작성</div>
@@ -73,6 +102,8 @@
       <button class="btn btn-secondary" id="createReview">작성하기</button>
     </div>
   </div>
+
+
   <script src="/js/review/create.js"></script>
   <script src="/js/review/update.js"></script>
   <script src="/js/review/delete.js"></script>
