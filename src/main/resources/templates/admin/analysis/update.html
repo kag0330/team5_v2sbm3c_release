@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{admin/layout}"> <!-- layout.html 상속-->
+
+<div layout:fragment="content">
+  <div class="title_line">
+    차트 수정
+  </div>
+
+  <aside class="aside_right">
+    <a href="/admin/analysis/list">차트 목록</a>
+    <span class="menu_devide">│</span>
+    <a href="/admin/analysis/create">차트 등록</a>
+    <span class="menu_devide">│</span>
+    <a href="javascript: location.reload();">새로 고침</a>
+  </aside>
+  
+  <div class="menu_line"></div>
+  
+  <div style="width: 60%; margin: 0px auto ">
+    
+    <form name="frm" id="frm" th:object="${analysisDTO}" method="post" action="/admin/analysis/update">
+      <input type="hidden" name="analysisno" th:field="*{analysisno}">
+
+      <div>
+        <label for="code">코드*</label>
+        <input type='text' name='code' id='code' value='1' required="required" autofocus="autofocus" placeholder="코드"
+          class="form-control form-control-sm" style="width: 30%;" th:field="*{code}">
+        <span>같은 주제를 분석하는 경우 분류 목적으로 사용</span>
+      </div>
+
+      <div>
+        <label for="title">분석 제목*</label>
+        <input type="text" name="title" id="title" value="" class="form-control form-control-sm" style="width: 50%;"
+          th:field="*{title}">
+      </div>
+
+      <div>
+        <label for='content'>분석 내용(스토리 텔링)*</label>
+        <textarea name='content' required="required" class="form-control" rows="12"
+          style='width: 100%;' th:text="*{content}"></textarea>
+      </div>
+
+      <div>
+        <label for="chart">차트 종류*</label>
+        <button type="button" class="btn btn-primary btn-sm" id="monthBtn1">월 판매량 가져오기</button>
+        <button type="button" class="btn btn-primary btn-sm" id="monthBtn2">월 접속자 수 가져오기</button>
+        <div class="loding"></div>
+        <input type="text" name="chart" id="chart" value="" class="form-control form-control-sm" style="width: 50%;"
+          th:field="*{chart}">
+        <span>1: 열 챠트, 2: 시간 열 챠트, 3: 파이 챠트, 4:라인 챠트</span>
+      </div>
+
+      <div>
+        <label for='data'>차트 데이터*</label>
+        <textarea name='data' required="required" class="form-control" rows="12" style='width: 100%;' th:text="*{data}"></textarea>
+      </div>
+
+      <div>
+        <label for="xlabel">X축 레이블</label>
+        <input type="text" name="xlabel" id="xlabel" value="" class="form-control form-control-sm" style="width: 50%;"
+          th:field="*{xlabel}">
+      </div>
+
+      <div>
+        <label for="ylabel">Y축 레이블</label>
+        <input type="text" name="ylabel" id="ylabel" value="" class="form-control form-control-sm" style="width: 50%;"
+          th:field="*{ylabel}">
+      </div>
+
+      <div>
+        <label for="legend">범례 이름</label>
+        <input type="text" name="legend" id="legend" value="" class="form-control form-control-sm" style="width: 50%;"
+          th:field="*{legend}">
+      </div>
+
+      <div class="content_body_bottom">
+        <button type="submit" class="btn btn-secondary btn-sm">등록</button>
+        <button type="button" onclick="history.back();" class="btn btn-secondary btn-sm">취소</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    document.querySelector("#monthBtn1").addEventListener('click', function(){
+      fetch('http://54.180.175.50:9094/sales_rate')
+      .then(response => {
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json(); 
+      })
+      .then(data => {
+        const formattedData = JSON.stringify(data);
+        document.querySelector("textarea[name=data]").value = formattedData;
+        document.querySelector("input[name=xlabel]").value = '월';
+        document.querySelector("input[name=ylabel]").value = '판매량';
+        document.querySelector("input[name=legend]").value = '판매량';
+        document.querySelector(".loding").innerHTML = '';
+        })
+        document.querySelector(".loding").innerHTML = '<img src="/images/progress.gif" style="width:10%;" />'
+    });
+    
+    document.querySelector("#monthBtn2").addEventListener('click', function(){
+      fetch('http://54.180.175.50:9094/unique_visitor')
+      .then(response => {
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.text(); 
+      })
+      .then(data => {
+        document.querySelector("textarea[name=data]").value = data;
+        document.querySelector("input[name=xlabel]").value = '날짜';
+        document.querySelector("input[name=ylabel]").value = '접속자 수';
+        document.querySelector("input[name=legend]").value = '접속자 수';
+        document.querySelector(".loding").innerHTML = '';
+        })
+        document.querySelector(".loding").innerHTML = '<img src="/images/progress.gif" style="width:10%;" />'
+    });
+    
+  </script>
+</div>
+
+</html>

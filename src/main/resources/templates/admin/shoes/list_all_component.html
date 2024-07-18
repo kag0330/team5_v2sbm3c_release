@@ -3,13 +3,11 @@
   <table class="table table-hover">
     <colgroup>
       <col style='width: 10%;' />
-      <col style='width: 18%;' />
+      <col style='width: 20%;' />
       <col style='width: 10%;' />
       <col style='width: 10%;' />
-      <col style='width: 28%;' />
-      <col style='width: 8%;' />
-      <col style='width: 8%;' />
-      <col style='width: 8%;' />
+      <col style='width: 35%;' />
+      <col style='width: 15%;' />
     </colgroup>
     <thead>
       <tr>
@@ -19,8 +17,6 @@
         <th class="th_bs">가격</th>
         <th class="th_bs">설명</th>
         <th class="th_bs">판매여부</th>
-        <th class="th_bs">댓글 보기</th>
-        <th class="th_bs">신발 삭제</th>
       </tr>
     </thead>
     <tbody>
@@ -32,8 +28,6 @@
         <td class="td_bs" th:text="${shoesVO.price}"></td>
         <td class="td_bs" th:text="${shoesVO.contents}"></td>
         <td class="td_bs" th:text="${shoesVO.visible}"></td>
-        <td class="td_bs"><img src="/cate/images/update.png" class="icon"></td>
-        <td class="td_bs"><img src="/cate/images/delete.png" class="icon"></td>
       </tr>
     </tbody>
   </table>

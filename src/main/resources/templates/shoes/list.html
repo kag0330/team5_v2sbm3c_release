@@ -48,7 +48,7 @@
       <div class="shoes" th:each="shoesVO, status:${list}">
         <div class="square">
           <a style="width: 100%;" th:href="@{|/shoes/${shoesVO.shoesno}|}">
-            <img th:each="shoesFile : ${shoesFileList}" th:src="${shoesFile.shoesno == shoesVO.shoesno} ? @{|/file/storage/${shoesFile.src}|} : '/images/no_image_x400.png'"><!-- 이미지 및 기타 정보 -->
+            <img th:if="${shoesVO.shoesno} == ${shoesFile.shoesno}" th:each="shoesFile : ${shoesFileList}" th:src="${shoesFile.shoesno == shoesVO.shoesno} ? @{|/file/storage/${shoesFile.src}|} : '/images/no_image_x400.png'"><!-- 이미지 및 기타 정보 -->
           </a>  
         </div>
         <p th:text="${shoesVO.title}"></p>

@@ -54,7 +54,7 @@ public class ReviewCont {
     System.out.println("-> ShoesCont created.");
   }
 
-  public int record_per_page = 5;
+  public int record_per_page = 10;
   public int page_per_block = 5;
 
   private void review_table_paging(Model model, int shoesno, String word, String selectType, int now_page) {
@@ -79,20 +79,20 @@ public class ReviewCont {
     }
   }
 
+
   /* 후기 작성 */
   @PostMapping(value = "/create")
   @ResponseBody
   public Map<String, Object> create(HttpSession session, Model model, @RequestBody Map<String, String> map) {
 
     MemberVO memberVO = (MemberVO)session.getAttribute("login");
-    // session memberno 추가
-    // int memberno = session.getMemberno();
+    
 
     ReviewVO reviewVO = new ReviewVO();
     reviewVO.setContents(map.get("contents"));
     reviewVO.setRating(Double.valueOf(map.get("rating")));
     reviewVO.setShoesno(Integer.parseInt(map.get("shoesno")));
-    memberVO.getMemberno();
+    reviewVO.setMemberno(memberVO.getMemberno());
 
     int cnt = this.reviewProc.create(reviewVO);
     Map<String, Object> response = new HashMap<>();

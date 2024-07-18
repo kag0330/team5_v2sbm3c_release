@@ -72,7 +72,8 @@ document.addEventListener("DOMContentLoaded", function() {
       body: JSON.stringify({
         contents: review,
         rating: rating.textContent,
-        shoesno: shoesno
+        shoesno: shoesno,
+        nickname: nickname
       })
     })
       .then(response => response.json())
@@ -89,4 +90,3 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 });
-

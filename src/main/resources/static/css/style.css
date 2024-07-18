@@ -880,7 +880,8 @@
   .text-center {
     text-align: center;
   }
-
+  
+  
   .modal {
     display: none;
     position: fixed;

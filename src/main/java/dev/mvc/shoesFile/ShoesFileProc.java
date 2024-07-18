@@ -13,6 +13,7 @@ public class ShoesFileProc implements ShoesFileProcInter {
 
   @Override
   public ArrayList<ShoesFileVO> list() {
+    System.out.println(shoesFileDAO.list());
     return this.shoesFileDAO.list();
   }
 

@@ -2,18 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="dev.mvc.shoes.ShoesDAOInter">
 
-  <insert id="admin_create" parameterType="Map"> DECLARE v_shoesno NUMBER; BEGIN
-    INSERT INTO shoes(shoesno, memberno, title, brand, price, contents, visible)
-    VALUES (SHOES_SEQ.nextval, #{shoesVO.memberno}, #{shoesVO.title},
-    #{shoesVO.brand}, #{shoesVO.price}, #{shoesVO.contents}, #{shoesVO.visible})
-    RETURNING shoesno INTO v_shoesno; INSERT INTO category_list (categorylistno,
-    categoryno, shoesno) SELECT CATEGORY_LIST_SEQ.nextval, list.* FROM ( <foreach
-      collection="categorylist" item="categoryno" separator="UNION ALL ">
-      SELECT #{categoryno} as categoryno,
-      v_shoesno as shoesno
-      from dual
-    </foreach>
-    ) list; END; </insert>
+  <insert id="admin_create" parameterType="Map">
+     DECLARE
+        v_shoesno NUMBER;
+    BEGIN
+        INSERT INTO shoes(shoesno, memberno, title, brand, price, contents, visible)
+        VALUES (SHOES_SEQ.nextval, #{shoesVO.memberno}, #{shoesVO.title}, #{shoesVO.brand}, #{shoesVO.price}, #{shoesVO.contents}, #{shoesVO.visible})
+        RETURNING shoesno INTO v_shoesno;
+        
+        INSERT INTO category_list (categorylistno, categoryno, shoesno)
+        SELECT CATEGORY_LIST_SEQ.nextval, list.* FROM (
+    <foreach collection="categorylist" item="categoryno" separator="UNION ALL ">
+          SELECT #{categoryno} as categoryno,
+          v_shoesno as shoesno
+          from dual
+        </foreach>
+    ) list;
+    END;
+  </insert>
 
   <update id="admin_update" parameterType="dev.mvc.shoes.ShoesVO">
     UPDATE SHOES
@@ -27,10 +33,13 @@
   </delete>
 
   <!-- 검색된 레코드 수 -->
-  <select id="list_search_count" resultType="int" parameterType="Map"> SELECT
+  <select id="list_search_count" resultType="int" parameterType="Map">
+    SELECT
     COUNT(*) as cnt FROM shoes s JOIN category_list cl ON s.shoesno = cl.shoesno
-    JOIN category c ON cl.categoryno = c.categoryno <if test="categoryno != 0">
-    WHERE cl.categoryno = #{categoryno} <if test="word != null and word != ''">
+    JOIN category c ON cl.categoryno = c.categoryno
+    <if test="categoryno != 0">
+      WHERE cl.categoryno = #{categoryno}
+      <if test="word != null and word != ''">
     AND (
         UPPER(s.title) LIKE '%' || UPPER(#{word}) || '%'
         OR UPPER(s.brand) LIKE '%' || UPPER(#{word}) || '%'
@@ -39,8 +48,7 @@
         )
       </if>
     </if>
-    <if
-      test="word != null and word != '' and (categoryno == 0)">
+    <if test="word != null and word != '' and (categoryno == 0)">
       WHERE
       (
       UPPER(s.title) LIKE '%' || UPPER(#{word}) || '%'
@@ -52,15 +60,17 @@
   </select>
 
 
-  <select id="list_search_paging" resultType="dev.mvc.shoes.ShoesVO"
-    parameterType="Map"> SELECT shoesno, title, brand, contents, price, visible,
+  <select id="list_search_paging" resultType="dev.mvc.shoes.ShoesVO" parameterType="Map">
+    SELECT shoesno, title, brand, contents, price, visible,
     discount FROM ( SELECT s.shoesno AS shoesno, s.title AS title, s.brand AS
     brand, s.contents AS contents, s.price AS price, s.visible AS visible,
     s.discount AS discount, ROW_NUMBER() OVER( ORDER BY CASE WHEN s.visible =
     'N' THEN 0 ELSE 1 END, s.shoesno DESC ) AS r FROM shoes s JOIN category_list
-    cl ON s.shoesno = cl.shoesno JOIN category c ON cl.categoryno = c.categoryno <if
-      test="categoryno != null and categoryno != ''"> WHERE cl.categoryno =
-    #{categoryno} <if test="word != null and word != ''">
+    cl ON s.shoesno = cl.shoesno JOIN category c ON cl.categoryno = c.categoryno
+    <if test="categoryno != null and categoryno != ''">
+      WHERE cl.categoryno =
+    #{categoryno}
+      <if test="word != null and word != ''">
         AND (
         UPPER(s.title) LIKE '%' || UPPER(#{word}) || '%'
         OR UPPER(s.brand) LIKE '%' || UPPER(#{word}) || '%'
@@ -69,8 +79,7 @@
         )
       </if>
     </if>
-    <if
-      test="word != null and word != '' and (categoryno == null or categoryno == '')">
+    <if test="word != null and word != '' and (categoryno == null or categoryno == '')">
     WHERE
       (
       UPPER(s.title) LIKE '%' || UPPER(#{word}) || '%'
@@ -79,15 +88,17 @@
       OR UPPER(s.price) LIKE '%' || UPPER(#{word}) || '%'
       )
     </if>
-    ) </select>
+    )
+  </select>
 
   <!-- 신발 상세 -->
   <select id="read" resultMap="shoesRead" parameterType="Integer">
     SELECT s.shoesno, c.categoryno, s.title, s.brand, s.contents, s.price,
-    s.discount, s.rating, c.subname, s.visible
+    s.discount, s.rating, c.subname, s.visible, sf.src
     FROM shoes s
     JOIN category_list cl ON s.shoesno = cl.shoesno
     JOIN category c ON cl.categoryno = c.categoryno
+    JOIN shoes_file sf ON sf.shoesno = s.shoesno
     WHERE s.shoesno = #{shoesno} AND ROWNUM = 1
   </select>
 
@@ -107,6 +118,11 @@
       <id property="categoryno" column="categoryno" />
       <result property="subname" column="subname" />
     </association>
+    
+      <association property="shoesFileVO" javaType="dev.mvc.shoesFile.ShoesFileVO">
+      <id property="sfshoesno" column="sfshoesno" />
+      <result property="src" column="src" />
+    </association>
   </resultMap>
 
   <select id="admin_read" resultType="dev.mvc.shoes.ShoesVO">
@@ -118,23 +134,27 @@
 
   <!-- 검색된 레코드 수 -->
   <select id="admin_list_search_count" resultType="int" parameterType="String">
-    SELECT COUNT(*) as cnt FROM shoes <if test="word != null and word != ''">
+    SELECT COUNT(*) as cnt FROM shoes
+    <if test="word != null and word != ''">
     WHERE UPPER(TITLE) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(BRAND) LIKE
       '%' || UPPER(#{word}) || '%'
     </if>
-    ORDER BY shoesno ASC </select>
+    ORDER BY shoesno ASC
+  </select>
 
   <!-- 신발 목록 정보 -->
-  <select id="admin_list_search_paging" resultType="dev.mvc.shoes.ShoesVO"
-    parameterType="Map"> SELECT SHOESNO, MEMBERNO, TITLE, BRAND, RATING, PRICE,
+  <select id="admin_list_search_paging" resultType="dev.mvc.shoes.ShoesVO" parameterType="Map">
+    SELECT SHOESNO, MEMBERNO, TITLE, BRAND, RATING, PRICE,
     DISCOUNT, CONTENTS, VISIBLE, r FROM ( SELECT SHOESNO, MEMBERNO, TITLE,
     BRAND, RATING, PRICE, DISCOUNT, CONTENTS, VISIBLE, rownum as r FROM ( SELECT
     SHOESNO, MEMBERNO, TITLE, BRAND, RATING, PRICE, DISCOUNT, CONTENTS, VISIBLE
-    FROM SHOES <if test="word != null and word != ''">
+    FROM SHOES
+    <if test="word != null and word != ''">
       WHERE UPPER(TITLE) LIKE '%' || UPPER(#{word}) || '%' OR UPPER(BRAND) LIKE
     '%' || UPPER(#{word}) || '%'
     </if>
-    ORDER BY shoesno ASC ) ) WHERE r &gt; = #{start_num} AND r &lt; = #{end_num} </select>
+    ORDER BY shoesno ASC ) ) WHERE r &gt; = #{start_num} AND r &lt; = #{end_num}
+  </select>
 
   <select id="admin_list_all" resultType="dev.mvc.shoes.ShoesVO">
     SELECT SHOESNO, MEMBERNO, TITLE, BRAND, RATING, PRICE, DISCOUNT, CONTENTS,
@@ -157,8 +177,7 @@
     WHERE shoesno = #{shoesno}
   </update>
 
-  <select id="inquiry_select" resultType="dev.mvc.shoes.ShoesVO"
-    parameterType="String">
+  <select id="inquiry_select" resultType="dev.mvc.shoes.ShoesVO" parameterType="String">
     select shoesno, title, brand from shoes
     WHERE UPPER(title) LIKE '%' || UPPER(#{word}) || '%'
     OR UPPER(brand) LIKE '%' || UPPER(#{word}) || '%'
@@ -184,8 +203,7 @@
     ORDER BY rdate DESC
   </select>
 
-  <select id="Shoes_discount" resultType="dev.mvc.shoes.ShoesVO"
-    parameterType="Integer">
+  <select id="Shoes_discount" resultType="dev.mvc.shoes.ShoesVO" parameterType="Integer">
     SELECT *
     FROM shoes
     WHERE discount > 0
@@ -196,12 +214,12 @@
     FROM category
     WHERE categoryno = #{categoryno}
   </select>
-  
+
   <select id="Shoes_girl" resultType="dev.mvc.category.CategoryVO" parameterType="Integer">
     SELECT *
     FROM category
     WHERE categoryno = #{categoryno}
   </select>
-  
-  
+
+
 </mapper>

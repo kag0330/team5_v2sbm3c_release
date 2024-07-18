@@ -5,7 +5,11 @@
   <div style="text-align: center;">
     <button class="btn btn-primary" onclick="create()">최신 이미지 생성하기</button>
     <div>
-      <img class="viewimg" style="width: 70%;" src="/wordcloud/review_wordcloud.png"><br>
+      <img class="viewimg" style="width: 70%;" src="/wordcloud/review_wordcloud.png"><br><br>
+      <div style="margin-bottom:30px;">
+        <span>Download IMG: </span>
+        <a id="download" href="#">NONE</a><br>
+      </div>
       <button type="button" id="btn1" class="btn btn-primary" >WordCloud</button>
       <button type="button" id="btn2" class="btn btn-primary" >Mask</button>
       <button type="button" id="btn3" class="btn btn-primary" >ColorMap</button>
@@ -28,6 +32,9 @@
         console.log(data);
         if(data.message == '이미지 생성 성공'){
           document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud.png';
+          document.querySelector("#download").href="/download?dir=/wordcloud/&filename=review_wordcloud.png&downname=review_wordcloud.png";
+          document.querySelector("#download").innerHTML = "review_wordcloud";
+          
           document.querySelector("#btn1").disabled = false;
           document.querySelector("#btn2").disabled = false;
           document.querySelector("#btn3").disabled = false; 
@@ -45,14 +52,20 @@
     
     document.querySelector("#btn1").addEventListener("click", function(){
       document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud.png';
+      document.querySelector("#download").href="/download?dir=/wordcloud/&filename=review_wordcloud.png&downname=review_wordcloud.png";
+      document.querySelector("#download").innerHTML = "review_wordcloud";
     })
     
     document.querySelector("#btn2").addEventListener("click", function(){
       document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud_mask.png';
+      document.querySelector("#download").href="/download?dir=/wordcloud/&filename=review_wordcloud_mask.png&downname=review_wordcloud_mask.png";
+      document.querySelector("#download").innerHTML = "review_wordcloud_mask";
     })
     
     document.querySelector("#btn3").addEventListener("click", function(){
       document.querySelector(".viewimg").src = url + '/wordcloud/review_wordcloud_colormap.png';
+      document.querySelector("#download").href="/download?dir=/wordcloud/&filename=review_wordcloud_colormap.png&downname=review_wordcloud_colormap.png";
+      document.querySelector("#download").innerHTML = "review_wordcloud_colormap";
     })
 
   </script>

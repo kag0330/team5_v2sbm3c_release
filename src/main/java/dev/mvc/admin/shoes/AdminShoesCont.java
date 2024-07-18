@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import dev.mvc.category.CategoryProcInter;
 import dev.mvc.category.CategoryVO;
 import dev.mvc.member.MemberProcInter;
-import dev.mvc.member.MemberVO;
 import dev.mvc.option.OptionProcInter;
 import dev.mvc.option.OptionVO;
 import dev.mvc.review.ReviewProcInter;
@@ -54,7 +53,7 @@ public class AdminShoesCont {
   private ReviewProcInter reviewProc;
 
   /** 페이지당 출력할 레코드 갯수, nowPage는 1부터 시작 */
-  public int record_per_page = 5;
+  public int record_per_page = 10;
 
   /** 블럭당 페이지 수, 하나의 블럭은 10개의 페이지로 구성됨 */
   public int page_per_block = 5;
@@ -173,8 +172,6 @@ public class AdminShoesCont {
   public Map<String, Object> create_process(HttpSession session, Model model, @RequestBody Map<String, Object> map) {
 
     ArrayList<Integer> categorylist = (ArrayList<Integer>) map.get("subcategorylist");
-    
-    MemberVO memberVO = (MemberVO)session.getAttribute("login");
 
     String title = (String) map.get("title");
     String brand = (String) map.get("brand");
@@ -184,7 +181,6 @@ public class AdminShoesCont {
 
     ShoesVO shoesVO = new ShoesVO();
     shoesVO.setMemberno(1); // 로그인으로 수정
-//    shoesVO.setMemberno(memberVO.getMemberno()); // 로그인으로 수정
     shoesVO.setTitle(title);
     shoesVO.setBrand(brand);
     shoesVO.setPrice(price);

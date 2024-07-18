@@ -12,10 +12,10 @@
       JOIN member m ON r.memberno = m.memberno
       LEFT JOIN likes l ON r.reviewno = l.reviewno
       LEFT JOIN hates h ON r.reviewno = h.reviewno
-      WHERE r.shoesno = 1
+      WHERE r.shoesno = #{shoesno}
       GROUP BY r.reviewno, r.contents, r.rating, r.rdate, s.title, m.memberno, m.nickname
       ORDER BY r.reviewno DESC
-    ) WHERE ROWNUM &lt; = 5
+    ) WHERE ROWNUM &lt; = 10
   </select>
 
   <resultMap id="reviewRead" type="dev.mvc.shoes.ShoesAllVO">
@@ -71,7 +71,7 @@
     </if>
     <choose>
       <when test="selectType == null or selectType == '' or selectType == 'new'">
-        ORDER BY r.reviewno DESC
+        ORDER BY r.rdate DESC
       </when>
       <when test="selectType == 'high'">
         ORDER BY r.rating DESC

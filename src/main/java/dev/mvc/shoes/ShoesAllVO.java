@@ -7,6 +7,7 @@ import dev.mvc.likes.LikesVO;
 import dev.mvc.member.MemberVO;
 import dev.mvc.option.OptionVO;
 import dev.mvc.review.ReviewVO;
+import dev.mvc.shoesFile.ShoesFileVO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,4 +22,5 @@ public class ShoesAllVO {
   private LikesVO likesVO;
   private MemberVO memberVO;
   private BasketVO basketVO;
+  private ShoesFileVO shoesFileVO;
 }
