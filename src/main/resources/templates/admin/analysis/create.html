@@ -90,8 +90,8 @@
         return response.text(); 
       })
       .then(data => {
-        const formattedData = JSON.stringify(data);
-        document.querySelector("textarea[name=data]").value = formattedData;
+        
+        document.querySelector("textarea[name=data]").value = data;
         document.querySelector("input[name=xlabel]").value = '월';
         document.querySelector("input[name=ylabel]").value = '판매량';
         document.querySelector("input[name=legend]").value = '판매량';
