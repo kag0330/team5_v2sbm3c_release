@@ -131,7 +131,7 @@
     INNER JOIN category c ON c.categoryno = cl.categoryno
     LEFT JOIN shoes_file sf ON s.shoesno = sf.shoesno
     WHERE
-    pd.paymentno = #{paymentno} AND c.subname = s.brand
+    pd.paymentno = #{paymentno}
     <if test="search != null and search != ''">
       AND UPPER(s.title) LIKE '%' || UPPER(#{search}) || '%'
     </if>

@@ -217,8 +217,8 @@
 
         <!-- 버튼들 -->
         <div class="button-container">
-          <button class="detail_btnl">장바구니</button>
-          <button class="detail_btnr" onclick="send()">구매하기</button>
+          <button type="button" class="detail_btnl">장바구니</button>
+          <button type="button" class="detail_btnr" onclick="send()">구매하기</button>
         </div>
 
       </div>
@@ -227,91 +227,6 @@
 
   <div th:replace="~{review/review_component::review_fragment}"></div>
   <div th:replace="~{report/report_component::report_fragment}"></div>
-
-
-  <!--                 <div class="size-selection">
-                  <p class="size-title">SIZE</p>
-                  <select name="sizes" id="sizes" class="size-select sizes">
-                    <option value="">사이즈</option>
-                    <option th:each="size : ${size_list}" th:value="${size}" th:text="${size}"></option>
-                  </select>
-                </div>
-
-                <!-- 색상 선택 
-                <div class="color-selection">
-                  <p class="color-title">색상</p>
-                  <select name="color" id="color" class="color-select color">
-                    <option>색상을 선택해주세요.</option>
-                    <option th:each="color : ${coloramount}" th:value="${color}" th:text="${color}">색상을 선택하세요</option>
-                  </select>
-                </div>
-
-                <!-- 버튼들 
-                <div class="button-container">
-                  <button class="detail_btnl">장바구니</button>
-                  <button class="detail_btnr" onclick="send()">구매하기</button>
-                </div> 
-        </div>
-      </div>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          var wrap = document.getElementById('wrap');
-          var sizes = wrap.querySelectorAll('.sizes');
-          var sizeslist = sizes[sizes.length - 1];
-
-          selectColor(sizeslist);
-
-        });
-
-        function selectColor(sizeslist) {
-          sizeslist.addEventListener('change', function () {
-            var shoesno = document.getElementById("shoesno").getAttribute("data-shoesno");
-            var wrap = document.getElementById('wrap');
-            var colorsSelect = wrap.querySelectorAll('.color');
-
-            colorlist = colorsSelect[colorsSelect.length - 1]; // 색상 리스트
-            colorlist.innerHTML = '<option value="">색상을 선택하세요</option>';
-
-            if (this.value) {
-              fetch('/options/option_color', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  shoesno: parseInt(shoesno, 10),
-                  sizes: parseInt(this.value, 10)
-                })
-              })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                  }
-                  return response.json();
-                })
-                .then(data => {
-
-                  data.coloramount.forEach(list => {
-                    var option = document.createElement('option');
-                    option.value = list.color;
-                    if (list.amount === 0) {
-                      option.textContent = list.color + ' [품절]';
-                    } else {
-                      option.textContent = list.color + ' [' + list.amount + ']';
-                    }
-
-                    colorlist.appendChild(option);
-                  });
-
-                })
-                .catch(error => {
-                  console.error('색상을 불러오는 데 실패했습니다.', error);
-                });
-            }
-          });
-        }
-      </script>
--->
 
 
 
@@ -359,10 +274,15 @@
       let amountInput = document.getElementById('amountInput');
       let optionSelect = document.getElementById('optionSelect');
       let selected = optionSelect.options[optionSelect.selectedIndex].value;
-      if (amountInput.value == null || amountInput.value == 0 || (amountInput.value < amountInput.max)) {
+      
+      let amountValue = parseInt(amountInput.value, 10); // 문자열을 숫자로 변환
+      let maxAmount = parseInt(amountInput.max, 10); // 문자열을 숫자로 변환
+
+      if (isNaN(amountValue) || amountValue <= 0 || amountValue >= maxAmount) {
         amountInput.focus();
         return false;
       }
+
       if (memberno == null || memberno == "") {
         alert("로그인 후 구매하실 수 있습니다.");
         return false;
