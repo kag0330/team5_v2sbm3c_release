@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
@@ -62,15 +64,13 @@ public class PaymentTotalProc implements PaymentTotalProcInter {
     cal.set(Calendar.MILLISECOND, 0);
     startDate = cal.getTime();
     
-
-    HashMap<String, Object> map = new HashMap<String, Object>();
+    HashMap<String, Object> map = new HashMap<>();
     map.put("memberno", memberno);
     map.put("startDate", startDate);
     map.put("endDate", today);
     map.put("search", search);
     
-
-    List<PaymentTotalVO> paymentTotalList = new ArrayList<PaymentTotalVO>();
+    List<PaymentTotalVO> paymentTotalList = new ArrayList<>();
 
     sqlsession.select("dev.mvc.paymentTotal.PaymentTotalDAOInter.list", map,
         (ResultHandler<PaymentTotalVO>) context -> {
@@ -83,16 +83,26 @@ public class PaymentTotalProc implements PaymentTotalProcInter {
           List<PaymentDetailsOptionVO> paymentDetailsList = sqlsession
               .selectList("dev.mvc.paymentTotal.PaymentTotalDAOInter.selectPaymentDetailsByPaymentNo", childMap);
           
-          ArrayList<PaymentDetailsOptionVO> pdoArrayList = new ArrayList<>(paymentDetailsList);
+          // 중복 제거를 위한 Set 사용
+          Set<Integer> seenDetails = new HashSet<>();
+          ArrayList<PaymentDetailsOptionVO> uniquePaymentDetails = new ArrayList<>();
+          for (PaymentDetailsOptionVO details : paymentDetailsList) {
+            if (!seenDetails.contains(details.getPayment_details_no())) {
+              seenDetails.add(details.getPayment_details_no());
+              uniquePaymentDetails.add(details);
+            }
+          }
 
-          if (!paymentDetailsList.isEmpty()) {
-            paymentTotal.setPayment_details_option(pdoArrayList);
+          if (!uniquePaymentDetails.isEmpty()) {
+            paymentTotal.setPayment_details_option(uniquePaymentDetails);
             paymentTotalList.add(paymentTotal);
           }
         });
 
     return (ArrayList<PaymentTotalVO>) paymentTotalList;
   }
+
+
 
   @Override
   public ArrayList<PaymentTotalVO> cslist(int memberno, int date, String search) {
