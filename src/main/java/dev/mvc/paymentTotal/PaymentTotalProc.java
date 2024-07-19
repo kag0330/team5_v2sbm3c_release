@@ -56,6 +56,7 @@ public class PaymentTotalProc implements PaymentTotalProcInter {
     Date today = new Date();
     Date startDate = Tool.addDays(today, date);
     
+    // Set time to start of the day for startDate
     Calendar cal = Calendar.getInstance();
     cal.setTime(startDate);
     cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -64,10 +65,18 @@ public class PaymentTotalProc implements PaymentTotalProcInter {
     cal.set(Calendar.MILLISECOND, 0);
     startDate = cal.getTime();
     
+    // Set time to end of the day for today
+    cal.setTime(today);
+    cal.set(Calendar.HOUR_OF_DAY, 23);
+    cal.set(Calendar.MINUTE, 59);
+    cal.set(Calendar.SECOND, 59);
+    cal.set(Calendar.MILLISECOND, 999);
+    today = cal.getTime();
+    
     HashMap<String, Object> map = new HashMap<>();
     map.put("memberno", memberno);
-    map.put("startDate", startDate);
-    map.put("endDate", today);
+    map.put("startDate", new java.sql.Timestamp(startDate.getTime()));
+    map.put("endDate", new java.sql.Timestamp(today.getTime()));
     map.put("search", search);
     
     List<PaymentTotalVO> paymentTotalList = new ArrayList<>();
