@@ -75,12 +75,14 @@
   </div>
   <script th:inline="javascript">
     var optionList = /*[[${optionList}]]*/[];
-
+    
     function createOption() {
       var form = document.getElementById('createform');
       var sizes = document.getElementById('sizes').value;
       var color = document.getElementById('color').value;
       var amount = document.getElementById('amount').value;
+      
+      
       if (sizes.trim() === '' || color.trim() === '' || amount.trim() === '') {
         alert('사이즈, 색상, 재고를 입력해주세요.');
         return;

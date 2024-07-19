@@ -25,6 +25,7 @@ import dev.mvc.paymentTotal.PaymentTotalProcInter;
 import dev.mvc.shoes.ShoesAllVO;
 import dev.mvc.shoes.ShoesProcInter;
 import dev.mvc.shoes.ShoesVO;
+import dev.mvc.shoesFile.ShoesFileProcInter;
 import dev.mvc.team5.DefaultCont;
 import dev.mvc.tool.Alert;
 import jakarta.servlet.http.HttpSession;
@@ -47,6 +48,10 @@ public class BasketCont {
   @Autowired
   @Qualifier("dev.mvc.paymentTotal.PaymentTotalProc")
   private PaymentTotalProcInter paymentTotalProc;
+  
+  @Autowired
+  @Qualifier("dev.mvc.shoesFile.ShoesFileProc")
+  private ShoesFileProcInter shoesFileProc;
 
   /** 페이지당 출력할 레코드 갯수, nowPage는 1부터 시작 */
   public int record_per_page = 5;
@@ -88,9 +93,9 @@ public class BasketCont {
       int memberno = memberVO.getMemberno();
       
       ArrayList<ShoesAllVO> list = this.basketProc.list(memberno);
-      System.out.println(list.toString());
+      
       model.addAttribute("list", list);
-
+      model.addAttribute("shoesFileVO", this.shoesFileProc.list());
       return "basket/basket_list"; // /templates/basket/basket.html
     } else {
       Alert message = new Alert("로그인 후 이용해주세요.", "/login/signin", RequestMethod.GET, null);

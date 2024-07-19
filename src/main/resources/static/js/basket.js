@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+          shoesno: shoesno,
           sizes: parseInt(sizes),
           color: color,
           amount: parseInt(amountInput.value)

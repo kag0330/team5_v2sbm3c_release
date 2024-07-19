@@ -31,8 +31,8 @@ public class BasketProc implements BasketProcInter {
   
   @Override
   public Map<String, Object> read(Map<String, Object> map) {
-    Map<String, Object> result = this.basketDAO.read(map);
     System.out.println(map.toString());
+    Map<String, Object> result = this.basketDAO.read(map);
     if(result == null || result.isEmpty()) {
       return null;
     }

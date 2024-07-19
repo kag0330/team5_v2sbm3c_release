@@ -42,6 +42,7 @@
     INNER JOIN shoes s ON o.shoesno = s.shoesno
     INNER JOIN member m ON m.memberno = b.memberno
     WHERE color =#{color} AND sizes = #{sizes}
+    AND s.shoesno = #{shoesno}
 	</select>
 
 

@@ -10,7 +10,8 @@
       <div class="basket-list">
         <div class="basket" th:each="ShoesAllVO, status:${list}">
           <div class="item-details">
-            <img class="basket_img" src="/images/crocs.jpg" alt="장바구니1">
+          <img class="basket_img" th:if="${ShoesAllVO.shoesVO.shoesno} == ${shoesFile.shoesno}" th:each="shoesFile : ${shoesFileVO}" th:src="@{|/file/storage/${shoesFile.src}|}" alt="장바구니1">
+
             <div class="item-info">
               <input type="hidden" class="basketno" th:value="${ShoesAllVO.basketVO.basketno}">
               <input type="hidden" class="optionno" th:value="${ShoesAllVO.optionVO.optionno}">

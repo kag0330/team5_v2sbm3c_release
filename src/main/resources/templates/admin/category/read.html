@@ -11,7 +11,7 @@
         <span th:text="${categoryVO.name}" class="text-center" style="font-size: 20px;"></span>
 
         <span th:if="${categoryVO.subname != '-'}" th:text="' > ' + ${categoryVO.subname}"
-          class="title_line_text" style="color: white;"></span>
+          class="title_line_text"></span>
       <aside class="aside_right">
         <a href="/admin/category/list?now_page=1" title="카테고리 목록"><i class="fas fa-list"></i></a>
         <span class="menu_devide">│</span>

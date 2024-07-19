@@ -300,7 +300,7 @@ public class AdminShoesCont {
     ShoesVO shoesVO = this.shoesProc.admin_read(shoesno);
     model.addAttribute("shoesVO", shoesVO);
 
-    ArrayList<OptionVO> optionList = this.optionProc.option_list(now_page);
+    ArrayList<OptionVO> optionList = this.optionProc.option_list(shoesno);
     model.addAttribute("optionList", optionList);
 
     OptionVO optionVO = new OptionVO();

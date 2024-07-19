@@ -8,7 +8,7 @@
     <span th:if="${not #strings.isEmpty(session.login)}">
       <input type="hidden" id="mymemberno" th:data-mymemberno="${memberno}">
     </span>
-    <input type="hidden" id="shoesno" th:data-shoesno="${shoesAllVO.shoesVO.shoesno}">
+    <input type="hidden" id="shoesno" th:data-shoesno="${shoesAllVO.shoesVO.shoesno}" th:value=${shoesAllVO.shoesVO.shoesno}>
     <input type="hidden" id="src" th:data-shoesno="${shoesAllVO.shoesFileVO.src}">
 
 
@@ -232,6 +232,7 @@
 
   <script th:inline="javascript">
     const memberno = /*[[${session.login != null ? session.login.memberno : null}]]*/"";
+    const shoesno = /*[[${shoesAllVO.shoesVO.shoesno}]]*/"";
     let options = /*[[${options}]]*/"";
 
     let optionSelect = document.getElementById('optionSelect');
@@ -268,7 +269,7 @@
 
     function send() {
       let basketList = [];
-
+     
       let price = document.querySelector(".product-afterprice").innerText.replace(/[^0-9]/g, '');
 
       let amountInput = document.getElementById('amountInput');

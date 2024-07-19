@@ -129,6 +129,8 @@ public class ShoesCont {
 
     ArrayList<ShoesVO> list = shoesProc.Shoes_discount();
     model.addAttribute("list", list);
+    
+    model.addAttribute("shoesFileList", this.shoesFileProc.list());
 
     return "shoes/list";
   }
