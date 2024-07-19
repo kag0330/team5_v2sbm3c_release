@@ -60,6 +60,7 @@ public class AnalysisService {
   public boolean update(AnalysisDTO analysisDTO) {
     Optional<AnalysisEntity> originAnalysisEntity =  this.analysisRepository.findById(analysisDTO.getAnalysisno());
     if(originAnalysisEntity.isPresent()) {
+      AnalysisEntity ae =  originAnalysisEntity.get();
       AnalysisEntity analysisEntity = AnalysisEntity.builder()
           .analysisno(analysisDTO.getAnalysisno())
           .code(analysisDTO.getCode())
@@ -70,7 +71,7 @@ public class AnalysisService {
           .xlabel(analysisDTO.getXlabel())
           .ylabel(analysisDTO.getYlabel())
           .legend(analysisDTO.getLegend())
-          .rdate(analysisDTO.getRdate())
+          .rdate(ae.getRdate())
           .build();
       this.analysisRepository.save(analysisEntity);
       return true;
