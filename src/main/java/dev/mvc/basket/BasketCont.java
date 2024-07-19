@@ -131,6 +131,7 @@ public class BasketCont {
     String color = (String) map.get("color");
     int sizes = (Integer) map.get("sizes");
     int amount = (Integer) map.get("amount");
+    int shoesno = (Integer) map.get("shoesno");
     
     Map<String, Object> readMap = this.basketProc.read(map);
     System.out.println("basketno: " + readMap);
@@ -142,7 +143,7 @@ public class BasketCont {
       return response;
     }
 
-    int result = basketProc.create(memberno, color, sizes, amount);
+    int result = basketProc.create(memberno, color, sizes, amount, shoesno);
     
     if (result == 1) {
       response.put("success", true);

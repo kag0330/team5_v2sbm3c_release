@@ -51,7 +51,7 @@
 		SELECT basket_seq.nextval, #{amount}, #{memberno}, o.optionno
 		FROM options o
 		JOIN shoes s ON o.shoesno = s.shoesno
-		WHERE o.color = #{color} AND o.sizes = #{sizes}
+		WHERE o.color = #{color} AND o.sizes = #{sizes} AND s.shoesno = #{shoesno}
 	</insert>
 
 	<update id="update" parameterType="Map">

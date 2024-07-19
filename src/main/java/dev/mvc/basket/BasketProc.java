@@ -41,12 +41,13 @@ public class BasketProc implements BasketProcInter {
   }
 
   @Override
-  public int create(int memberno, String color, int sizes, int amount) {
+  public int create(int memberno, String color, int sizes, int amount, int shoesno) {
     Map<String, Object> map = new HashMap<>();
     map.put("memberno", memberno);
     map.put("color", color);
     map.put("sizes", sizes);
     map.put("amount", amount);
+    map.put("shoesno", shoesno);
     
     int cnt = this.basketDAO.create(map);
     System.out.println("cnt: "+cnt);

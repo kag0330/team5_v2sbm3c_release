@@ -12,7 +12,7 @@ public interface BasketProcInter {
   
   public Map<String, Object> read(Map<String, Object> map);
   
-  public int create(int memberno, String color, int sizes, int amount);
+  public int create(int memberno, String color, int sizes, int amount, int shoesno);
 
   
   public int delete(Integer memberno, Integer basketno);
